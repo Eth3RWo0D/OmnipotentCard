@@ -1,0 +1,33 @@
+modLoader="javafml" #mandatory
+loaderVersion="[36,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+license="BSD 3-Clause License"
+[[mods]] #mandatory
+modId="omni_card" #mandatory
+version="${file.jarVersion}" #mandatory
+displayName="Omnipotent Card" #mandatory
+displayURL="https://marblegate.love/" #optional
+# logoFile="examplemod.png" #optional
+credits="Art by Etherwood" #optional
+authors="MarbleGate 纯白之门 & Etherwood 以太木" #optional
+description='''
+waiting for edit.
+'''
+[[dependencies.omni_card]] #optional
+    # the modid of the dependency
+    modId="forge" #mandatory
+    # Does this dependency have to exist - if not, ordering below must be specified
+    mandatory=true #mandatory
+    # The version range of the dependency
+    versionRange="[36,)" #mandatory
+    # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
+    ordering="NONE"
+    # Side this dependency is applied on - BOTH, CLIENT or SERVER
+    side="BOTH"
+# Here's another dependency
+[[dependencies.omni_card]]
+    modId="minecraft"
+    mandatory=true
+# This version range declares a minimum of the current minecraft version up to but not including the next major version
+    versionRange="[1.16.5,1.17)"
+    ordering="NONE"
+    side="BOTH"

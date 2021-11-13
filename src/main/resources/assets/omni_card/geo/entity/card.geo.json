@@ -1,0 +1,35 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.card",
+				"texture_width": 16,
+				"texture_height": 16,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "bone",
+					"pivot": [-7.5, 0.1, 8.5],
+					"cubes": [
+						{
+							"origin": [-1.5, 0, -2.5],
+							"size": [3, 0.2, 5],
+							"uv": {
+								"north": {"uv": [0, 6], "uv_size": [3, 0.25]},
+								"east": {"uv": [0, 5], "uv_size": [5, 0.25]},
+								"south": {"uv": [6, 0], "uv_size": [3, 0.25]},
+								"west": {"uv": [5, 5], "uv_size": [5, 0.25]},
+								"up": {"uv": [0, 0], "uv_size": [3, 5]},
+								"down": {"uv": [3, 5], "uv_size": [3, -5]}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}
