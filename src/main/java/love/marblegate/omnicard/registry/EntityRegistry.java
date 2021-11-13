@@ -12,7 +12,7 @@ public class EntityRegistry {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, OmniCard.MODID);
     public static final RegistryObject<EntityType<CardEntity>> CARD = ENTITIES.register("card",
             () -> EntityType.Builder.<CardEntity>of(CardEntity::new, EntityClassification.MISC)
-                    .sized(0.3F, 0.02F)
+                    .sized(0.3F, 0.06F)
                     .clientTrackingRange(4).updateInterval(5)
                     .build("card"));
 

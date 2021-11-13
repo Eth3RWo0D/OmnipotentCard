@@ -18,7 +18,7 @@ public class BlankCard extends Item {
 
     @Override
     public ActionResult<ItemStack> use(World worldIn, PlayerEntity player, Hand hand) {
-        if(!worldIn.isClientSide()){
+        if (!worldIn.isClientSide()) {
             Vector3d vector3d = player.getViewVector(1.0F);
             /*double x = livingentity.getX() - (this.ghast.getX() + vector3d.x * 4.0D);
             double y = livingentity.getY(0.5D) - (0.5D + this.ghast.getY(0.5D));
@@ -28,8 +28,8 @@ public class BlankCard extends Item {
             double y = (vector3d.y * 4D);
             double z = (vector3d.z * 4D);
 
-            CardEntity cardEntity = new CardEntity(player,x,y,z,worldIn, CardEntity.CardType.values()[player.getRandom().nextInt(CardEntity.CardType.values().length)]);
-            cardEntity.setPos(player.getX(), player.getY(), player.getZ());
+            CardEntity cardEntity = new CardEntity(player, x, y, z, worldIn, CardEntity.CardType.values()[player.getRandom().nextInt(CardEntity.CardType.values().length)]);
+            cardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
             worldIn.addFreshEntity(cardEntity);
         }
         return super.use(worldIn, player, hand);

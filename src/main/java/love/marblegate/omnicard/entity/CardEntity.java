@@ -1,16 +1,19 @@
 package love.marblegate.omnicard.entity;
 
+import love.marblegate.omnicard.misc.ModDamage;
 import love.marblegate.omnicard.registry.EntityRegistry;
-import net.minecraft.entity.Entity;
+import love.marblegate.omnicard.registry.ItemRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.projectile.DamagingProjectileEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -32,7 +35,7 @@ public class CardEntity extends DamagingProjectileEntity implements IAnimatable,
     }
 
     public CardEntity(LivingEntity livingEntity, double xPower, double yPower, double zPower, World world, CardType cardType) {
-        super(EntityRegistry.CARD.get(),livingEntity,xPower,yPower,zPower,world);
+        super(EntityRegistry.CARD.get(), livingEntity, xPower, yPower, zPower, world);
         type = cardType;
     }
 
@@ -62,15 +65,26 @@ public class CardEntity extends DamagingProjectileEntity implements IAnimatable,
 
     }
 
-    protected void onHit(RayTraceResult p_70227_1_) {
+    @Override
+    protected void onHit(RayTraceResult rayTraceResult) {
         // TODO temporary
-        super.onHit(p_70227_1_);
+        super.onHit(rayTraceResult);
         if (!this.level.isClientSide) {
-            boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());
-            this.level.explode((Entity)null, this.getX(), this.getY(), this.getZ(), 2, flag, flag ? Explosion.Mode.DESTROY : Explosion.Mode.NONE);
+            this.level.addFreshEntity(new ItemEntity(this.level, rayTraceResult.getLocation().x, rayTraceResult.getLocation().y, rayTraceResult.getLocation().z, ItemRegistry.BLANK_CARD.get().getDefaultInstance()));
             this.remove();
         }
 
+    }
+
+    @Override
+    protected void onHitEntity(EntityRayTraceResult entityRayTraceResult) {
+        super.onHitEntity(entityRayTraceResult);
+        entityRayTraceResult.getEntity().hurt(ModDamage.causeCardDamage(getOwner(), CardType.BLANK), 5); //TODO temporary
+    }
+
+    @Override
+    protected void onHitBlock(BlockRayTraceResult blockRayTraceResult) {
+        super.onHitBlock(blockRayTraceResult);
     }
 
     @Override
@@ -96,7 +110,7 @@ public class CardEntity extends DamagingProjectileEntity implements IAnimatable,
     @Override
     public void addAdditionalSaveData(CompoundNBT compoundNBT) {
         super.addAdditionalSaveData(compoundNBT);
-        compoundNBT.putString("card_type",type.toString());
+        compoundNBT.putString("card_type", type.toString());
     }
 
     @Override
@@ -115,7 +129,7 @@ public class CardEntity extends DamagingProjectileEntity implements IAnimatable,
         HELIOTROPE("violetcard"),
         INK("blackcard");
 
-        String name;
+        public String name;
 
         CardType(String i) {
             name = i;

@@ -8,7 +8,7 @@ public class ModGroup {
 
     public final static GeneralGroup GENERAL = new GeneralGroup();
 
-    public static class GeneralGroup extends ItemGroup{
+    public static class GeneralGroup extends ItemGroup {
 
         public GeneralGroup() {
             super("omni_card.general");
