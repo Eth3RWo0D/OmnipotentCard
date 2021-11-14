@@ -1,6 +1,5 @@
 package love.marblegate.omnicard.misc;
 
-import love.marblegate.omnicard.entity.CardEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.DamageSource;
@@ -12,7 +11,7 @@ import javax.annotation.Nullable;
 
 public class ModDamage {
 
-    public static DamageSource causeCardDamage(@Nullable Entity entity, CardEntity.CardType type) {
+    public static DamageSource causeCardDamage(@Nullable Entity entity, CardType type) {
         if (entity instanceof LivingEntity)
             return new MobtoMobDamageSource("omni_card." + type.name, (LivingEntity) entity);
         else

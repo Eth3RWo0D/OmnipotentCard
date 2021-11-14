@@ -8,19 +8,14 @@
         "bone": {
           "rotation": {
             "0.0": {
-              "vector": [
-                0,
-                0,
-                0
-              ]
+              "vector": [0, 0, 0]
+            },
+            "0.1": {
+              "vector": [0, 182.5, 0],
+              "easing": "linear"
             },
             "0.2": {
-              "vector": [
-                0,
-                360,
-                0
-              ],
-              "easing": "linear"
+              "vector": [0, 360, 0]
             }
           }
         }
@@ -33,18 +28,26 @@
         "bone": {
           "rotation": {
             "0.0": {
-              "vector": [
-                0,
-                0,
-                0
-              ]
+              "vector": [0, 0, 0]
+            },
+            "0.1": {
+              "vector": [0, 0, -25]
             },
             "0.2": {
-              "vector": [
-                0,
-                0,
-                -180
-              ]
+              "vector": [0, 0, 30]
+            }
+          },
+          "scale": {
+            "0.0": {
+              "vector": [1, 1, 1]
+            },
+            "0.1": {
+              "vector": [1.1, 1, 1.1],
+              "easing": "step"
+            },
+            "0.2": {
+              "vector": [1, 1, 1],
+              "easing": "step"
             }
           }
         }

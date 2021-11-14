@@ -1,8 +1,14 @@
 package love.marblegate.omnicard;
 
+import love.marblegate.omnicard.capability.cardtype.CardTypeData;
+import love.marblegate.omnicard.capability.cardtype.ICardTypeData;
+import love.marblegate.omnicard.item.CardStack;
+import love.marblegate.omnicard.misc.CardType;
 import love.marblegate.omnicard.registry.EntityRegistry;
 import love.marblegate.omnicard.registry.ItemRegistry;
+import net.minecraft.item.ItemModelsProperties;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,11 +34,12 @@ public class OmniCard {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
         // Register the processIMC method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
+        */
         // Register the doClientStuff method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
 
         // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);*/
+        // MinecraftForge.EVENT_BUS.register(this);
     }
 
    /* private void setup(final FMLCommonSetupEvent event)
@@ -40,13 +47,33 @@ public class OmniCard {
         // some preinit code
         LOGGER.info("HELLO FROM PREINIT");
         LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
-    }
+    }*/
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-        // do something that can only be done on the client
-        LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().options);
+        // Item Property Override
+        ItemModelsProperties.register(ItemRegistry.CARD_STACK.get(),
+                CardStack.CARD_CATEGORY_PROPERTY_NAME, (stack, world, living) -> {
+                    ICardTypeData cardTypeData = stack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
+                    CardType cardType = cardTypeData.get();
+                    if(cardType == CardType.RED){
+                        return 0.1F;
+                    } else if (cardType == CardType.CORAL){
+                        return 0.2F;
+                    } else if (cardType == CardType.GOLD){
+                        return 0.3F;
+                    } else if (cardType == CardType.SEA_GREEN){
+                        return 0.4F;
+                    } else if (cardType == CardType.AZURE){
+                        return 0.5F;
+                    } else if (cardType == CardType.CERULEAN_BLUE){
+                        return 0.6F;
+                    } else if (cardType == CardType.HELIOTROPE){
+                        return 0.7F;
+                    } else return 0;
+                });
     }
 
+    /*
     private void enqueueIMC(final InterModEnqueueEvent event)
     {
         // some example code to dispatch IMC to another mod
