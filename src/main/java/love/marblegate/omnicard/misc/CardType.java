@@ -6,15 +6,15 @@ import net.minecraft.item.Item;
 import java.util.function.Supplier;
 
 public enum CardType {
-    BLANK("white_card",CateCategory.STANDARD,true,ItemRegistry.BLANK_CARD),
-    RED("red_card",CateCategory.STANDARD,false),
-    CORAL("orange_card",CateCategory.STANDARD,false),
-    GOLD("gold_card",CateCategory.STANDARD,false),
-    SEA_GREEN("green_card",CateCategory.STANDARD,false),
-    AZURE("sky_card",CateCategory.STANDARD,false),
-    CERULEAN_BLUE("blue_card",CateCategory.STANDARD,false),
-    HELIOTROPE("violet_card",CateCategory.STANDARD,false),
-    INK("black_card",CateCategory.STANDARD,false),
+    BLANK("white_card",CateCategory.STANDARD,ItemRegistry.BLANK_CARD),
+    RED("red_card",CateCategory.STANDARD,ItemRegistry.BLANK_CARD),
+    CORAL("orange_card",CateCategory.STANDARD,ItemRegistry.BLANK_CARD),
+    GOLD("gold_card",CateCategory.STANDARD,ItemRegistry.BLANK_CARD),
+    SEA_GREEN("green_card",CateCategory.STANDARD,ItemRegistry.BLANK_CARD),
+    AZURE("sky_card",CateCategory.STANDARD,ItemRegistry.BLANK_CARD),
+    CERULEAN_BLUE("blue_card",CateCategory.STANDARD,ItemRegistry.BLANK_CARD),
+    HELIOTROPE("violet_card",CateCategory.STANDARD,ItemRegistry.BLANK_CARD),
+    INK("black_card",CateCategory.STANDARD,ItemRegistry.BLANK_CARD),
 
     FLAME("flame_card",CateCategory.ELEMENTAL,true, ItemRegistry.FLAME_CARD),
     TORRENT("torrent_card",CateCategory.ELEMENTAL,true, ItemRegistry.TORRENT_CARD),
@@ -35,31 +35,28 @@ public enum CardType {
     public String name;
     public CateCategory category;
     public Supplier<Item> retrievedItem;
-    public boolean recyclable;
+    public boolean canBePickup;
 
     CardType(String i,CateCategory category) {
         name = i;
         this.category = category;
+        canBePickup = false;
     }
 
     CardType(String i,CateCategory category, Supplier<Item> retrievedItem) {
         name = i;
         this.category = category;
         this.retrievedItem = retrievedItem;
+        canBePickup = false;
     }
 
-    CardType(String i,CateCategory category,boolean recyclable, Supplier<Item> retrievedItem) {
+    CardType(String i, CateCategory category, boolean canBePickup, Supplier<Item> retrievedItem) {
         name = i;
         this.category = category;
-        this.recyclable = recyclable;
+        this.canBePickup = canBePickup;
         this.retrievedItem = retrievedItem;
     }
 
-    CardType(String i,CateCategory category,boolean recyclable) {
-        name = i;
-        this.category = category;
-        this.recyclable = recyclable;
-    }
 
 
     public String getTexturePath(){

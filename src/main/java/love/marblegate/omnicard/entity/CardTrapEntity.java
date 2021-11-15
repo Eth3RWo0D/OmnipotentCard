@@ -68,7 +68,7 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
 
     @Override
     public ActionResultType interact(PlayerEntity player, Hand hand) {
-        if(type.retrievedItem!=null){
+        if(type.retrievedItem!=null && type.canBePickup){
             if(!player.level.isClientSide()){
                 player.level.addFreshEntity(new ItemEntity(player.level,this.getX(),this.getY(),this.getZ(),type.retrievedItem.get().getDefaultInstance()));
                 remove();
