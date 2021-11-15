@@ -5,7 +5,7 @@ import love.marblegate.omnicard.OmniCard;
 import love.marblegate.omnicard.capability.cardtype.CardTypeData;
 import love.marblegate.omnicard.capability.cardtype.CardTypeItemStackProvider;
 import love.marblegate.omnicard.capability.cardtype.ICardTypeData;
-import love.marblegate.omnicard.entity.CardEntity;
+import love.marblegate.omnicard.entity.FlyingCardEntity;
 import love.marblegate.omnicard.misc.CardType;
 import love.marblegate.omnicard.misc.ModGroup;
 import love.marblegate.omnicard.registry.ItemRegistry;
@@ -50,11 +50,12 @@ public class CardStack extends Item{
                         double y = (vector3d.y * 4D);
                         double z = (vector3d.z * 4D);
 
-                        CardEntity cardEntity = new CardEntity(player, x, y, z, worldIn, cardTypeData.get());
-                        cardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
-                        worldIn.addFreshEntity(cardEntity);
+                        FlyingCardEntity flyingCardEntity = new FlyingCardEntity(player, x, y, z, worldIn, cardTypeData.get());
+                        flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
+                        worldIn.addFreshEntity(flyingCardEntity);
                         if(!player.abilities.instabuild){
                             consumeBlankCard(player);
+                            player.causeFoodExhaustion(1);
                         }
                     } else {
                         return ActionResult.fail(player.getItemInHand(hand));

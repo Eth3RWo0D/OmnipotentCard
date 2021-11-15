@@ -1,7 +1,7 @@
 {
   "credit": "Made with Blockbench",
   "textures": {
-    "8": "omni_card:card/standard/white_card"
+    "8": "omni_card:card/special/seal_card"
   },
   "elements": [
     {

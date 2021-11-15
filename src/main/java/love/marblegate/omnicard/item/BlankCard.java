@@ -1,6 +1,6 @@
 package love.marblegate.omnicard.item;
 
-import love.marblegate.omnicard.entity.CardEntity;
+import love.marblegate.omnicard.entity.FlyingCardEntity;
 import love.marblegate.omnicard.misc.CardType;
 import love.marblegate.omnicard.misc.ModGroup;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,6 +19,7 @@ public class BlankCard extends Item {
 
     @Override
     public ActionResult<ItemStack> use(World worldIn, PlayerEntity player, Hand hand) {
+        ItemStack itemStack = player.getItemInHand(hand);
         if (!worldIn.isClientSide()) {
             Vector3d vector3d = player.getViewVector(1.0F);
 
@@ -26,10 +27,14 @@ public class BlankCard extends Item {
             double y = (vector3d.y * 4D);
             double z = (vector3d.z * 4D);
 
-            CardEntity cardEntity = new CardEntity(player, x, y, z, worldIn, CardType.BLANK);
-            cardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
-            worldIn.addFreshEntity(cardEntity);
+            FlyingCardEntity flyingCardEntity = new FlyingCardEntity(player, x, y, z, worldIn, CardType.BLANK);
+            flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
+            worldIn.addFreshEntity(flyingCardEntity);
+
+            if(!player.abilities.instabuild){
+                itemStack.shrink(1);
+            }
         }
-        return super.use(worldIn, player, hand);
+        return ActionResult.sidedSuccess(itemStack,worldIn.isClientSide());
     }
 }

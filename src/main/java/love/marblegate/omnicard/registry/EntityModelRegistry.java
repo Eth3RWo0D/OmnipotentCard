@@ -1,6 +1,7 @@
 package love.marblegate.omnicard.registry;
 
-import love.marblegate.omnicard.renderer.CardEntityRenderer;
+import love.marblegate.omnicard.renderer.CardTrapEntityRenderer;
+import love.marblegate.omnicard.renderer.FlyingCardEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -13,6 +14,8 @@ public class EntityModelRegistry {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void onClientSetUpEvent(FMLClientSetupEvent event) {
-        RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.CARD.get(), CardEntityRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.FLYING_CARD.get(), FlyingCardEntityRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.CARD_TRAP.get(), CardTrapEntityRenderer::new);
+
     }
 }

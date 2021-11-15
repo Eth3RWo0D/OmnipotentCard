@@ -4,6 +4,7 @@ import love.marblegate.omnicard.capability.cardtype.CardTypeData;
 import love.marblegate.omnicard.capability.cardtype.ICardTypeData;
 import love.marblegate.omnicard.item.CardStack;
 import love.marblegate.omnicard.misc.CardType;
+import love.marblegate.omnicard.registry.EffectRegistry;
 import love.marblegate.omnicard.registry.EntityRegistry;
 import love.marblegate.omnicard.registry.ItemRegistry;
 import net.minecraft.item.ItemModelsProperties;
@@ -27,6 +28,7 @@ public class OmniCard {
 
         ItemRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         EntityRegistry.ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        EffectRegistry.EFFECT.register(FMLJavaModLoadingContext.get().getModEventBus());
 
         /*// Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);

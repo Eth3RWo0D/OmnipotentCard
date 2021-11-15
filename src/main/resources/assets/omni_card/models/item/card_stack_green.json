@@ -1,8 +1,8 @@
 {
   "credit": "Made with Blockbench",
   "textures": {
-    "0": "omni_card:card/green_card",
-    "particle": "omni_card:card/green_card"
+    "0": "omni_card:card/standard/green_card",
+    "particle": "omni_card:card/standard/green_card"
   },
   "elements": [
     {

@@ -1,8 +1,8 @@
 {
   "credit": "Made with Blockbench",
   "textures": {
-    "0": "omni_card:card/gold_card",
-    "particle": "omni_card:card/gold_card"
+    "0": "omni_card:card/standard/gold_card",
+    "particle": "omni_card:card/standard/gold_card"
   },
   "elements": [
     {

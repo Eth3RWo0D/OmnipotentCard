@@ -1,8 +1,8 @@
 {
   "credit": "Made with Blockbench",
   "textures": {
-    "0": "omni_card:card/sky_card",
-    "particle": "omni_card:card/sky_card"
+    "0": "omni_card:card/standard/sky_card",
+    "particle": "omni_card:card/standard/sky_card"
   },
   "elements": [
     {
