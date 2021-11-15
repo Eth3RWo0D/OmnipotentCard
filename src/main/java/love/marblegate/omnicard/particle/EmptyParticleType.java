@@ -36,7 +36,8 @@ public class EmptyParticleType extends ParticleType<EmptyParticleType> implement
     }
 
     @Override
-    public void writeToNetwork(PacketBuffer p_197553_1_) {}
+    public void writeToNetwork(PacketBuffer p_197553_1_) {
+    }
 
     @Override
     public String writeToString() {

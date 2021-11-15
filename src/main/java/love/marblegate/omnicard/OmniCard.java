@@ -58,19 +58,19 @@ public class OmniCard {
                 CardStack.CARD_CATEGORY_PROPERTY_NAME, (stack, world, living) -> {
                     ICardTypeData cardTypeData = stack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
                     CardType cardType = cardTypeData.get();
-                    if(cardType == CardType.RED){
+                    if (cardType == CardType.RED) {
                         return 0.1F;
-                    } else if (cardType == CardType.CORAL){
+                    } else if (cardType == CardType.CORAL) {
                         return 0.2F;
-                    } else if (cardType == CardType.GOLD){
+                    } else if (cardType == CardType.GOLD) {
                         return 0.3F;
-                    } else if (cardType == CardType.SEA_GREEN){
+                    } else if (cardType == CardType.SEA_GREEN) {
                         return 0.4F;
-                    } else if (cardType == CardType.AZURE){
+                    } else if (cardType == CardType.AZURE) {
                         return 0.5F;
-                    } else if (cardType == CardType.CERULEAN_BLUE){
+                    } else if (cardType == CardType.CERULEAN_BLUE) {
                         return 0.6F;
-                    } else if (cardType == CardType.HELIOTROPE){
+                    } else if (cardType == CardType.HELIOTROPE) {
                         return 0.7F;
                     } else return 0;
                 });

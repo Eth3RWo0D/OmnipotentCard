@@ -31,10 +31,10 @@ public class BlankCard extends Item {
             flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
             worldIn.addFreshEntity(flyingCardEntity);
 
-            if(!player.abilities.instabuild){
+            if (!player.abilities.instabuild) {
                 itemStack.shrink(1);
             }
         }
-        return ActionResult.sidedSuccess(itemStack,worldIn.isClientSide());
+        return ActionResult.sidedSuccess(itemStack, worldIn.isClientSide());
     }
 }

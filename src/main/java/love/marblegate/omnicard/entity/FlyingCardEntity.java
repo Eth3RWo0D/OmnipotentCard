@@ -18,13 +18,10 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -54,13 +51,11 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
         setPickUpStatus(false);
     }
 
-    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)
-    {
-        if(!canPickUp()){
+    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+        if (!canPickUp()) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("cardfly_normal", true));
             return PlayState.CONTINUE;
-        }
-        else{
+        } else {
             return PlayState.STOP;
         }
     }
@@ -74,20 +69,24 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(CAN_PICK_UP,true);
+        this.entityData.define(CAN_PICK_UP, true);
     }
 
     @Override
     public void tick() {
         super.tick();
-        if(!level.isClientSide()){
-            if(remainingLifeTime<=0){
-                if(type.retrievedItem!=null)
-                    this.spawnAtLocation(type.retrievedItem.get().getDefaultInstance(), 0.1F);
+        if (!level.isClientSide()) {
+            if (remainingLifeTime <= 0) {
+                if (type.entityDroppedItem != null)
+                    this.spawnAtLocation(type.entityDroppedItem.get().getDefaultInstance(), 0.1F);
                 remove();
-            }
-            else{
-                remainingLifeTime-=1;
+            } else {
+                remainingLifeTime -= 1;
+                // Pickup Card on Ground
+                if (canPickUp() && type.entityDroppedItem != null && qualifiedToBeRetrieved()) {
+                    this.spawnAtLocation(type.entityDroppedItem.get().getDefaultInstance(), 0.1F);
+                    remove();
+                }
             }
         }
     }
@@ -105,140 +104,47 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
     @Override
     protected void onHitEntity(EntityRayTraceResult entityRayTraceResult) {
         super.onHitEntity(entityRayTraceResult);
-        if(!this.level.isClientSide()){
-            Entity entity = entityRayTraceResult.getEntity();
-
-            // Pickup Card on Ground
-            if(canPickUp() && entity instanceof PlayerEntity && type.retrievedItem!=null){
-                this.spawnAtLocation(type.retrievedItem.get().getDefaultInstance(), 0.1F);
-            }
-
-            if(entity instanceof LivingEntity && !canPickUp()) {
-                // hit living entity
-                LivingEntity livingEntity = (LivingEntity) entity;
-                if(type==CardType.BLANK){
-                    livingEntity.hurt(ModDamage.causeCardDamage(getOwner(), type), 6);
-                }
-
-                else if(type==CardType.INK){
-                    livingEntity.hurt(ModDamage.causeCardDamage(getOwner(), type), 6);
-                    livingEntity.addEffect(new EffectInstance(Effects.WITHER, 80));
-                }
-
-                else if(type==CardType.RED){
-                    if(livingEntity.hasEffect(EffectRegistry.READY_TO_EXPLODE.get())){
-                        Explosion.Mode explosion$mode = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(livingEntity.level, livingEntity) ? Explosion.Mode.BREAK : Explosion.Mode.NONE;
-                        livingEntity.level.explode(livingEntity, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), 3, explosion$mode);
-                        livingEntity.hurt(ModDamage.causeCardDamage(getOwner(), CardType.RED).setExplosion(), 6);
-                    }
-                    livingEntity.addEffect(new EffectInstance(EffectRegistry.READY_TO_EXPLODE.get(), 30));
-                }
-
-                else if(type==CardType.CORAL){
-                    livingEntity.hurt(ModDamage.causeCardDamage(getOwner(), type), 6);
-                    if(livingEntity instanceof PlayerEntity){
-                        livingEntity.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 80,3));
-                        livingEntity.addEffect(new EffectInstance(Effects.CONFUSION, 80));
-                    } else {
-                        livingEntity.addEffect(new EffectInstance(EffectRegistry.DIZZY.get(), 80));
-                        livingEntity.addEffect(new EffectInstance(Effects.CONFUSION, 80));
-                    }
-                }
-
-                else if(type==CardType.GOLD){
-                    livingEntity.hurt(ModDamage.causeCardDamage(getOwner(), type), 6);
-                    livingEntity.addEffect(new EffectInstance(Effects.LEVITATION, 80));
-                    livingEntity.addEffect(new EffectInstance(Effects.GLOWING, 80));
-                }
-
-                else if(type==CardType.SEA_GREEN){
-                    if(livingEntity.isInvertedHealAndHarm()){
-                        livingEntity.hurt(ModDamage.causeCardDamage(getOwner(), type).setMagic(), 8);
-                    } else {
-                        livingEntity.heal(8);
-                    }
-                }
-
-                else if(type==CardType.AZURE){
-
-                }
-
-                else if(type==CardType.CERULEAN_BLUE){
-                    livingEntity.hurt(ModDamage.causeCardDamage(getOwner(), type), 6);
-                    livingEntity.addEffect(new EffectInstance(Effects.BLINDNESS, 100));
-                }
-
-                else if(type==CardType.HELIOTROPE){
-                    livingEntity.hurt(ModDamage.causeCardDamage(getOwner(), type), 6);
-                    livingEntity.addEffect(new EffectInstance(Effects.POISON, 80));
-                    livingEntity.addEffect(new EffectInstance(EffectRegistry.POISON_NOW_LETHAL.get(), 81));
-                }
-
-                else if(type==CardType.FLAME){
-
-                }
-
-                else if(type==CardType.TORRENT){
-
-                }
-
-                else if(type==CardType.THUNDER){
-
-                }
-
-                else if(type==CardType.BRAMBLE){
-
-                }
-
-                else if(type==CardType.END){
-
-                }
-
-                else if(type==CardType.EARTH){
-
-                }
-                remove();
-            } else if (!(entity instanceof FlyingCardEntity)){
-                // Hit non-living entity
-                entity.hurt(ModDamage.causeCardDamage(getOwner(), type), 6);
-                remove();
-            }
+        Entity entity = entityRayTraceResult.getEntity();
+        if (entity instanceof LivingEntity && !canPickUp() && type.flyingCardHitHandler!=null) {
+            type.flyingCardHitHandler.handleHit(this, (LivingEntity) entity);
+            remove();
         }
     }
 
     @Override
     protected void onHitBlock(BlockRayTraceResult blockRayTraceResult) {
         super.onHitBlock(blockRayTraceResult);
-        if(type!=CardType.TORRENT){
-            // Card Stay on
+        if (type != CardType.TORRENT) {
+            // Card stays on block
             stayOnBlock(blockRayTraceResult);
         } else {
             // Torrent Card eliminates fire
-            if(this.level.isClientSide()){
-
+            if (this.level.isClientSide()) {
+                // TODO 需要加入激流牌效果
             }
             stayOnBlock(blockRayTraceResult);
         }
     }
 
-    private void stayOnBlock(BlockRayTraceResult blockRayTraceResult){
+    private boolean qualifiedToBeRetrieved() {
+        return !level.getEntities(this, this.getBoundingBox(), (entity -> entity instanceof PlayerEntity)).isEmpty();
+    }
+
+    private void stayOnBlock(BlockRayTraceResult blockRayTraceResult) {
         Vector3d vector3d = blockRayTraceResult.getLocation().subtract(this.getX(), this.getY(), this.getZ());
         this.setDeltaMovement(vector3d);
-        Vector3d vector3d1 = vector3d.normalize().scale((double)0.05F);
+        Vector3d vector3d1 = vector3d.normalize().scale((double) 0.05F);
         this.setPosRaw(this.getX() - vector3d1.x, this.getY() - vector3d1.y, this.getZ() - vector3d1.z);
         setPickUpStatus(true);
     }
 
-    private boolean canPickUp(){
+    private boolean canPickUp() {
         return this.entityData.get(CAN_PICK_UP);
     }
 
-    private void setPickUpStatus(boolean b){
-        entityData.set(CAN_PICK_UP,b);
+    private void setPickUpStatus(boolean b) {
+        entityData.set(CAN_PICK_UP, b);
     }
-
-
-
 
     @Override
     protected boolean shouldBurn() {
@@ -247,7 +153,7 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
 
     @Override
     protected IParticleData getTrailParticle() {
-        if(!canPickUp()){
+        if (!canPickUp()) {
             return ParticleTypes.FIREWORK;
         } else
             return ParticleRegistry.EMPTY.get();
@@ -271,8 +177,8 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
     public void addAdditionalSaveData(CompoundNBT compoundNBT) {
         super.addAdditionalSaveData(compoundNBT);
         compoundNBT.putString("card_type", type.toString());
-        compoundNBT.putInt("remaining_life_time",remainingLifeTime);
-        compoundNBT.putBoolean("can_pickup",canPickUp());
+        compoundNBT.putInt("remaining_life_time", remainingLifeTime);
+        compoundNBT.putBoolean("can_pickup", canPickUp());
     }
 
     @Override
@@ -284,7 +190,7 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
     public void writeSpawnData(PacketBuffer buffer) {
         buffer.writeEnum(type);
         buffer.writeInt(remainingLifeTime);
-        buffer.writeByte(canPickUp()?1:0);
+        buffer.writeByte(canPickUp() ? 1 : 0);
     }
 
     @Override

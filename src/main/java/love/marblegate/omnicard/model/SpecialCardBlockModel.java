@@ -1,6 +1,5 @@
 package love.marblegate.omnicard.model;
 
-import love.marblegate.omnicard.block.SpecialCardBlock;
 import love.marblegate.omnicard.block.tileentity.SpecialCardBlockTileEntity;
 import net.minecraft.util.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;

@@ -2,7 +2,6 @@ package love.marblegate.omnicard.particle;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.TexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.world.ClientWorld;
@@ -13,7 +12,8 @@ public class EmptyParticle extends TexturedParticle {
     }
 
     @Override
-    public void render(IVertexBuilder p_225606_1_, ActiveRenderInfo p_225606_2_, float p_225606_3_) {}
+    public void render(IVertexBuilder p_225606_1_, ActiveRenderInfo p_225606_2_, float p_225606_3_) {
+    }
 
     @Override
     protected float getU0() {

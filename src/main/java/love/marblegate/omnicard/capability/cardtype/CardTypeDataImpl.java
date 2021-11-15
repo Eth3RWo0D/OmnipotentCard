@@ -6,7 +6,7 @@ public class CardTypeDataImpl implements ICardTypeData {
     private CardType cardType;
     private boolean isSwitchingCard;
 
-    public CardTypeDataImpl(){
+    public CardTypeDataImpl() {
         cardType = CardType.INK;
         isSwitchingCard = false;
     }

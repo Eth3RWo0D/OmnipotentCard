@@ -6,7 +6,6 @@ import love.marblegate.omnicard.registry.EffectRegistry;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.EffectType;
 import net.minecraft.potion.Effects;
-import net.minecraft.world.Explosion;
 
 public class PoisonNowLethal extends HiddenEffect {
     public PoisonNowLethal(EffectType p_i50391_1_) {
@@ -16,7 +15,7 @@ public class PoisonNowLethal extends HiddenEffect {
     @Override
     public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
         if (this == EffectRegistry.POISON_NOW_LETHAL.get() && !livingEntity.level.isClientSide()) {
-            if(livingEntity.hasEffect(Effects.POISON) && livingEntity.getHealth()<=1.5F){
+            if (livingEntity.hasEffect(Effects.POISON) && livingEntity.getHealth() <= 1.5F) {
                 livingEntity.hurt(ModDamage.causeCardDamage(null, CardType.HELIOTROPE).bypassArmor(), 100);
             }
         }

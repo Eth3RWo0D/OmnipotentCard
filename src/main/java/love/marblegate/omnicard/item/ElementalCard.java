@@ -35,31 +35,31 @@ public class ElementalCard extends Item {
 
             FlyingCardEntity flyingCardEntity = new FlyingCardEntity(player, x, y, z, worldIn, cardType);
             flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
+            flyingCardEntity.setOwner(player);
             worldIn.addFreshEntity(flyingCardEntity);
 
-            if(!player.abilities.instabuild){
+            if (!player.abilities.instabuild) {
                 itemStack.shrink(1);
             }
         }
-        return ActionResult.sidedSuccess(itemStack,worldIn.isClientSide());
+        return ActionResult.sidedSuccess(itemStack, worldIn.isClientSide());
     }
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        if(context.getPlayer().isShiftKeyDown()){
-            if(context.getClickedFace() == Direction.UP){
-                if(!context.getLevel().isClientSide()){
-                    CardTrapEntity cardTrapEntity = new CardTrapEntity(context.getLevel(),cardType);
-                    cardTrapEntity.setPos(context.getClickLocation().x,context.getClickLocation().y,context.getClickLocation().z);
+        if (context.getPlayer().isShiftKeyDown()) {
+            if (context.getClickedFace() == Direction.UP) {
+                if (!context.getLevel().isClientSide()) {
+                    CardTrapEntity cardTrapEntity = new CardTrapEntity(context.getLevel(), cardType);
+                    cardTrapEntity.setPos(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z);
                     cardTrapEntity.yRot = context.getPlayer().yRot;
                     context.getLevel().addFreshEntity(cardTrapEntity);
-                    if(!context.getPlayer().abilities.instabuild){
+                    if (!context.getPlayer().abilities.instabuild) {
                         stack.shrink(1);
                     }
                 }
                 return ActionResultType.SUCCESS;
-            }
-            else {
+            } else {
                 return ActionResultType.FAIL;
             }
         } else {

@@ -24,9 +24,9 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class CardStack extends Item{
-    public static ResourceLocation CARD_CATEGORY_PROPERTY_NAME = new ResourceLocation(OmniCard.MODID,"card_type");
-    private static final List<CardType> availableCardType = Lists.newArrayList(CardType.INK,CardType.RED,CardType.CORAL,CardType.GOLD,CardType.SEA_GREEN,CardType.AZURE,CardType.CERULEAN_BLUE,CardType.HELIOTROPE);
+public class CardStack extends Item {
+    public static ResourceLocation CARD_CATEGORY_PROPERTY_NAME = new ResourceLocation(OmniCard.MODID, "card_type");
+    private static final List<CardType> availableCardType = Lists.newArrayList(CardType.INK, CardType.RED, CardType.CORAL, CardType.GOLD, CardType.SEA_GREEN, CardType.AZURE, CardType.CERULEAN_BLUE, CardType.HELIOTROPE);
 
     public CardStack() {
         super(new Properties().tab(ModGroup.GENERAL));
@@ -37,13 +37,13 @@ public class CardStack extends Item{
         if (!worldIn.isClientSide()) {
             ICardTypeData cardTypeData = player.getItemInHand(hand).getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
 
-            if(!player.isShiftKeyDown()){
-                if(cardTypeData.isSwitchingCard()){
+            if (!player.isShiftKeyDown()) {
+                if (cardTypeData.isSwitchingCard()) {
                     // stop card picking
                     cardTypeData.setSwitchingCard(false);
                 } else {
                     // Throwing Card
-                    if(player.abilities.instabuild || hasEnoughBlankCard(player)){
+                    if (player.abilities.instabuild || hasEnoughBlankCard(player)) {
                         Vector3d vector3d = player.getViewVector(1.0F);
 
                         double x = (vector3d.x * 4D);
@@ -53,7 +53,7 @@ public class CardStack extends Item{
                         FlyingCardEntity flyingCardEntity = new FlyingCardEntity(player, x, y, z, worldIn, cardTypeData.get());
                         flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
                         worldIn.addFreshEntity(flyingCardEntity);
-                        if(!player.abilities.instabuild){
+                        if (!player.abilities.instabuild) {
                             consumeBlankCard(player);
                             player.causeFoodExhaustion(1);
                         }
@@ -67,19 +67,19 @@ public class CardStack extends Item{
             }
 
         }
-        return ActionResult.sidedSuccess( player.getItemInHand(hand),worldIn.isClientSide());
+        return ActionResult.sidedSuccess(player.getItemInHand(hand), worldIn.isClientSide());
     }
 
-    private boolean hasEnoughBlankCard(PlayerEntity player){
-        for(ItemStack itemStack: player.inventory.items){
-            if(itemStack.getItem().equals(ItemRegistry.BLANK_CARD.get())) return true;
+    private boolean hasEnoughBlankCard(PlayerEntity player) {
+        for (ItemStack itemStack : player.inventory.items) {
+            if (itemStack.getItem().equals(ItemRegistry.BLANK_CARD.get())) return true;
         }
         return false;
     }
 
-    private void consumeBlankCard(PlayerEntity player){
-        for(ItemStack itemStack: player.inventory.items){
-            if(itemStack.getItem().equals(ItemRegistry.BLANK_CARD.get())) {
+    private void consumeBlankCard(PlayerEntity player) {
+        for (ItemStack itemStack : player.inventory.items) {
+            if (itemStack.getItem().equals(ItemRegistry.BLANK_CARD.get())) {
                 itemStack.shrink(1);
             }
         }
@@ -87,31 +87,30 @@ public class CardStack extends Item{
 
     @Override
     public void inventoryTick(ItemStack itemStack, World world, Entity entity, int slot, boolean selected) {
-        if(!world.isClientSide() && selected){
+        if (!world.isClientSide() && selected) {
             ICardTypeData cardTypeData = itemStack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
-            if(world.getDayTime()%10==0 && cardTypeData.isSwitchingCard()){
+            if (world.getDayTime() % 10 == 0 && cardTypeData.isSwitchingCard()) {
                 cardTypeData.set(switchingToNextCard(cardTypeData.get()));
             }
         }
     }
 
-    private CardType switchingToNextCard(CardType cardType){
+    private CardType switchingToNextCard(CardType cardType) {
         int position = availableCardType.indexOf(cardType);
-        if(position!=availableCardType.size()-1){
-            return availableCardType.get(position+1);
-        }
-        else return availableCardType.get(0);
+        if (position != availableCardType.size() - 1) {
+            return availableCardType.get(position + 1);
+        } else return availableCardType.get(0);
     }
 
     @Nullable
     @Override
     public CompoundNBT getShareTag(ItemStack stack) {
         CompoundNBT compoundNBT = super.getShareTag(stack);
-        if(compoundNBT == null){
+        if (compoundNBT == null) {
             compoundNBT = new CompoundNBT();
         }
         ICardTypeData cardTypeData = stack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
-        compoundNBT.putString("card_type",cardTypeData.get().name());
+        compoundNBT.putString("card_type", cardTypeData.get().name());
         return compoundNBT;
     }
 

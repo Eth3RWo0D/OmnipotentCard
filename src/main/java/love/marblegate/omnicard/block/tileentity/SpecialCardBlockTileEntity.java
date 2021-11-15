@@ -2,7 +2,6 @@ package love.marblegate.omnicard.block.tileentity;
 
 import love.marblegate.omnicard.registry.TileEntityRegistry;
 import net.minecraft.tileentity.TileEntity;
-
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;

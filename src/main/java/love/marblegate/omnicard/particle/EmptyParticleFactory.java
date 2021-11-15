@@ -10,6 +10,6 @@ public class EmptyParticleFactory implements IParticleFactory<EmptyParticleType>
     @Nullable
     @Override
     public Particle createParticle(EmptyParticleType data, ClientWorld clientWorld, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-        return new EmptyParticle(clientWorld,x,y,z);
+        return new EmptyParticle(clientWorld, x, y, z);
     }
 }
