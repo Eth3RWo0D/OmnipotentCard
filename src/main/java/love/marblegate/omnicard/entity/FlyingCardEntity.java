@@ -1,8 +1,6 @@
 package love.marblegate.omnicard.entity;
 
 import love.marblegate.omnicard.misc.CardType;
-import love.marblegate.omnicard.misc.ModDamage;
-import love.marblegate.omnicard.registry.EffectRegistry;
 import love.marblegate.omnicard.registry.EntityRegistry;
 import love.marblegate.omnicard.registry.ParticleRegistry;
 import net.minecraft.entity.Entity;
@@ -77,14 +75,14 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
         super.tick();
         if (!level.isClientSide()) {
             if (remainingLifeTime <= 0) {
-                if (type.entityDroppedItem != null)
-                    this.spawnAtLocation(type.entityDroppedItem.get().getDefaultInstance(), 0.1F);
+                if (type.retrievedItem != null)
+                    this.spawnAtLocation(type.retrievedItem.get().getDefaultInstance(), 0.1F);
                 remove();
             } else {
                 remainingLifeTime -= 1;
                 // Pickup Card on Ground
-                if (canPickUp() && type.entityDroppedItem != null && qualifiedToBeRetrieved()) {
-                    this.spawnAtLocation(type.entityDroppedItem.get().getDefaultInstance(), 0.1F);
+                if (canPickUp()  && qualifiedToBeRetrieved()) {
+                    this.spawnAtLocation(type.retrievedItem.get().getDefaultInstance(), 0.1F);
                     remove();
                 }
             }
@@ -105,7 +103,7 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
     protected void onHitEntity(EntityRayTraceResult entityRayTraceResult) {
         super.onHitEntity(entityRayTraceResult);
         Entity entity = entityRayTraceResult.getEntity();
-        if (entity instanceof LivingEntity && !canPickUp() && type.flyingCardHitHandler!=null) {
+        if (entity instanceof LivingEntity && !canPickUp()) {
             type.flyingCardHitHandler.handleHit(this, (LivingEntity) entity);
             remove();
         }

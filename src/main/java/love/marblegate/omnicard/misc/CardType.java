@@ -4,26 +4,19 @@ import love.marblegate.omnicard.entity.CardTrapEntity;
 import love.marblegate.omnicard.entity.FlyingCardEntity;
 import love.marblegate.omnicard.registry.EffectRegistry;
 import love.marblegate.omnicard.registry.ItemRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.NBTTextComponent;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import org.lwjgl.system.CallbackI;
 
 import java.util.function.Supplier;
 
@@ -37,8 +30,7 @@ public enum CardType {
         if (!card.level.isClientSide()){
             if (victim.hasEffect(EffectRegistry.READY_TO_EXPLODE.get())) {
                 Explosion.Mode explosion$mode = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(victim.level, victim) ? Explosion.Mode.BREAK : Explosion.Mode.NONE;
-                victim.level.explode(victim, victim.getX(), victim.getY(), victim.getZ(), 3, explosion$mode);
-                victim.hurt(ModDamage.causeCardDamage(card.getOwner(), card.getCardType()).setExplosion(), 6);
+                victim.level.explode(victim, ModDamage.causeCardDamage(card.getOwner(), card.getCardType()).setExplosion(), null, victim.getX(), victim.getY(), victim.getZ(), 0.71F, false, explosion$mode);
             }
             victim.addEffect(new EffectInstance(EffectRegistry.READY_TO_EXPLODE.get(), 30));
         }
@@ -115,7 +107,7 @@ public enum CardType {
             }
             Vector3d vector3d = card.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize().scale(2D);
             if (vector3d.lengthSqr() > 0.0D) {
-                push(victim,vector3d.x, 0.8D, vector3d.z);
+                MiscUtil.applyKnockback(victim,vector3d.x, 0.8D, vector3d.z);
             }
         }
     }, (trap, victim) -> {
@@ -123,7 +115,7 @@ public enum CardType {
             if(victim.isOnFire()){
                 victim.clearFire();
             }
-            push(victim,0,1.8F,0);
+            MiscUtil.applyKnockback(victim,0,1.8F,0);
         }
     }),
     THUNDER("thunder_card", CateCategory.ELEMENTAL,  ItemRegistry.THUNDER_CARD, (card, victim) -> {
@@ -178,13 +170,13 @@ public enum CardType {
             BlockPos blockPos = victim.blockPosition(), targetLocation = null;
             while(trialTime<=5){
                 targetLocation = blockPos.offset(victim.getRandom().nextInt(11)-5,victim.getRandom().nextInt(22)+42,victim.getRandom().nextInt(11)-5);
-                if(canTeleportTo(targetLocation,victim,isPlayer)){
+                if(MiscUtil.canTeleportTo(targetLocation,victim,isPlayer)){
                     break;
                 }
                 trialTime++;
             }
             victim.teleportTo(targetLocation.getX(),targetLocation.getY(),targetLocation.getZ());
-            addParticleServerSide((ServerWorld) victim.level,ParticleTypes.PORTAL,
+            MiscUtil.addParticleServerSide((ServerWorld) victim.level,ParticleTypes.PORTAL,
                     card.getRandomX(1.2D), card.getRandomY()-0.5d, card.getRandomZ(1.2D),
                     (victim.getRandom().nextDouble() - 0.5D) * 2.0D, (victim.getRandom().nextDouble() - 0.5D) * 2.0D, (victim.getRandom().nextDouble() - 0.5D) * 2.0D,
                     1, 80);
@@ -196,57 +188,37 @@ public enum CardType {
             BlockPos blockPos = victim.blockPosition(), targetLocation = null;
             while(trialTime<=5){
                 targetLocation = blockPos.offset(victim.getRandom().nextInt(11)-5,victim.getRandom().nextInt(22)+42,victim.getRandom().nextInt(11)-5);
-                if(canTeleportTo(targetLocation,victim,isPlayer)){
+                if(MiscUtil.canTeleportTo(targetLocation,victim,isPlayer)){
                     break;
                 }
                 trialTime++;
             }
             victim.teleportTo(targetLocation.getX(),targetLocation.getY(),targetLocation.getZ());
-            addParticleServerSide((ServerWorld) victim.level,ParticleTypes.PORTAL,
+            MiscUtil.addParticleServerSide((ServerWorld) victim.level,ParticleTypes.PORTAL,
                     trap.getX(), trap.getY() + 0.1D, trap.getZ(),
                     victim.getRandom().nextDouble() - 0.5D, victim.getRandom().nextDouble(), victim.getRandom().nextDouble() - 0.5D,
                     1, 50);
         }
-    }),
-
-    // Special Card
-    FIELD("field_card", CateCategory.SPECIAL, ItemRegistry.FIELD_CARD),
-    PURIFICATION("purification_card", CateCategory.SPECIAL),
-    SEAL("seal_card", CateCategory.SPECIAL, ItemRegistry.SEAL_CARD),
-    SUNNY("sunny_card", CateCategory.SPECIAL),
-    RAINY("rainy_card", CateCategory.SPECIAL),
-    THUNDERSTORM("thunderstorm_card", CateCategory.SPECIAL),
-    BLOOM("bloom_card", CateCategory.SPECIAL, ItemRegistry.BLOOM_CARD);
-
+    });
 
     public String name;
     public CateCategory category;
-    public Supplier<Item> entityDroppedItem;
+    public Supplier<Item> retrievedItem;
     public ITrapCardActivationHandler trapCardActivationHandler;
     public IFlyingCardHitHandler flyingCardHitHandler;
 
-    CardType(String i, CateCategory category) {
-        name = i;
-        this.category = category;
-    }
 
-    CardType(String i, CateCategory category, Supplier<Item> entityDroppedItem) {
+    CardType(String i, CateCategory category, Supplier<Item> retrievedItem, IFlyingCardHitHandler flyingCardHitHandler) {
         name = i;
         this.category = category;
-        this.entityDroppedItem = entityDroppedItem;
-    }
-
-    CardType(String i, CateCategory category, Supplier<Item> entityDroppedItem, IFlyingCardHitHandler flyingCardHitHandler) {
-        name = i;
-        this.category = category;
-        this.entityDroppedItem = entityDroppedItem;
+        this.retrievedItem = retrievedItem;
         this.flyingCardHitHandler = flyingCardHitHandler;
     }
 
-    CardType(String i, CateCategory category, Supplier<Item> entityDroppedItem, IFlyingCardHitHandler flyingCardHitHandler, ITrapCardActivationHandler trapCardActivationHandler) {
+    CardType(String i, CateCategory category, Supplier<Item> retrievedItem, IFlyingCardHitHandler flyingCardHitHandler, ITrapCardActivationHandler trapCardActivationHandler) {
         name = i;
         this.category = category;
-        this.entityDroppedItem = entityDroppedItem;
+        this.retrievedItem = retrievedItem;
         this.flyingCardHitHandler = flyingCardHitHandler;
         this.trapCardActivationHandler = trapCardActivationHandler;
     }
@@ -267,8 +239,7 @@ public enum CardType {
 
     public enum CateCategory {
         STANDARD("standard/"),
-        ELEMENTAL("elemental/"),
-        SPECIAL("special/l");
+        ELEMENTAL("elemental/");
 
         public String path;
 
@@ -277,31 +248,5 @@ public enum CardType {
         }
     }
 
-    private static boolean canTeleportTo(BlockPos pos, LivingEntity livingEntity, boolean isPlayer){
-        World level = livingEntity.level;
-        if(level.getBlockState(pos).getBlock().isPossibleToRespawnInThis() || level.getBlockState(pos.above()).getBlock().isPossibleToRespawnInThis()){
-            if(isPlayer){
-                for(int i = -1;i>-6;i--){
-                    if(level.getBlockState(pos.below(i)).getMaterial().isSolid()){
-                        return true;
-                    }
-                }
-                return false;
-            }
-            return true;
-        }
-        return false;
-    }
-
-
-    private static void push(LivingEntity livingEntity,double x, double y, double z) {
-        livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().add(x, y, z));
-        livingEntity.hurtMarked = true;
-        livingEntity.hasImpulse = true;
-    }
-
-    private static <T extends IParticleData> void addParticleServerSide(ServerWorld world, T particle, double x, double y, double z, double xDist, double yDist, double zDist, double maxSpeed, int count){
-        world.sendParticles(particle,x,y,z,count,xDist,yDist,zDist,maxSpeed);
-    }
 
 }

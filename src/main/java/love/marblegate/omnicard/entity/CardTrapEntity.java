@@ -1,7 +1,6 @@
 package love.marblegate.omnicard.entity;
 
 import love.marblegate.omnicard.misc.CardType;
-import love.marblegate.omnicard.misc.ModDamage;
 import love.marblegate.omnicard.registry.EntityRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -58,14 +57,11 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
 
     @Override
     public ActionResultType interact(PlayerEntity player, Hand hand) {
-        if (type.entityDroppedItem != null) {
-            if (!player.level.isClientSide()) {
-                player.level.addFreshEntity(new ItemEntity(player.level, this.getX(), this.getY(), this.getZ(), type.entityDroppedItem.get().getDefaultInstance()));
-                remove();
-            }
-            return ActionResultType.sidedSuccess(player.level.isClientSide());
+        if (!player.level.isClientSide()) {
+            player.level.addFreshEntity(new ItemEntity(player.level, this.getX(), this.getY(), this.getZ(), type.retrievedItem.get().getDefaultInstance()));
+            remove();
         }
-        return ActionResultType.PASS;
+        return ActionResultType.sidedSuccess(player.level.isClientSide());
     }
 
     @Override
