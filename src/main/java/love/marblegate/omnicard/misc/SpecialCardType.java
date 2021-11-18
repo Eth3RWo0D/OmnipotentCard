@@ -3,10 +3,11 @@ package love.marblegate.omnicard.misc;
 import love.marblegate.omnicard.block.tileentity.SpecialCardBlockTileEntity;
 import love.marblegate.omnicard.registry.ItemRegistry;
 import net.minecraft.item.Item;
+import net.minecraft.util.IStringSerializable;
 
 import java.util.function.Supplier;
 
-public enum SpecialCardType {
+public enum SpecialCardType implements IStringSerializable {
     // Special Card
     FIELD("field_card",24000,true, ItemRegistry.FIELD_CARD, entity -> {
 
@@ -42,6 +43,11 @@ public enum SpecialCardType {
         this.canRetrieveByBreak = canRetrieveByBreak;
         this.retrievedItem = retrievedItem;
         this.serverTickLogic = serverTickLogic;
+    }
+
+    @Override
+    public String getSerializedName() {
+        return name();
     }
 
     @FunctionalInterface

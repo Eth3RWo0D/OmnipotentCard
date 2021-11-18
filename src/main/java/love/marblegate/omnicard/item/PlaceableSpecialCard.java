@@ -127,7 +127,6 @@ public class PlaceableSpecialCard extends Item {
             compoundnbt.putInt("lifetime",cardType.lifetimeAfterPlace);
             compoundnbt.putString("card_type", cardType.name());
 
-
             // Should I set the tileEntityData directly like below? It seems logical and viable.
             // tileentity.setupEntityCustomData(cardType);
 

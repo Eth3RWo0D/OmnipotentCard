@@ -12,13 +12,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class EntityRendererRegistry {
+public class RendererRegistry {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void onClientSetUpEvent(FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.FLYING_CARD.get(), FlyingCardEntityRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.CARD_TRAP.get(), CardTrapEntityRenderer::new);
-        // ClientRegistry.bindTileEntityRenderer(TileEntityRegistry.SPECIAL_CARD_BLOCK_TILEENTITY.get(), SpecialCardBlockRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(TileEntityRegistry.SPECIAL_CARD_BLOCK_TILEENTITY.get(), SpecialCardBlockRenderer::new);
 
 
     }
