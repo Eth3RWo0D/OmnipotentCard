@@ -118,19 +118,13 @@ public class PlaceableSpecialCard extends Item {
                 return false;
             }
 
-            CompoundNBT compoundnbt = tileentity.save(new CompoundNBT());
-            // You just cannot use #serializeNBT since custom data of tileentity is not initialize
-            // CompoundNBT compoundnbt = tileentity.serializeNBT();
+            tileentity.initializingData(cardType);
 
-            // TODO design custom tileentity data ini
-            // TileEntity Data Load Here
-            compoundnbt.putInt("lifetime",cardType.lifetimeAfterPlace);
-            compoundnbt.putString("card_type", cardType.name());
+            // Vanilla BlockItem use #save & #load method and also NBT tag from ItemStack.
+            // But we do not use following code since #save requires custom data to be setup.
+            // CompoundNBT compoundnbt = tileentity.save(new CompoundNBT());
+            // tileentity.load(level.getBlockState(blockPos),compoundnbt);
 
-            // Should I set the tileEntityData directly like below? It seems logical and viable.
-            // tileentity.setupEntityCustomData(cardType);
-
-            tileentity.deserializeNBT(level.getBlockState(blockPos),compoundnbt);
             tileentity.setChanged();
             return true;
         }

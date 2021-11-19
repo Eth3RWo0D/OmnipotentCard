@@ -6,7 +6,6 @@ import net.minecraft.util.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class SpecialCardBlockModel extends AnimatedGeoModel<SpecialCardBlockTileEntity> {
-    // TODO
     @Override
     public ResourceLocation getModelLocation(SpecialCardBlockTileEntity object) {
         return new ResourceLocation(OmniCard.MODID, "geo/block/special_card_block.geo.json");

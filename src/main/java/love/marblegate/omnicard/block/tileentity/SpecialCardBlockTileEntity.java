@@ -34,13 +34,6 @@ public class SpecialCardBlockTileEntity extends TileEntity implements ITickableT
 
     public SpecialCardBlockTileEntity() {
         super(TileEntityRegistry.SPECIAL_CARD_BLOCK_TILEENTITY.get());
-        preparedVanish = false;
-    }
-
-    public SpecialCardBlockTileEntity(SpecialCardType type) {
-        super(TileEntityRegistry.SPECIAL_CARD_BLOCK_TILEENTITY.get());
-        preparedVanish = false;
-        this.type = type;
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -76,7 +69,9 @@ public class SpecialCardBlockTileEntity extends TileEntity implements ITickableT
                 }
                 if(lifetime>0) lifetime--;
                 // Handle Special Card Logic
-                type.serverTickLogic.handle(this);
+                if(type!=null){
+                    type.serverTickLogic.handle(this);
+                }
             }
         }
 
@@ -90,19 +85,24 @@ public class SpecialCardBlockTileEntity extends TileEntity implements ITickableT
         return type;
     }
 
+    public void initializingData(SpecialCardType cardType){
+        type = cardType;
+        lifetime = cardType.lifetimeAfterPlace;
+        preparedVanish = false;
+    }
+
+
     @Override
-    public void deserializeNBT(BlockState state, CompoundNBT nbt) {
-        super.deserializeNBT(state, nbt);
+    public void load(BlockState state, CompoundNBT nbt) {
+        super.load(state, nbt);
         type = SpecialCardType.valueOf(nbt.getString("card_type"));
         lifetime = nbt.getInt("lifetime");
         preparedVanish = nbt.getBoolean("should_disappear");
-
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT compoundNBT = super.serializeNBT();
-        if(compoundNBT==null) compoundNBT = new CompoundNBT();
+    public CompoundNBT save(CompoundNBT nbt) {
+        CompoundNBT compoundNBT = super.save(nbt);
         compoundNBT.putString("card_type",type.name());
         compoundNBT.putInt("lifetime",lifetime);
         compoundNBT.putBoolean("should_disappear",preparedVanish);

@@ -1,0 +1,27 @@
+{
+  "item.omni_card.card_stack": "The Card Switcher",
+  "item.omni_card.blank_card": "Blank Card",
+  "item.omni_card.flame_card": "\"FLAME\"",
+  "item.omni_card.torrent_card": "\"TORRENT\"",
+  "item.omni_card.thunder_card": "\"THUNDER\"",
+  "item.omni_card.bramble_card": "\"BRAMBLE\"",
+  "item.omni_card.earth_card": "\"EARTH\"",
+  "item.omni_card.end_card": "\"END\"",
+  "item.omni_card.field_card": "\"FIELD\"",
+  "item.omni_card.purification_card": "\"PURIFICA\"",
+  "item.omni_card.seal_card": "\"SEAL\"",
+  "item.omni_card.sunny_card": "\"SUNNY\"",
+  "item.omni_card.rainy_card": "\"RAIN\"",
+  "item.omni_card.thunderstorm_card": "\"THUNDERSTORM\"",
+  "item.omni_card.bloom_card": "\"BLOOM\"",
+
+  "entity.omni_card.flying_card": "Card",
+  "entity.omni_card.card_trap": "Card",
+
+  "effect.omni_card.holy_flame": "Holy Flame",
+  "effect.omni_card.dizzy": "Dizzy",
+  "effect.omni_card.ready_to_explode": "Ready to Explode",
+  "effect.omni_card.poison_now_lethal": "Poison Now is Lethal",
+
+  "itemGroup.omni_card.general": "Omnipotent Card"
+}

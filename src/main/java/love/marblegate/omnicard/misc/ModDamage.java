@@ -11,6 +11,10 @@ import javax.annotation.Nullable;
 
 public class ModDamage {
 
+    public static DamageSource causeHolyFlameDamage(){
+        return new SimpleDeathMessageDamageSource("holy_fire");
+    }
+
     public static DamageSource causeCardDamage(@Nullable Entity entity, CardType type) {
         if (entity instanceof LivingEntity)
             return new MobtoMobDamageSource("omni_card." + type.name, (LivingEntity) entity);
