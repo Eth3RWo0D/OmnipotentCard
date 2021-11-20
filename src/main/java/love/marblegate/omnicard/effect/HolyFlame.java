@@ -14,7 +14,7 @@ import java.util.List;
 public class HolyFlame extends Effect {
 
     public HolyFlame() {
-        super(EffectType.HARMFUL, 16766001);
+        super(EffectType.HARMFUL, 10161421);
     }
 
 

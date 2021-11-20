@@ -2,7 +2,9 @@ package love.marblegate.omnicard.registry;
 
 import love.marblegate.omnicard.OmniCard;
 import love.marblegate.omnicard.entity.CardTrapEntity;
+import love.marblegate.omnicard.entity.FallingStoneEntity;
 import love.marblegate.omnicard.entity.FlyingCardEntity;
+import love.marblegate.omnicard.entity.StoneSpikeEntity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraftforge.fml.RegistryObject;
@@ -21,5 +23,15 @@ public class EntityRegistry {
                     .sized(.3F, .02F)
                     .clientTrackingRange(10)
                     .build("card_trap"));
+    public static final RegistryObject<EntityType<FallingStoneEntity>> FALLING_STONE = ENTITIES.register("falling_stone",
+            () -> EntityType.Builder.<FallingStoneEntity>of(FallingStoneEntity::new, EntityClassification.MISC)
+                    .sized(.8F, .3F)
+                    .clientTrackingRange(10).updateInterval(5)
+                    .build("falling_stone"));
+    public static final RegistryObject<EntityType<StoneSpikeEntity>> STONE_SPIKE = ENTITIES.register("stone_spike",
+            () -> EntityType.Builder.<StoneSpikeEntity>of(StoneSpikeEntity::new, EntityClassification.MISC)
+                    .sized(.8F, .8F)
+                    .clientTrackingRange(10)
+                    .build("stone_spike"));
 
 }

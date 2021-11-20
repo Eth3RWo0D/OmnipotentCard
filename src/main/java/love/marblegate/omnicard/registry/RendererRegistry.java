@@ -1,8 +1,6 @@
 package love.marblegate.omnicard.registry;
 
-import love.marblegate.omnicard.renderer.CardTrapEntityRenderer;
-import love.marblegate.omnicard.renderer.FlyingCardEntityRenderer;
-import love.marblegate.omnicard.renderer.SpecialCardBlockRenderer;
+import love.marblegate.omnicard.renderer.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -18,6 +16,8 @@ public class RendererRegistry {
     public static void onClientSetUpEvent(FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.FLYING_CARD.get(), FlyingCardEntityRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.CARD_TRAP.get(), CardTrapEntityRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.FALLING_STONE.get(), FallingStoneEntityRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.STONE_SPIKE.get(), StoneSpikeEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(TileEntityRegistry.SPECIAL_CARD_BLOCK_TILEENTITY.get(), SpecialCardBlockRenderer::new);
 
 
