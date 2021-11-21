@@ -29,6 +29,11 @@ import javax.annotation.Nullable;
 public class SpecialCardBlockTileEntity extends TileEntity implements ITickableTileEntity,IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
     private SpecialCardType type;
+
+    public int getLifetime() {
+        return lifetime;
+    }
+
     private int lifetime;
     private boolean preparedVanish;
 

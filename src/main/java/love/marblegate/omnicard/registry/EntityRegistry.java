@@ -7,6 +7,7 @@ import love.marblegate.omnicard.entity.FlyingCardEntity;
 import love.marblegate.omnicard.entity.StoneSpikeEntity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;

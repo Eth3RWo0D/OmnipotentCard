@@ -112,16 +112,7 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
     @Override
     protected void onHitBlock(BlockRayTraceResult blockRayTraceResult) {
         super.onHitBlock(blockRayTraceResult);
-        if (type != CardType.TORRENT) {
-            // Card stays on block
-            stayOnBlock(blockRayTraceResult);
-        } else {
-            // Torrent Card eliminates fire
-            if (this.level.isClientSide()) {
-                // TODO 需要加入激流牌效果
-            }
-            stayOnBlock(blockRayTraceResult);
-        }
+        stayOnBlock(blockRayTraceResult);
     }
 
     private boolean qualifiedToBeRetrieved() {
