@@ -82,7 +82,7 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
         }
 
         if (isAlive()) {
-            // Natural falling and movement`
+            // Natural falling and movement
             this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.04D, 0.0D));
 
             if (this.level.isClientSide) {

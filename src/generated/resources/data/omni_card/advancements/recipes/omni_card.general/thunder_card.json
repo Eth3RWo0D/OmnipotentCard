@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "omni_card:thunder_card"
+    ]
+  },
+  "criteria": {
+    "blank_card": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "omni_card:blank_card"
+          },
+          {
+            "item": "minecraft:rabbit_foot"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "omni_card:thunder_card"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "blank_card",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "omni_card:blank_card"
+    },
+    "B": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "result": {
+    "item": "omni_card:card_stack"
+  }
+}

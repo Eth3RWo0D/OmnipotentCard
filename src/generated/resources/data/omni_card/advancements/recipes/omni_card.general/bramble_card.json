@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "omni_card:bramble_card"
+    ]
+  },
+  "criteria": {
+    "blank_card": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "omni_card:blank_card"
+          },
+          {
+            "item": "minecraft:vine"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "omni_card:bramble_card"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "blank_card",
+      "has_the_recipe"
+    ]
+  ]
+}

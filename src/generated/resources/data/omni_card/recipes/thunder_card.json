@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "omni_card:blank_card"
+    },
+    "B": {
+      "item": "minecraft:rabbit_foot"
+    }
+  },
+  "result": {
+    "item": "omni_card:thunder_card",
+    "count": 8
+  }
+}

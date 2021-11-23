@@ -16,6 +16,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
@@ -66,6 +68,11 @@ public class PlaceableSpecialCard extends Item {
 
                 SoundType soundtype = blockstate1.getSoundType(world, blockpos, context.getPlayer());
                 world.playSound(playerentity, blockpos, this.getPlaceSound(blockstate1, world, blockpos, context.getPlayer()), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+
+                if(cardType == SpecialCardType.PURIFICATION){
+                    context.getPlayer().addEffect(new EffectInstance(Effects.WEAKNESS,1200));
+                }
+
                 if (playerentity == null || !playerentity.abilities.instabuild) {
                     itemstack.shrink(1);
                 }

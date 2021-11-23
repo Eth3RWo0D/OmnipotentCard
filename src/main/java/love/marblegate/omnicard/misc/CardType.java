@@ -1,7 +1,9 @@
 package love.marblegate.omnicard.misc;
 
 import love.marblegate.omnicard.entity.CardTrapEntity;
+import love.marblegate.omnicard.entity.FallingStoneEntity;
 import love.marblegate.omnicard.entity.FlyingCardEntity;
+import love.marblegate.omnicard.entity.StoneSpikeEntity;
 import love.marblegate.omnicard.registry.EffectRegistry;
 import love.marblegate.omnicard.registry.ItemRegistry;
 import net.minecraft.entity.EntityType;
@@ -156,11 +158,18 @@ public enum CardType {
     }),
     EARTH("earth_card", CateCategory.ELEMENTAL,  ItemRegistry.EARTH_CARD, (card, victim) -> {
         if (!card.level.isClientSide()){
-
+            FallingStoneEntity fallingStoneEntity = new FallingStoneEntity(card.level);
+            fallingStoneEntity.setPos(victim.getX(),victim.getY()+3,victim.getZ());
+            card.level.addFreshEntity(fallingStoneEntity);
         }
     }, (trap, victim) -> {
         if (!trap.level.isClientSide()){
-
+            StoneSpikeEntity stoneSpikeEntity = new StoneSpikeEntity(trap.level);
+            stoneSpikeEntity.setPos(trap.getX(),trap.getY(),trap.getZ());
+            trap.level.addFreshEntity(stoneSpikeEntity);
+            victim.hurt(ModDamage.causeCardDamage(trap.getOwner(),trap.getCardType()),6);
+            victim.addEffect(new EffectInstance(Effects.WEAKNESS,100));
+            victim.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN,100));
         }
     }),
     END("end_card", CateCategory.ELEMENTAL,  ItemRegistry.END_CARD, (card, victim) -> {

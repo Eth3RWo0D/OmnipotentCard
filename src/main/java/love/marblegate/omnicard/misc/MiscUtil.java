@@ -1,7 +1,10 @@
 package love.marblegate.omnicard.misc;
 
 import love.marblegate.omnicard.block.tileentity.SpecialCardBlockTileEntity;
+import love.marblegate.omnicard.data.ModRecipeGen;
+import love.marblegate.omnicard.registry.BlockRegistry;
 import love.marblegate.omnicard.registry.EffectRegistry;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.FlyingEntity;
 import net.minecraft.entity.LivingEntity;
@@ -20,11 +23,12 @@ import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
 import java.util.Random;
 import java.util.stream.Collectors;
 
-@Mod.EventBusSubscriber
+
 public class MiscUtil {
     public static boolean canTeleportTo(BlockPos pos, LivingEntity livingEntity, boolean isPlayer){
         World level = livingEntity.level;
@@ -91,20 +95,4 @@ public class MiscUtil {
         return buildAABB(pos,radius,radius);
     }
 
-    @SubscribeEvent
-    public static void preventHostileNearSEALCard(LivingSpawnEvent.CheckSpawn event){
-        // It only stops natural spawning
-        if(event.getSpawnReason() == SpawnReason.NATURAL){
-            if(isHostile(event.getEntityLiving(),false)){
-                for(BlockPos pos: BlockPos.betweenClosedStream(buildAABB(event.getEntity().blockPosition(), 8)).collect(Collectors.toList())){
-                    TileEntity tileEntity = event.getWorld().getBlockEntity(pos);
-                    if(tileEntity instanceof SpecialCardBlockTileEntity){
-                        SpecialCardBlockTileEntity specialCardBlockTile = (SpecialCardBlockTileEntity) tileEntity;
-                        if(specialCardBlockTile.getCardType() == SpecialCardType.SEAL)
-                            event.setResult(Event.Result.DENY);
-                    }
-                }
-            }
-        }
-    }
 }

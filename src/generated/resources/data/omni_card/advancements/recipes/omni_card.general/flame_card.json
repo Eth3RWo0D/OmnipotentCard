@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "omni_card:flame_card"
+    ]
+  },
+  "criteria": {
+    "blank_card": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "omni_card:blank_card"
+          },
+          {
+            "item": "minecraft:blaze_powder"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "omni_card:flame_card"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "blank_card",
+      "has_the_recipe"
+    ]
+  ]
+}
