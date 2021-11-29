@@ -45,7 +45,7 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
 
     public FlyingCardEntity(LivingEntity livingEntity, double xPower, double yPower, double zPower, World world, CommonCard card) {
         super(EntityRegistry.FLYING_CARD.get(), livingEntity, xPower, yPower, zPower, world);
-        card = card;
+        this.card = card;
         remainingLifeTime = 60 * 20;
         setPickUpStatus(false);
     }
