@@ -1,7 +1,7 @@
 package love.marblegate.omnicard.item;
 
+import love.marblegate.omnicard.card.CommonCards;
 import love.marblegate.omnicard.entity.FlyingCardEntity;
-import love.marblegate.omnicard.misc.CardType;
 import love.marblegate.omnicard.misc.ModGroup;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -27,7 +27,7 @@ public class BlankCard extends Item {
             double y = (vector3d.y * 4D);
             double z = (vector3d.z * 4D);
 
-            FlyingCardEntity flyingCardEntity = new FlyingCardEntity(player, x, y, z, worldIn, CardType.BLANK);
+            FlyingCardEntity flyingCardEntity = new FlyingCardEntity(player, x, y, z, worldIn, CommonCards.BLANK);
             flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
             worldIn.addFreshEntity(flyingCardEntity);
 

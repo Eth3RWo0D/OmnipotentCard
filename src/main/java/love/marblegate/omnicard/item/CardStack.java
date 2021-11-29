@@ -5,8 +5,9 @@ import love.marblegate.omnicard.OmniCard;
 import love.marblegate.omnicard.capability.cardtype.CardTypeData;
 import love.marblegate.omnicard.capability.cardtype.CardTypeItemStackProvider;
 import love.marblegate.omnicard.capability.cardtype.ICardTypeData;
+import love.marblegate.omnicard.card.CommonCard;
+import love.marblegate.omnicard.card.CommonCards;
 import love.marblegate.omnicard.entity.FlyingCardEntity;
-import love.marblegate.omnicard.misc.CardType;
 import love.marblegate.omnicard.misc.ModGroup;
 import love.marblegate.omnicard.registry.ItemRegistry;
 import net.minecraft.entity.Entity;
@@ -26,7 +27,7 @@ import java.util.List;
 
 public class CardStack extends Item {
     public static ResourceLocation CARD_CATEGORY_PROPERTY_NAME = new ResourceLocation(OmniCard.MODID, "card_type");
-    private static final List<CardType> availableCardType = Lists.newArrayList(CardType.INK, CardType.RED, CardType.CORAL, CardType.GOLD, CardType.SEA_GREEN, CardType.AZURE, CardType.CERULEAN_BLUE, CardType.HELIOTROPE);
+    private static final List<CommonCard> availableCardType = Lists.newArrayList(CommonCards.INK, CommonCards.RED, CommonCards.CORAL, CommonCards.GOLD, CommonCards.SEA_GREEN, CommonCards.AZURE, CommonCards.CERULEAN_BLUE, CommonCards.HELIOTROPE);
 
     public CardStack() {
         super(new Properties().tab(ModGroup.GENERAL));
@@ -95,8 +96,8 @@ public class CardStack extends Item {
         }
     }
 
-    private CardType switchingToNextCard(CardType cardType) {
-        int position = availableCardType.indexOf(cardType);
+    private CommonCard switchingToNextCard(CommonCard presentCard) {
+        int position = availableCardType.indexOf(presentCard);
         if (position != availableCardType.size() - 1) {
             return availableCardType.get(position + 1);
         } else return availableCardType.get(0);
@@ -110,7 +111,7 @@ public class CardStack extends Item {
             compoundNBT = new CompoundNBT();
         }
         ICardTypeData cardTypeData = stack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
-        compoundNBT.putString("card_type", cardTypeData.get().name());
+        compoundNBT.putByte("card_type", CommonCards.toByte(cardTypeData.get()));
         return compoundNBT;
     }
 
@@ -119,7 +120,7 @@ public class CardStack extends Item {
         super.readShareTag(stack, nbt);
         if (nbt != null) {
             ICardTypeData cardTypeData = stack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
-            cardTypeData.set(CardType.valueOf(nbt.getString("card_type")));
+            cardTypeData.set(CommonCards.fromByte(nbt.getByte("card_type")));
         }
     }
 

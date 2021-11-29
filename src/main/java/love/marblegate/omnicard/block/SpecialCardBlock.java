@@ -3,8 +3,7 @@ package love.marblegate.omnicard.block;
 
 import com.google.common.collect.Lists;
 import love.marblegate.omnicard.block.tileentity.SpecialCardBlockTileEntity;
-import love.marblegate.omnicard.misc.CardType;
-import love.marblegate.omnicard.misc.SpecialCardType;
+import love.marblegate.omnicard.card.BlockCard;
 import love.marblegate.omnicard.registry.TileEntityRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -69,8 +68,8 @@ public class SpecialCardBlock extends Block {
             TileEntity tileentity = builder.getOptionalParameter(LootParameters.BLOCK_ENTITY);
             if (tileentity instanceof SpecialCardBlockTileEntity) {
                 SpecialCardBlockTileEntity specialCardBlockTileEntity = (SpecialCardBlockTileEntity)tileentity;
-                if(specialCardBlockTileEntity.getCardType().canRetrieveByBreak){
-                    return Lists.newArrayList(specialCardBlockTileEntity.getCardType().retrievedItem.get().getDefaultInstance());
+                if(specialCardBlockTileEntity.getCardType().canRetrieve() && specialCardBlockTileEntity.getCardType().getRetrievedItem().isPresent()){
+                    return Lists.newArrayList(specialCardBlockTileEntity.getCardType().getRetrievedItem().get().getDefaultInstance());
                 }
             }
         }
@@ -95,7 +94,10 @@ public class SpecialCardBlock extends Block {
 
     @Override
     public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
-        SpecialCardType type = ((SpecialCardBlockTileEntity)world.getBlockEntity(pos)).getCardType();
-        return type.retrievedItem.get().getDefaultInstance();
+        BlockCard type = ((SpecialCardBlockTileEntity)world.getBlockEntity(pos)).getCardType();
+        if(type.getRetrievedItem().isPresent())
+            return type.getRetrievedItem().get().getDefaultInstance();
+        else
+            return ItemStack.EMPTY;
     }
 }

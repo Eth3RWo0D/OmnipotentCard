@@ -1,9 +1,9 @@
 package love.marblegate.omnicard.item;
 
 import love.marblegate.omnicard.block.tileentity.SpecialCardBlockTileEntity;
-import love.marblegate.omnicard.misc.CardType;
+import love.marblegate.omnicard.card.BlockCard;
+import love.marblegate.omnicard.card.BlockCards;
 import love.marblegate.omnicard.misc.ModGroup;
-import love.marblegate.omnicard.misc.SpecialCardType;
 import love.marblegate.omnicard.registry.BlockRegistry;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
@@ -15,13 +15,10 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -31,11 +28,11 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 
 public class PlaceableSpecialCard extends Item {
-    public final SpecialCardType cardType;
+    public final BlockCard card;
 
-    public PlaceableSpecialCard(SpecialCardType cardType) {
+    public PlaceableSpecialCard(BlockCard card) {
         super(new Properties().tab(ModGroup.GENERAL));
-        this.cardType = cardType;
+        this.card = card;
     }
 
     public ActionResultType useOn(ItemUseContext context) {
@@ -69,7 +66,7 @@ public class PlaceableSpecialCard extends Item {
                 SoundType soundtype = blockstate1.getSoundType(world, blockpos, context.getPlayer());
                 world.playSound(playerentity, blockpos, this.getPlaceSound(blockstate1, world, blockpos, context.getPlayer()), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
 
-                if(cardType == SpecialCardType.PURIFICATION){
+                if(card == BlockCards.PURIFICATION){
                     context.getPlayer().addEffect(new EffectInstance(Effects.WEAKNESS,1200));
                 }
 
@@ -86,30 +83,6 @@ public class PlaceableSpecialCard extends Item {
         return context.getLevel().setBlockAndUpdate(context.getClickedPos(), blockState);
     }
 
-    // Pretty strange, do not find any code piece adding "BlockStateTag" to ItemStack
-    /*private BlockState updateBlockStateFromTag(BlockPos blockPos, World world, ItemStack itemStack, BlockState blockState) {
-        BlockState blockstate = blockState;
-        CompoundNBT compoundnbt = itemStack.getTag();
-        if (compoundnbt != null) {
-            CompoundNBT compoundnbt1 = compoundnbt.getCompound("BlockStateTag");
-            StateContainer<Block, BlockState> statecontainer = blockState.getBlock().getStateDefinition();
-
-            for(String s : compoundnbt1.getAllKeys()) {
-                Property<?> property = statecontainer.getProperty(s);
-                if (property != null) {
-                    String s1 = compoundnbt1.get(s).getAsString();
-                    blockstate = updateState(blockstate, property, s1);
-                }
-            }
-        }
-
-        if (blockstate != blockState) {
-            world.setBlock(blockPos, blockstate, 2);
-        }
-
-        return blockstate;
-    }*/
-
     private static <T extends Comparable<T>> BlockState updateState(BlockState blockState, Property<T> property, String nbtString) {
         return property.getValue(nbtString).map((string) -> blockState.setValue(property, string)).orElse(blockState);
     }
@@ -125,7 +98,7 @@ public class PlaceableSpecialCard extends Item {
                 return false;
             }
 
-            tileentity.initializingData(cardType);
+            tileentity.initializingData(card);
 
             // Vanilla BlockItem use #save & #load method and also NBT tag from ItemStack.
             // But we do not use following code since #save requires custom data to be setup.

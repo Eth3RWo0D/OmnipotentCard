@@ -1,6 +1,6 @@
 package love.marblegate.omnicard.capability.cardtype;
 
-import love.marblegate.omnicard.misc.CardType;
+import love.marblegate.omnicard.card.CommonCards;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -24,14 +24,14 @@ public class CardTypeData {
         @Override
         public INBT writeNBT(Capability<ICardTypeData> capability, ICardTypeData instance, Direction side) {
             CompoundNBT compoundNBT = new CompoundNBT();
-            compoundNBT.putString("card_type", instance.get().name());
+            compoundNBT.putByte("card_type", CommonCards.toByte(instance.get()));
             compoundNBT.putBoolean("is_switching", instance.isSwitchingCard());
             return compoundNBT;
         }
 
         @Override
         public void readNBT(Capability<ICardTypeData> capability, ICardTypeData instance, Direction side, INBT nbt) {
-            instance.set(CardType.valueOf(((CompoundNBT) nbt).getString("card_type")));
+            instance.set(CommonCards.fromByte(((CompoundNBT) nbt).getByte("card_type")));
             instance.setSwitchingCard((((CompoundNBT) nbt).getBoolean("is_switching")));
         }
     }

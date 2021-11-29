@@ -1,6 +1,7 @@
 package love.marblegate.omnicard.entity;
 
-import love.marblegate.omnicard.misc.CardType;
+import love.marblegate.omnicard.card.CommonCard;
+import love.marblegate.omnicard.card.CommonCards;
 import love.marblegate.omnicard.registry.EntityRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -8,6 +9,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
@@ -28,21 +30,22 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditionalSpawnData {
     private final AnimationFactory factory = new AnimationFactory(this);
-    private CardType type;
+    private CommonCard card;
     private UUID ownerUUID;
 
     public CardTrapEntity(EntityType<? extends CardTrapEntity> p_i50173_1_, World p_i50173_2_) {
         super(p_i50173_1_, p_i50173_2_);
     }
 
-    public CardTrapEntity(World p_i50173_2_, CardType cardType) {
-        super(EntityRegistry.CARD_TRAP.get(), p_i50173_2_);
-        type = cardType;
+    public CardTrapEntity(World world, CommonCard card) {
+        super(EntityRegistry.CARD_TRAP.get(), world);
+        this.card = card;
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -58,7 +61,8 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
     @Override
     public ActionResultType interact(PlayerEntity player, Hand hand) {
         if (!player.level.isClientSide()) {
-            player.level.addFreshEntity(new ItemEntity(player.level, this.getX(), this.getY(), this.getZ(), type.retrievedItem.get().getDefaultInstance()));
+            if(card.getRetrievedItem().isPresent())
+                player.level.addFreshEntity(new ItemEntity(player.level, this.getX(), this.getY(), this.getZ(), card.getRetrievedItem().get().getDefaultInstance()));
             remove();
         }
         return ActionResultType.sidedSuccess(player.level.isClientSide());
@@ -74,11 +78,9 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
         super.tick();
 
         // Handle activated by entity
-        if(type.trapCardActivationHandler!=null){
-            List<LivingEntity> targets = getTriggeringTarget();
-            if (!targets.isEmpty()) {
-                activateTrap(targets);
-            }
+        List<LivingEntity> targets = getTriggeringTarget();
+        if (!targets.isEmpty()) {
+            activateTrap(targets);
         }
 
         if (isAlive()) {
@@ -119,7 +121,7 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
 
     private void activateTrap(List<LivingEntity> targets){
         for(LivingEntity livingEntity:targets)
-            type.trapCardActivationHandler.handleTrap(this,livingEntity);
+            card.activate(this,livingEntity);
         remove();
     }
 
@@ -152,20 +154,20 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
     }
 
 
-    public CardType getCardType() {
-        return type;
+    public CommonCard getCardType() {
+        return card;
     }
 
     @Override
     public void readAdditionalSaveData(CompoundNBT compoundNBT) {
-        type = CardType.valueOf(compoundNBT.getString("card_type"));
+        card = CommonCards.fromByte(compoundNBT.getByte("card_type"));
         if(compoundNBT.contains("owner_uuid"))
             ownerUUID = compoundNBT.getUUID("owner_uuid");
     }
 
     @Override
     public void addAdditionalSaveData(CompoundNBT compoundNBT) {
-        compoundNBT.putString("card_type", type.toString());
+        compoundNBT.putByte("card_type", CommonCards.toByte(card));
         if(ownerUUID!=null){
             compoundNBT.putUUID("owner_uuid",ownerUUID);
         }
@@ -179,12 +181,12 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
 
     @Override
     public void writeSpawnData(PacketBuffer buffer) {
-        buffer.writeEnum(type);
+        buffer.writeByte(CommonCards.toByte(card));
     }
 
     @Override
     public void readSpawnData(PacketBuffer additionalData) {
-        type = additionalData.readEnum(CardType.class);
+        card = CommonCards.fromByte(additionalData.readByte());
     }
 
 }

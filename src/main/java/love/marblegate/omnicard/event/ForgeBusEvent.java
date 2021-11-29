@@ -1,6 +1,8 @@
-package love.marblegate.omnicard.misc;
+package love.marblegate.omnicard.event;
 
 import love.marblegate.omnicard.block.tileentity.SpecialCardBlockTileEntity;
+import love.marblegate.omnicard.card.BlockCards;
+import love.marblegate.omnicard.misc.MiscUtil;
 import love.marblegate.omnicard.registry.BlockRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.SpawnReason;
@@ -9,8 +11,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeBusEvent {
@@ -25,7 +25,7 @@ public class ForgeBusEvent {
                         TileEntity tileEntity = event.getWorld().getBlockEntity(pos);
                         if (tileEntity instanceof SpecialCardBlockTileEntity) {
                             SpecialCardBlockTileEntity specialCardBlockTile = (SpecialCardBlockTileEntity) tileEntity;
-                            if (specialCardBlockTile.getCardType() == SpecialCardType.SEAL) {
+                            if (specialCardBlockTile.getCardType() == BlockCards.SEAL) {
                                 event.setResult(net.minecraftforge.eventbus.api.Event.Result.DENY);
                             }
                         }

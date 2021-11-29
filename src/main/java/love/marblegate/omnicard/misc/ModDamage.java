@@ -1,5 +1,6 @@
 package love.marblegate.omnicard.misc;
 
+import love.marblegate.omnicard.card.CommonCard;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.DamageSource;
@@ -12,14 +13,14 @@ import javax.annotation.Nullable;
 public class ModDamage {
 
     public static DamageSource causeHolyFlameDamage(){
-        return new SimpleDeathMessageDamageSource("holy_fire");
+        return new SimpleDeathMessageDamageSource("omni_card.holy_fire");
     }
 
-    public static DamageSource causeCardDamage(@Nullable Entity entity, CardType type) {
+    public static DamageSource causeCardDamage(@Nullable Entity entity, CommonCard card) {
         if (entity instanceof LivingEntity)
-            return new MobtoMobDamageSource("omni_card." + type.name, (LivingEntity) entity);
+            return new MobtoMobDamageSource("omni_card." + card.getCardName(), (LivingEntity) entity);
         else
-            return new SimpleDeathMessageDamageSource("omni_card." + type.name);
+            return new SimpleDeathMessageDamageSource("omni_card" + card.getCardName());
     }
 
     public static class MobtoMobDamageSource extends EntityDamageSource {
@@ -38,7 +39,7 @@ public class ModDamage {
          */
         @Override
         public ITextComponent getLocalizedDeathMessage(LivingEntity entityLivingBaseIn) {
-            String s = "death.attack." + msgId;
+            String s = "death.attack." + msgId +".with_source";
             return new TranslationTextComponent(s, entityLivingBaseIn.getDisplayName(), entity.getDisplayName());
         }
     }
@@ -50,7 +51,7 @@ public class ModDamage {
 
         @Override
         public ITextComponent getLocalizedDeathMessage(LivingEntity entityLivingBaseIn) {
-            String s = "death.attack." + msgId;
+            String s = "death.attack." + msgId +".no_source";
             return new TranslationTextComponent(s, entityLivingBaseIn.getDisplayName());
         }
     }

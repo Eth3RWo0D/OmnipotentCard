@@ -1,24 +1,25 @@
 package love.marblegate.omnicard.capability.cardtype;
 
-import love.marblegate.omnicard.misc.CardType;
+import love.marblegate.omnicard.card.CommonCard;
+import love.marblegate.omnicard.card.CommonCards;
 
 public class CardTypeDataImpl implements ICardTypeData {
-    private CardType cardType;
+    private CommonCard type;
     private boolean isSwitchingCard;
 
     public CardTypeDataImpl() {
-        cardType = CardType.INK;
+        type = CommonCards.INK;
         isSwitchingCard = false;
     }
 
     @Override
-    public CardType get() {
-        return cardType;
+    public CommonCard get() {
+        return type;
     }
 
     @Override
-    public void set(CardType cardType) {
-        this.cardType = cardType;
+    public void set(CommonCard type) {
+        this.type = type;
     }
 
     @Override

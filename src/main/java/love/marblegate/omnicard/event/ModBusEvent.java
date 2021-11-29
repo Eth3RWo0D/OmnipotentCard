@@ -1,4 +1,4 @@
-package love.marblegate.omnicard.misc;
+package love.marblegate.omnicard.event;
 
 import love.marblegate.omnicard.data.ModRecipeGen;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

@@ -1,11 +1,11 @@
 package love.marblegate.omnicard.capability.cardtype;
 
-import love.marblegate.omnicard.misc.CardType;
+import love.marblegate.omnicard.card.CommonCard;
 
 public interface ICardTypeData {
-    CardType get();
+    CommonCard get();
 
-    void set(CardType cardType);
+    void set(CommonCard card);
 
     void setSwitchingCard(boolean i);
 

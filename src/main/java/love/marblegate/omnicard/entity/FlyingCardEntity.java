@@ -1,6 +1,7 @@
 package love.marblegate.omnicard.entity;
 
-import love.marblegate.omnicard.misc.CardType;
+import love.marblegate.omnicard.card.CommonCard;
+import love.marblegate.omnicard.card.CommonCards;
 import love.marblegate.omnicard.registry.EntityRegistry;
 import love.marblegate.omnicard.registry.ParticleRegistry;
 import net.minecraft.entity.Entity;
@@ -34,7 +35,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class FlyingCardEntity extends DamagingProjectileEntity implements IAnimatable, IEntityAdditionalSpawnData {
     private final AnimationFactory factory = new AnimationFactory(this);
-    private CardType type;
+    private CommonCard card;
     private static final DataParameter<Boolean> CAN_PICK_UP = EntityDataManager.defineId(FlyingCardEntity.class, DataSerializers.BOOLEAN);
     private int remainingLifeTime;
 
@@ -42,9 +43,9 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
         super(p_i50173_1_, p_i50173_2_);
     }
 
-    public FlyingCardEntity(LivingEntity livingEntity, double xPower, double yPower, double zPower, World world, CardType cardType) {
+    public FlyingCardEntity(LivingEntity livingEntity, double xPower, double yPower, double zPower, World world, CommonCard card) {
         super(EntityRegistry.FLYING_CARD.get(), livingEntity, xPower, yPower, zPower, world);
-        type = cardType;
+        card = card;
         remainingLifeTime = 60 * 20;
         setPickUpStatus(false);
     }
@@ -75,14 +76,14 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
         super.tick();
         if (!level.isClientSide()) {
             if (remainingLifeTime <= 0) {
-                if (type.retrievedItem != null)
-                    this.spawnAtLocation(type.retrievedItem.get().getDefaultInstance(), 0.1F);
+                if (card.getRetrievedItem().isPresent())
+                    this.spawnAtLocation(card.getRetrievedItem().get().getDefaultInstance(), 0.1F);
                 remove();
             } else {
                 remainingLifeTime -= 1;
                 // Pickup Card on Ground
                 if (canPickUp()  && qualifiedToBeRetrieved()) {
-                    this.spawnAtLocation(type.retrievedItem.get().getDefaultInstance(), 0.1F);
+                    this.spawnAtLocation(card.getRetrievedItem().get().getDefaultInstance(), 0.1F);
                     remove();
                 }
             }
@@ -104,7 +105,7 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
         super.onHitEntity(entityRayTraceResult);
         Entity entity = entityRayTraceResult.getEntity();
         if (entity instanceof LivingEntity && !canPickUp()) {
-            type.flyingCardHitHandler.handleHit(this, (LivingEntity) entity);
+            card.hit(this, (LivingEntity) entity);
             remove();
         }
     }
@@ -149,14 +150,14 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
 
     }
 
-    public CardType getCardType() {
-        return type;
+    public CommonCard getCardType() {
+        return card;
     }
 
     @Override
     public void readAdditionalSaveData(CompoundNBT compoundNBT) {
         super.readAdditionalSaveData(compoundNBT);
-        type = CardType.valueOf(compoundNBT.getString("card_type"));
+        card = CommonCards.fromByte(compoundNBT.getByte("card_type"));
         remainingLifeTime = compoundNBT.getInt("remaining_life_time");
         boolean b = compoundNBT.getBoolean("can_pickup");
         setPickUpStatus(b);
@@ -165,7 +166,7 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
     @Override
     public void addAdditionalSaveData(CompoundNBT compoundNBT) {
         super.addAdditionalSaveData(compoundNBT);
-        compoundNBT.putString("card_type", type.toString());
+        compoundNBT.putByte("card_type", CommonCards.toByte(card));
         compoundNBT.putInt("remaining_life_time", remainingLifeTime);
         compoundNBT.putBoolean("can_pickup", canPickUp());
     }
@@ -177,14 +178,14 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
 
     @Override
     public void writeSpawnData(PacketBuffer buffer) {
-        buffer.writeEnum(type);
+        buffer.writeByte(CommonCards.toByte(card));
         buffer.writeInt(remainingLifeTime);
         buffer.writeByte(canPickUp() ? 1 : 0);
     }
 
     @Override
     public void readSpawnData(PacketBuffer additionalData) {
-        type = additionalData.readEnum(CardType.class);
+        card = CommonCards.fromByte(additionalData.readByte());
         remainingLifeTime = additionalData.readInt();
         boolean b = additionalData.readByte() == 1;
         setPickUpStatus(b);

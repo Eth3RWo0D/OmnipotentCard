@@ -23,5 +23,31 @@
   "effect.omni_card.ready_to_explode": "Ready to Explode",
   "effect.omni_card.poison_now_lethal": "Poison Now is Lethal",
 
-  "itemGroup.omni_card.general": "Omnipotent Card"
+  "itemGroup.omni_card.general": "Omnipotent Card",
+
+  "death.attack.omni_card.holy_fire":"",
+  "death.attack.omni_card.white_card.no_source":"",
+  "death.attack.omni_card.white_card.with_source":"",
+  "death.attack.omni_card.red_card.no_source":"",
+  "death.attack.omni_card.red_card.with_source":"",
+  "death.attack.omni_card.orange_card.no_source":"",
+  "death.attack.omni_card.orange_card.with_source":"",
+  "death.attack.omni_card.gold_card.no_source":"",
+  "death.attack.omni_card.gold_card.with_source":"",
+  "death.attack.omni_card.green_card.no_source":"",
+  "death.attack.omni_card.green_card.with_source":"",
+  "death.attack.omni_card.blue_card.no_source":"",
+  "death.attack.omni_card.blue_card.with_source":"",
+  "death.attack.omni_card.violet_card.no_source":"",
+  "death.attack.omni_card.violet_card.with_source":"",
+  "death.attack.omni_card.black_card.no_source":"",
+  "death.attack.omni_card.black_card.with_source":"",
+  "death.attack.omni_card.flame_card.no_source":"",
+  "death.attack.omni_card.flame_card.with_source":"",
+  "death.attack.omni_card.thunder_card.no_source":"",
+  "death.attack.omni_card.thunder_card.with_source":"",
+  "death.attack.omni_card.bramble_card.no_source":"",
+  "death.attack.omni_card.bramble_card.with_source":"",
+  "death.attack.omni_card.earth_card.no_source":"",
+  "death.attack.omni_card.earth_card.with_source":""
 }

@@ -1,8 +1,8 @@
 package love.marblegate.omnicard.item;
 
+import love.marblegate.omnicard.card.CommonCard;
 import love.marblegate.omnicard.entity.CardTrapEntity;
 import love.marblegate.omnicard.entity.FlyingCardEntity;
-import love.marblegate.omnicard.misc.CardType;
 import love.marblegate.omnicard.misc.ModGroup;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -16,11 +16,11 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class ElementalCard extends Item {
-    public final CardType cardType;
+    public final CommonCard card;
 
-    public ElementalCard(CardType cardType) {
+    public ElementalCard(CommonCard card) {
         super(new Properties().tab(ModGroup.GENERAL));
-        this.cardType = cardType;
+        this.card = card;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ElementalCard extends Item {
             double y = (vector3d.y * 4D);
             double z = (vector3d.z * 4D);
 
-            FlyingCardEntity flyingCardEntity = new FlyingCardEntity(player, x, y, z, worldIn, cardType);
+            FlyingCardEntity flyingCardEntity = new FlyingCardEntity(player, x, y, z, worldIn, card);
             flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
             flyingCardEntity.setOwner(player);
             worldIn.addFreshEntity(flyingCardEntity);
@@ -50,7 +50,7 @@ public class ElementalCard extends Item {
         if (context.getPlayer().isShiftKeyDown()) {
             if (context.getClickedFace() == Direction.UP) {
                 if (!context.getLevel().isClientSide()) {
-                    CardTrapEntity cardTrapEntity = new CardTrapEntity(context.getLevel(), cardType);
+                    CardTrapEntity cardTrapEntity = new CardTrapEntity(context.getLevel(), card);
                     cardTrapEntity.setPos(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z);
                     cardTrapEntity.yRot = context.getPlayer().yRot;
                     context.getLevel().addFreshEntity(cardTrapEntity);
