@@ -1,6 +1,6 @@
 package love.marblegate.omnicard.entity;
 
-import love.marblegate.omnicard.misc.CardType;
+import love.marblegate.omnicard.card.CommonCards;
 import love.marblegate.omnicard.misc.ModDamage;
 import love.marblegate.omnicard.registry.EntityRegistry;
 import net.minecraft.entity.Entity;
@@ -14,8 +14,6 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -45,28 +43,28 @@ public class FallingStoneEntity extends Entity implements IAnimatable {
     }
 
     @Override
-    public void tick(){
-        if(!level.isClientSide()){
+    public void tick() {
+        if (!level.isClientSide()) {
             List<LivingEntity> targets = getLivingEntityBeneath();
             if (!targets.isEmpty()) {
-                for(LivingEntity livingEntity:targets){
-                    livingEntity.hurt(ModDamage.causeCardDamage(null,CardType.EARTH),6);
-                    livingEntity.addEffect(new EffectInstance(Effects.WEAKNESS,100));
-                    livingEntity.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN,100));
+                for (LivingEntity livingEntity : targets) {
+                    livingEntity.hurt(ModDamage.causeCardDamage(null, CommonCards.EARTH), 6);
+                    livingEntity.addEffect(new EffectInstance(Effects.WEAKNESS, 100));
+                    livingEntity.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 100));
                 }
-                getEntityData().set(DONE_HIT,true);
+                getEntityData().set(DONE_HIT, true);
             }
-            if(isInWall()){
-                getEntityData().set(DONE_HIT,true);
+            if (isInWall()) {
+                getEntityData().set(DONE_HIT, true);
             }
-            if(getEntityData().get(DONE_HIT)){
-                if(disappearCountdown <= 0){
+            if (getEntityData().get(DONE_HIT)) {
+                if (disappearCountdown <= 0) {
                     remove();
                 } else
-                    disappearCountdown --;
+                    disappearCountdown--;
             }
         }
-        if(!getEntityData().get(DONE_HIT)){
+        if (!getEntityData().get(DONE_HIT)) {
             setDeltaMovement(0, -0.25D, 0);
         } else {
             setDeltaMovement(0, -0.2D, 0);
@@ -81,12 +79,12 @@ public class FallingStoneEntity extends Entity implements IAnimatable {
 
     @Override
     protected void readAdditionalSaveData(CompoundNBT compoundNBT) {
-        getEntityData().set(DONE_HIT,compoundNBT.getBoolean("done_hit"));
+        getEntityData().set(DONE_HIT, compoundNBT.getBoolean("done_hit"));
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundNBT compoundNBT) {
-        compoundNBT.putBoolean("done_hit",getEntityData().get(DONE_HIT));
+        compoundNBT.putBoolean("done_hit", getEntityData().get(DONE_HIT));
     }
 
     @Override
@@ -95,11 +93,10 @@ public class FallingStoneEntity extends Entity implements IAnimatable {
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        if(getEntityData().get(DONE_HIT)){
+        if (getEntityData().get(DONE_HIT)) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("disappear", false));
             return PlayState.CONTINUE;
-        }
-        else{
+        } else {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("falling", true));
             return PlayState.CONTINUE;
         }
@@ -116,7 +113,7 @@ public class FallingStoneEntity extends Entity implements IAnimatable {
     }
 
     private List<LivingEntity> getLivingEntityBeneath() {
-        return level.getEntities(this,getBoundingBox().expandTowards(0,-0.3,0),entity -> entity instanceof LivingEntity)
+        return level.getEntities(this, getBoundingBox().expandTowards(0, -0.3, 0), entity -> entity instanceof LivingEntity)
                 .stream().map(entity -> (LivingEntity) entity).collect(Collectors.toList());
     }
 }

@@ -2,8 +2,9 @@ package love.marblegate.omnicard;
 
 import love.marblegate.omnicard.capability.cardtype.CardTypeData;
 import love.marblegate.omnicard.capability.cardtype.ICardTypeData;
+import love.marblegate.omnicard.card.CommonCard;
+import love.marblegate.omnicard.card.CommonCards;
 import love.marblegate.omnicard.item.CardStack;
-import love.marblegate.omnicard.misc.CardType;
 import love.marblegate.omnicard.registry.*;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraftforge.fml.common.Mod;
@@ -57,20 +58,20 @@ public class OmniCard {
         ItemModelsProperties.register(ItemRegistry.CARD_STACK.get(),
                 CardStack.CARD_CATEGORY_PROPERTY_NAME, (stack, world, living) -> {
                     ICardTypeData cardTypeData = stack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
-                    CardType cardType = cardTypeData.get();
-                    if (cardType == CardType.RED) {
+                    CommonCard card = cardTypeData.get();
+                    if (card == CommonCards.RED) {
                         return 0.1F;
-                    } else if (cardType == CardType.CORAL) {
+                    } else if (card == CommonCards.CORAL) {
                         return 0.2F;
-                    } else if (cardType == CardType.GOLD) {
+                    } else if (card == CommonCards.GOLD) {
                         return 0.3F;
-                    } else if (cardType == CardType.SEA_GREEN) {
+                    } else if (card == CommonCards.SEA_GREEN) {
                         return 0.4F;
-                    } else if (cardType == CardType.AZURE) {
+                    } else if (card == CommonCards.AZURE) {
                         return 0.5F;
-                    } else if (cardType == CardType.CERULEAN_BLUE) {
+                    } else if (card == CommonCards.CERULEAN_BLUE) {
                         return 0.6F;
-                    } else if (cardType == CardType.HELIOTROPE) {
+                    } else if (card == CommonCards.HELIOTROPE) {
                         return 0.7F;
                     } else return 0;
                 });

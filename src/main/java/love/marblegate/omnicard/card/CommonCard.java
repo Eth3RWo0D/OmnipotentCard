@@ -8,7 +8,7 @@ import net.minecraft.item.Item;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public class CommonCard extends AbstractCard{
+public class CommonCard extends AbstractCard {
     private final CardFunc.ITrapCardActivationHandler trapCardActivationHandler;
     private final CardFunc.IFlyingCardHitHandler flyingCardHitHandler;
 
@@ -18,20 +18,20 @@ public class CommonCard extends AbstractCard{
         trapCardActivationHandler = builder.trapCardActivationHandler;
     }
 
-    public void hit(FlyingCardEntity card, LivingEntity victim){
-        if(flyingCardHitHandler!=null){
-            flyingCardHitHandler.handleHit(card,victim);
+    public void hit(FlyingCardEntity card, LivingEntity victim) {
+        if (flyingCardHitHandler != null) {
+            flyingCardHitHandler.handleHit(card, victim);
         }
     }
 
-    public void activate(CardTrapEntity trap, LivingEntity victim){
-        if(trapCardActivationHandler!=null){
-            trapCardActivationHandler.handleTrap(trap,victim);
+    public void activate(CardTrapEntity trap, LivingEntity victim) {
+        if (trapCardActivationHandler != null) {
+            trapCardActivationHandler.handleTrap(trap, victim);
         }
     }
 
 
-    public static class Builder extends AbstractCard.Builder<Builder>{
+    public static class Builder extends AbstractCard.Builder<Builder> {
         private CardFunc.ITrapCardActivationHandler trapCardActivationHandler;
         private CardFunc.IFlyingCardHitHandler flyingCardHitHandler;
 
@@ -49,13 +49,13 @@ public class CommonCard extends AbstractCard{
             return this;
         }
 
-        public Builder setFlyCardHitHandler(CardFunc.IFlyingCardHitHandler flyingCardHitHandler){
+        public Builder setFlyCardHitHandler(CardFunc.IFlyingCardHitHandler flyingCardHitHandler) {
             this.flyingCardHitHandler = Objects.requireNonNull(flyingCardHitHandler);
             return this;
         }
 
-        public Builder setTrapCardActivateHandler(CardFunc.ITrapCardActivationHandler trapCardActivationHandler){
-            this.trapCardActivationHandler =  Objects.requireNonNull(trapCardActivationHandler);
+        public Builder setTrapCardActivateHandler(CardFunc.ITrapCardActivationHandler trapCardActivationHandler) {
+            this.trapCardActivationHandler = Objects.requireNonNull(trapCardActivationHandler);
             return this;
         }
 

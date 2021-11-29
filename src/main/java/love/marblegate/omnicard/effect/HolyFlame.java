@@ -20,13 +20,13 @@ public class HolyFlame extends Effect {
 
     @Override
     public void applyEffectTick(LivingEntity entity, int amplifier) {
-       if(!entity.level.isClientSide()){
-           entity.setSecondsOnFire(2);
-           entity.addEffect(new EffectInstance(EffectRegistry.HOLY_FLAME.get(),21,amplifier));
-          if( entity.fireImmune() || entity.level.isRaining() ){
-              entity.hurt(ModDamage.causeHolyFlameDamage(),1);
-          }
-       }
+        if (!entity.level.isClientSide()) {
+            entity.setSecondsOnFire(2);
+            entity.addEffect(new EffectInstance(EffectRegistry.HOLY_FLAME.get(), 21, amplifier));
+            if (entity.fireImmune() || entity.level.isRaining()) {
+                entity.hurt(ModDamage.causeHolyFlameDamage(), 1);
+            }
+        }
     }
 
     @Override

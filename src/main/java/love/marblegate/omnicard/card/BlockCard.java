@@ -5,7 +5,7 @@ import love.marblegate.omnicard.block.tileentity.SpecialCardBlockTileEntity;
 import java.util.Objects;
 
 
-public class BlockCard extends AbstractCard{
+public class BlockCard extends AbstractCard {
     private final CardFunc.ISpecialCardBlockServerTick serverTickHandler;
     private final int lifetime;
     private final boolean canRetrieveByBreak;
@@ -14,7 +14,7 @@ public class BlockCard extends AbstractCard{
         return lifetime;
     }
 
-    public boolean canRetrieve(){
+    public boolean canRetrieve() {
         return canRetrieveByBreak;
     }
 
@@ -27,13 +27,13 @@ public class BlockCard extends AbstractCard{
 
     }
 
-    public void handlerServerTick(SpecialCardBlockTileEntity specialCardBlockTile){
-        if(specialCardBlockTile!=null){
+    public void handlerServerTick(SpecialCardBlockTileEntity specialCardBlockTile) {
+        if (specialCardBlockTile != null) {
             serverTickHandler.handle(specialCardBlockTile);
         }
     }
 
-    public static class Builder extends AbstractCard.Builder<Builder>{
+    public static class Builder extends AbstractCard.Builder<Builder> {
         private CardFunc.ISpecialCardBlockServerTick serverTickHandler;
         private final int lifetime;
         private boolean canRetrieveByBreak = false;
@@ -43,7 +43,7 @@ public class BlockCard extends AbstractCard{
             this.lifetime = lifetime;
         }
 
-        public Builder isRetrievableWhenBreak(){
+        public Builder isRetrievableWhenBreak() {
             canRetrieveByBreak = true;
             return this;
         }
@@ -58,7 +58,7 @@ public class BlockCard extends AbstractCard{
             return this;
         }
 
-        public Builder setFlyCardHitHandler(CardFunc.ISpecialCardBlockServerTick serverTickHandler){
+        public Builder setFlyCardHitHandler(CardFunc.ISpecialCardBlockServerTick serverTickHandler) {
             this.serverTickHandler = Objects.requireNonNull(serverTickHandler);
             return this;
         }

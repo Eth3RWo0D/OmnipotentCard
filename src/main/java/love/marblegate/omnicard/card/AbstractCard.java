@@ -10,18 +10,18 @@ public abstract class AbstractCard {
     final String category;
     final Supplier<Item> retrievedItem;
 
-    protected AbstractCard(Builder<?> builder){
+    protected AbstractCard(Builder<?> builder) {
         name = builder.name;
         category = builder.category;
         retrievedItem = builder.retrievedItem;
     }
 
-    public String getCardName(){
+    public String getCardName() {
         return name;
     }
 
-    public Optional<Item> getRetrievedItem(){
-        if(retrievedItem==null)
+    public Optional<Item> getRetrievedItem() {
+        if (retrievedItem == null)
             return Optional.empty();
         else return Optional.of(retrievedItem.get());
     }
@@ -30,7 +30,7 @@ public abstract class AbstractCard {
         return category + "/" + name + ".png";
     }
 
-    public abstract static class Builder<T extends Builder<T>>{
+    public abstract static class Builder<T extends Builder<T>> {
         private final String name;
         private final String category;
         private Supplier<Item> retrievedItem;
@@ -40,7 +40,7 @@ public abstract class AbstractCard {
             this.category = category;
         }
 
-        public T setRetrievedItem(Supplier<Item> retrievedItem){
+        public T setRetrievedItem(Supplier<Item> retrievedItem) {
             this.retrievedItem = retrievedItem;
             return self();
         }

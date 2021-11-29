@@ -82,7 +82,7 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
             } else {
                 remainingLifeTime -= 1;
                 // Pickup Card on Ground
-                if (canPickUp()  && qualifiedToBeRetrieved()) {
+                if (canPickUp() && qualifiedToBeRetrieved()) {
                     this.spawnAtLocation(card.getRetrievedItem().get().getDefaultInstance(), 0.1F);
                     remove();
                 }

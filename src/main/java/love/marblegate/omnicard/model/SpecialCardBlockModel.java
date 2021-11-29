@@ -13,7 +13,8 @@ public class SpecialCardBlockModel extends AnimatedGeoModel<SpecialCardBlockTile
 
     @Override
     public ResourceLocation getTextureLocation(SpecialCardBlockTileEntity object) {
-        if (object.getCardType() == null) return new ResourceLocation(OmniCard.MODID, "textures/card/standard/unknown_card.png");
+        if (object.getCardType() == null)
+            return new ResourceLocation(OmniCard.MODID, "textures/card/standard/unknown_card.png");
         return new ResourceLocation(OmniCard.MODID, "textures/card/" + object.getCardType().getTexturePath());
     }
 

@@ -1,6 +1,5 @@
 package love.marblegate.omnicard.block;
 
-
 import com.google.common.collect.Lists;
 import love.marblegate.omnicard.block.tileentity.SpecialCardBlockTileEntity;
 import love.marblegate.omnicard.card.BlockCard;
@@ -8,37 +7,20 @@ import love.marblegate.omnicard.registry.TileEntityRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.WallHeight;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.block.material.PushReaction;
-import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.boss.WitherEntity;
-import net.minecraft.entity.item.TNTEntity;
-import net.minecraft.entity.item.minecart.TNTMinecartEntity;
-import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.WitherSkullEntity;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.BeehiveTileEntity;
-import net.minecraft.tileentity.ShulkerBoxTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -48,7 +30,7 @@ public class SpecialCardBlock extends Block {
     private static final VoxelShape SHAPE = Block.box(5.5D, 2.5D, 5.5D, 10.5D, 12.5D, 10.5D);
 
     public SpecialCardBlock() {
-        super(Properties.of(new Material(MaterialColor.NONE,false,false,false,false,false,false, PushReaction.BLOCK)).noCollission().strength(0.1F,5F));
+        super(Properties.of(new Material(MaterialColor.NONE, false, false, false, false, false, false, PushReaction.BLOCK)).noCollission().strength(0.1F, 5F));
     }
 
     @Override
@@ -67,8 +49,8 @@ public class SpecialCardBlock extends Block {
         if (entity instanceof PlayerEntity) {
             TileEntity tileentity = builder.getOptionalParameter(LootParameters.BLOCK_ENTITY);
             if (tileentity instanceof SpecialCardBlockTileEntity) {
-                SpecialCardBlockTileEntity specialCardBlockTileEntity = (SpecialCardBlockTileEntity)tileentity;
-                if(specialCardBlockTileEntity.getCardType().canRetrieve() && specialCardBlockTileEntity.getCardType().getRetrievedItem().isPresent()){
+                SpecialCardBlockTileEntity specialCardBlockTileEntity = (SpecialCardBlockTileEntity) tileentity;
+                if (specialCardBlockTileEntity.getCardType().canRetrieve() && specialCardBlockTileEntity.getCardType().getRetrievedItem().isPresent()) {
                     return Lists.newArrayList(specialCardBlockTileEntity.getCardType().getRetrievedItem().get().getDefaultInstance());
                 }
             }
@@ -94,8 +76,8 @@ public class SpecialCardBlock extends Block {
 
     @Override
     public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
-        BlockCard type = ((SpecialCardBlockTileEntity)world.getBlockEntity(pos)).getCardType();
-        if(type.getRetrievedItem().isPresent())
+        BlockCard type = ((SpecialCardBlockTileEntity) world.getBlockEntity(pos)).getCardType();
+        if (type.getRetrievedItem().isPresent())
             return type.getRetrievedItem().get().getDefaultInstance();
         else
             return ItemStack.EMPTY;

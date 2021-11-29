@@ -21,7 +21,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
 
-public class SpecialCardBlockTileEntity extends TileEntity implements ITickableTileEntity,IAnimatable {
+public class SpecialCardBlockTileEntity extends TileEntity implements ITickableTileEntity, IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
     private BlockCard card;
 
@@ -58,18 +58,18 @@ public class SpecialCardBlockTileEntity extends TileEntity implements ITickableT
     @Override
     public void tick() {
         // All logic should be handled in serverside since we don't sync lifetime
-        if(!level.isClientSide()){
-            if(lifetime==0)
-                level.setBlockAndUpdate(this.getBlockPos(),Blocks.AIR.defaultBlockState());
-            else{
+        if (!level.isClientSide()) {
+            if (lifetime == 0)
+                level.setBlockAndUpdate(this.getBlockPos(), Blocks.AIR.defaultBlockState());
+            else {
                 // Transfer to Disappear Animation
-                if(lifetime == 30){
+                if (lifetime == 30) {
                     preparedVanish = true;
                     SyncToClient();
                 }
-                if(lifetime>0) lifetime--;
+                if (lifetime > 0) lifetime--;
                 // Handle Special Card Logic
-                if(card !=null){
+                if (card != null) {
                     card.handlerServerTick(this);
                 }
             }
@@ -77,15 +77,15 @@ public class SpecialCardBlockTileEntity extends TileEntity implements ITickableT
 
     }
 
-    private void SyncToClient(){
-        level.sendBlockUpdated(getBlockPos(),getBlockState(),getBlockState(), Constants.BlockFlags.DEFAULT_AND_RERENDER);
+    private void SyncToClient() {
+        level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Constants.BlockFlags.DEFAULT_AND_RERENDER);
     }
 
     public BlockCard getCardType() {
         return card;
     }
 
-    public void initializingData(BlockCard card){
+    public void initializingData(BlockCard card) {
         this.card = card;
         lifetime = card.getLifetime();
         preparedVanish = false;
@@ -104,8 +104,8 @@ public class SpecialCardBlockTileEntity extends TileEntity implements ITickableT
     public CompoundNBT save(CompoundNBT nbt) {
         CompoundNBT compoundNBT = super.save(nbt);
         compoundNBT.putByte("card_type", BlockCards.toByte(card));
-        compoundNBT.putInt("lifetime",lifetime);
-        compoundNBT.putBoolean("should_disappear",preparedVanish);
+        compoundNBT.putInt("lifetime", lifetime);
+        compoundNBT.putBoolean("should_disappear", preparedVanish);
         return compoundNBT;
     }
 
@@ -125,7 +125,7 @@ public class SpecialCardBlockTileEntity extends TileEntity implements ITickableT
     public CompoundNBT getUpdateTag() {
         CompoundNBT compoundNBT = super.getUpdateTag();
         compoundNBT.putByte("card_type", BlockCards.toByte(card));
-        compoundNBT.putBoolean("should_disappear",preparedVanish);
+        compoundNBT.putBoolean("should_disappear", preparedVanish);
         return compoundNBT;
     }
 

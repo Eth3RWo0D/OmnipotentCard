@@ -9,7 +9,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
@@ -30,7 +29,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -61,7 +59,7 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
     @Override
     public ActionResultType interact(PlayerEntity player, Hand hand) {
         if (!player.level.isClientSide()) {
-            if(card.getRetrievedItem().isPresent())
+            if (card.getRetrievedItem().isPresent())
                 player.level.addFreshEntity(new ItemEntity(player.level, this.getX(), this.getY(), this.getZ(), card.getRetrievedItem().get().getDefaultInstance()));
             remove();
         }
@@ -115,13 +113,13 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
     }
 
     private List<LivingEntity> getTriggeringTarget() {
-        return level.getEntities(this,getBoundingBox().expandTowards(0,1,0),entity -> entity instanceof LivingEntity)
+        return level.getEntities(this, getBoundingBox().expandTowards(0, 1, 0), entity -> entity instanceof LivingEntity)
                 .stream().map(entity -> (LivingEntity) entity).collect(Collectors.toList());
     }
 
-    private void activateTrap(List<LivingEntity> targets){
-        for(LivingEntity livingEntity:targets)
-            card.activate(this,livingEntity);
+    private void activateTrap(List<LivingEntity> targets) {
+        for (LivingEntity livingEntity : targets)
+            card.activate(this, livingEntity);
         remove();
     }
 
@@ -134,7 +132,7 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
     @Nullable
     public Entity getOwner() {
         if (this.ownerUUID != null && this.level instanceof ServerWorld) {
-            return ((ServerWorld)this.level).getEntity(this.ownerUUID);
+            return ((ServerWorld) this.level).getEntity(this.ownerUUID);
         }
         return null;
     }
@@ -161,15 +159,15 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
     @Override
     public void readAdditionalSaveData(CompoundNBT compoundNBT) {
         card = CommonCards.fromByte(compoundNBT.getByte("card_type"));
-        if(compoundNBT.contains("owner_uuid"))
+        if (compoundNBT.contains("owner_uuid"))
             ownerUUID = compoundNBT.getUUID("owner_uuid");
     }
 
     @Override
     public void addAdditionalSaveData(CompoundNBT compoundNBT) {
         compoundNBT.putByte("card_type", CommonCards.toByte(card));
-        if(ownerUUID!=null){
-            compoundNBT.putUUID("owner_uuid",ownerUUID);
+        if (ownerUUID != null) {
+            compoundNBT.putUUID("owner_uuid", ownerUUID);
         }
     }
 

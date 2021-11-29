@@ -59,15 +59,15 @@ public class PlaceableSpecialCard extends Item {
                     updateCustomBlockEntityTag(world, playerentity, blockpos, itemstack);
                     block.setPlacedBy(world, blockpos, blockstate1, playerentity, itemstack);
                     if (playerentity instanceof ServerPlayerEntity) {
-                        CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayerEntity)playerentity, blockpos, itemstack);
+                        CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayerEntity) playerentity, blockpos, itemstack);
                     }
                 }
 
                 SoundType soundtype = blockstate1.getSoundType(world, blockpos, context.getPlayer());
                 world.playSound(playerentity, blockpos, this.getPlaceSound(blockstate1, world, blockpos, context.getPlayer()), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
 
-                if(card == BlockCards.PURIFICATION){
-                    context.getPlayer().addEffect(new EffectInstance(Effects.WEAKNESS,1200));
+                if (card == BlockCards.PURIFICATION) {
+                    context.getPlayer().addEffect(new EffectInstance(Effects.WEAKNESS, 1200));
                 }
 
                 if (playerentity == null || !playerentity.abilities.instabuild) {

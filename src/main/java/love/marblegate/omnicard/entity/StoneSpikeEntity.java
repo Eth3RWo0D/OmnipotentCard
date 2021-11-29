@@ -28,15 +28,15 @@ public class StoneSpikeEntity extends Entity implements IAnimatable {
         super(p_i48580_1_, p_i48580_2_);
     }
 
-    public StoneSpikeEntity(World world){
-        super(EntityRegistry.STONE_SPIKE.get(),world);
+    public StoneSpikeEntity(World world) {
+        super(EntityRegistry.STONE_SPIKE.get(), world);
         lifetime = 25;
     }
 
     @Override
-    public void tick(){
-        if(!level.isClientSide()){
-            if(lifetime<=0)
+    public void tick() {
+        if (!level.isClientSide()) {
+            if (lifetime <= 0)
                 remove();
             else
                 lifetime--;
@@ -50,14 +50,14 @@ public class StoneSpikeEntity extends Entity implements IAnimatable {
 
     @Override
     protected void readAdditionalSaveData(CompoundNBT compoundNBT) {
-        getEntityData().set(DONE_STRIKE,compoundNBT.getBoolean("done_strike"));
+        getEntityData().set(DONE_STRIKE, compoundNBT.getBoolean("done_strike"));
         lifetime = compoundNBT.getInt("done_strike");
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundNBT compoundNBT) {
-        compoundNBT.putBoolean("done_strike",getEntityData().get(DONE_STRIKE));
-        compoundNBT.putInt("lifetime",lifetime);
+        compoundNBT.putBoolean("done_strike", getEntityData().get(DONE_STRIKE));
+        compoundNBT.putInt("lifetime", lifetime);
     }
 
     @Override
@@ -66,9 +66,9 @@ public class StoneSpikeEntity extends Entity implements IAnimatable {
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        if(getEntityData().get(DONE_STRIKE))
+        if (getEntityData().get(DONE_STRIKE))
             return PlayState.STOP;
-        else{
+        else {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("rise", false));
             return PlayState.CONTINUE;
         }

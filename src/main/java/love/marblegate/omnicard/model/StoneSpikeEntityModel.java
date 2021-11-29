@@ -1,7 +1,6 @@
 package love.marblegate.omnicard.model;
 
 import love.marblegate.omnicard.OmniCard;
-import love.marblegate.omnicard.entity.FlyingCardEntity;
 import love.marblegate.omnicard.entity.StoneSpikeEntity;
 import net.minecraft.util.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;

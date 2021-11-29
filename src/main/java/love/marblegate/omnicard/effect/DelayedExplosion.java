@@ -1,6 +1,6 @@
 package love.marblegate.omnicard.effect;
 
-import love.marblegate.omnicard.misc.CardType;
+import love.marblegate.omnicard.card.CommonCards;
 import love.marblegate.omnicard.misc.ModDamage;
 import love.marblegate.omnicard.registry.EffectRegistry;
 import net.minecraft.entity.LivingEntity;
@@ -17,7 +17,7 @@ public class DelayedExplosion extends HiddenEffect {
         if (this == EffectRegistry.READY_TO_EXPLODE.get() && !livingEntity.level.isClientSide()) {
             Explosion.Mode explosion$mode = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(livingEntity.level, livingEntity) ? Explosion.Mode.BREAK : Explosion.Mode.NONE;
             livingEntity.level.explode(livingEntity, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), 3, explosion$mode);
-            livingEntity.hurt(ModDamage.causeCardDamage(null, CardType.RED).setExplosion(), 6);
+            livingEntity.hurt(ModDamage.causeCardDamage(null, CommonCards.RED).setExplosion(), 6);
         }
     }
 

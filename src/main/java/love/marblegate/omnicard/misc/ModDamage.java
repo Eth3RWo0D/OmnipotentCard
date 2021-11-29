@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 
 public class ModDamage {
 
-    public static DamageSource causeHolyFlameDamage(){
+    public static DamageSource causeHolyFlameDamage() {
         return new SimpleDeathMessageDamageSource("omni_card.holy_fire");
     }
 
@@ -39,7 +39,7 @@ public class ModDamage {
          */
         @Override
         public ITextComponent getLocalizedDeathMessage(LivingEntity entityLivingBaseIn) {
-            String s = "death.attack." + msgId +".with_source";
+            String s = "death.attack." + msgId + ".with_source";
             return new TranslationTextComponent(s, entityLivingBaseIn.getDisplayName(), entity.getDisplayName());
         }
     }
@@ -51,7 +51,7 @@ public class ModDamage {
 
         @Override
         public ITextComponent getLocalizedDeathMessage(LivingEntity entityLivingBaseIn) {
-            String s = "death.attack." + msgId +".no_source";
+            String s = "death.attack." + msgId + ".no_source";
             return new TranslationTextComponent(s, entityLivingBaseIn.getDisplayName());
         }
     }

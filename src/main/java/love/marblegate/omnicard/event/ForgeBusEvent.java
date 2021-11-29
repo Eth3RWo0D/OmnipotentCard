@@ -19,7 +19,7 @@ public class ForgeBusEvent {
         // It only stops natural spawning
         if (event.getSpawnReason() == SpawnReason.NATURAL) {
             if (MiscUtil.isHostile(event.getEntityLiving(), false)) {
-                for (BlockPos pos : BlockPos.betweenClosed(new BlockPos(event.getX()-8, (int) event.getY()-8, event.getZ()-8), new BlockPos(event.getX()+8, event.getY()+8, event.getZ()+8))) {
+                for (BlockPos pos : BlockPos.betweenClosed(new BlockPos(event.getX() - 8, (int) event.getY() - 8, event.getZ() - 8), new BlockPos(event.getX() + 8, event.getY() + 8, event.getZ() + 8))) {
                     BlockState blockState = event.getWorld().getBlockState(pos);
                     if (blockState.getBlock() == BlockRegistry.SPECIAL_CARD_BLOCK.get()) {
                         TileEntity tileEntity = event.getWorld().getBlockEntity(pos);

@@ -2,7 +2,6 @@ package love.marblegate.omnicard.model;
 
 import love.marblegate.omnicard.OmniCard;
 import love.marblegate.omnicard.entity.FallingStoneEntity;
-import love.marblegate.omnicard.entity.FlyingCardEntity;
 import net.minecraft.util.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
