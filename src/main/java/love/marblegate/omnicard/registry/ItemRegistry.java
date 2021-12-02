@@ -3,10 +3,7 @@ package love.marblegate.omnicard.registry;
 import love.marblegate.omnicard.OmniCard;
 import love.marblegate.omnicard.card.BlockCards;
 import love.marblegate.omnicard.card.CommonCards;
-import love.marblegate.omnicard.item.BlankCard;
-import love.marblegate.omnicard.item.CardStack;
-import love.marblegate.omnicard.item.ElementalCard;
-import love.marblegate.omnicard.item.PlaceableSpecialCard;
+import love.marblegate.omnicard.item.*;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -32,5 +29,15 @@ public class ItemRegistry {
     public static final RegistryObject<Item> RAINY_CARD = ITEMS.register("rainy_card", () -> new PlaceableSpecialCard(BlockCards.RAINY));
     public static final RegistryObject<Item> THUNDERSTORM_CARD = ITEMS.register("thunderstorm_card", () -> new PlaceableSpecialCard(BlockCards.THUNDERSTORM));
     public static final RegistryObject<Item> BLOOM_CARD = ITEMS.register("bloom_card", () -> new PlaceableSpecialCard(BlockCards.BLOOM));
+
+    public static final RegistryObject<Item> FIELD_CORE = ITEMS.register("field_core", Intermediates::new);
+    public static final RegistryObject<Item> PURIFICATION_CORE = ITEMS.register("purification_core", Intermediates::new);
+    public static final RegistryObject<Item> SEAL_CORE = ITEMS.register("seal_core", Intermediates::new);
+    public static final RegistryObject<Item> SUNNY_CORE = ITEMS.register("sunny_core", Intermediates::new);
+    public static final RegistryObject<Item> RAINY_CORE = ITEMS.register("rainy_core", Intermediates::new);
+    public static final RegistryObject<Item> THUNDERSTORM_CORE = ITEMS.register("thunderstorm_core", Intermediates::new);
+    public static final RegistryObject<Item> BLOOM_CORE = ITEMS.register("bloom_core", Intermediates::new);
+
+
 
 }
