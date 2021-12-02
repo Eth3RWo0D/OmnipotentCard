@@ -1,6 +1,5 @@
 package love.marblegate.omnicard.effect;
 
-import love.marblegate.omnicard.card.CommonCards;
 import love.marblegate.omnicard.misc.ModDamage;
 import love.marblegate.omnicard.registry.EffectRegistry;
 import net.minecraft.entity.LivingEntity;

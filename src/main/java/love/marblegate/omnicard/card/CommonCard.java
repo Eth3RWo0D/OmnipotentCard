@@ -3,10 +3,8 @@ package love.marblegate.omnicard.card;
 import love.marblegate.omnicard.entity.CardTrapEntity;
 import love.marblegate.omnicard.entity.FlyingCardEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
 
 import java.util.Objects;
-import java.util.function.Supplier;
 
 public class CommonCard extends AbstractCard {
     private final CardFunc.ITrapCardActivationHandler trapCardActivationHandler;
@@ -35,7 +33,7 @@ public class CommonCard extends AbstractCard {
         private CardFunc.ITrapCardActivationHandler trapCardActivationHandler;
         private CardFunc.IFlyingCardHitHandler flyingCardHitHandler;
 
-        public Builder(String name, String category, Supplier<Item> retrievedItem) {
+        public Builder(String name, String category) {
             super(name, category);
         }
 

@@ -3,7 +3,10 @@ package love.marblegate.omnicard.item;
 import love.marblegate.omnicard.card.CommonCard;
 import love.marblegate.omnicard.entity.CardTrapEntity;
 import love.marblegate.omnicard.entity.FlyingCardEntity;
+import love.marblegate.omnicard.misc.MiscUtil;
 import love.marblegate.omnicard.misc.ModGroup;
+import love.marblegate.omnicard.misc.ThemeColor;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -13,7 +16,11 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class ElementalCard extends Item {
     public final CommonCard card;
@@ -65,5 +72,15 @@ public class ElementalCard extends Item {
         } else {
             return super.onItemUseFirst(stack, context);
         }
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, @Nullable World world, List<ITextComponent> tooltips, ITooltipFlag iTooltipFlag) {
+        tooltips.add(MiscUtil.tooltip("tooltip.omni_card.elemental_card.function." + card.getCardName(), ThemeColor.HINT));
+        tooltips.add(MiscUtil.tooltipBold("tooltip.omni_card.elemental_card.operation_throw", ThemeColor.OPERATION)
+                .append(MiscUtil.tooltip("tooltip.omni_card.elemental_card.to_throw", ThemeColor.OPERATION_EXPLAIN)));
+        tooltips.add(MiscUtil.tooltipBold("tooltip.omni_card.elemental_card.operation_place", ThemeColor.OPERATION)
+                .append(MiscUtil.tooltip("tooltip.omni_card.elemental_card.to_place", ThemeColor.OPERATION_EXPLAIN)));
+        super.appendHoverText(itemStack, world, tooltips, iTooltipFlag);
     }
 }

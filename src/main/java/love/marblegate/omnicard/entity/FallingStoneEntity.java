@@ -1,6 +1,5 @@
 package love.marblegate.omnicard.entity;
 
-import love.marblegate.omnicard.card.CommonCards;
 import love.marblegate.omnicard.misc.ModDamage;
 import love.marblegate.omnicard.registry.EntityRegistry;
 import net.minecraft.entity.Entity;
@@ -48,7 +47,7 @@ public class FallingStoneEntity extends Entity implements IAnimatable {
             List<LivingEntity> targets = getLivingEntityBeneath();
             if (!targets.isEmpty()) {
                 for (LivingEntity livingEntity : targets) {
-                    livingEntity.hurt(ModDamage.causeCardDamage(this,null), 6);
+                    livingEntity.hurt(ModDamage.causeCardDamage(this, null), 6);
                     livingEntity.addEffect(new EffectInstance(Effects.WEAKNESS, 100));
                     livingEntity.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 100));
                 }

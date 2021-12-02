@@ -3,12 +3,15 @@ package love.marblegate.omnicard.item;
 import love.marblegate.omnicard.block.tileentity.SpecialCardBlockTileEntity;
 import love.marblegate.omnicard.card.BlockCard;
 import love.marblegate.omnicard.card.BlockCards;
+import love.marblegate.omnicard.misc.MiscUtil;
 import love.marblegate.omnicard.misc.ModGroup;
+import love.marblegate.omnicard.misc.ThemeColor;
 import love.marblegate.omnicard.registry.BlockRegistry;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -23,9 +26,11 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class PlaceableSpecialCard extends Item {
     public final BlockCard card;
@@ -113,5 +118,16 @@ public class PlaceableSpecialCard extends Item {
 
     private SoundEvent getPlaceSound(BlockState state, World world, BlockPos pos, PlayerEntity entity) {
         return state.getSoundType(world, pos, entity).getPlaceSound();
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, @Nullable World world, List<ITextComponent> tooltips, ITooltipFlag iTooltipFlag) {
+        tooltips.add(MiscUtil.tooltip("tooltip.omni_card.special_card.function." + card.getCardName(), ThemeColor.HINT));
+        tooltips.add(MiscUtil.tooltip("tooltip.omni_card.special_card.is_1", ThemeColor.HINT)
+                .append(MiscUtil.tooltip("tooltip.omni_card.special_card.is_" + (card.canRetrieve() ? "2" : "3"), ThemeColor.HINT_EMP))
+                .append(MiscUtil.tooltip("tooltip.omni_card.special_card.is_4", ThemeColor.HINT)));
+        tooltips.add(MiscUtil.tooltipBold("tooltip.omni_card.special_card.operation_place", ThemeColor.OPERATION)
+                .append(MiscUtil.tooltip("tooltip.omni_card.special_card.to_place", ThemeColor.OPERATION_EXPLAIN)));
+        super.appendHoverText(itemStack, world, tooltips, iTooltipFlag);
     }
 }

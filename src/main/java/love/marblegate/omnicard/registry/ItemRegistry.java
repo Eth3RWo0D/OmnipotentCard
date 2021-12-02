@@ -40,5 +40,4 @@ public class ItemRegistry {
     public static final RegistryObject<Item> BLOOM_CORE = ITEMS.register("bloom_core", Intermediates::new);
 
 
-
 }

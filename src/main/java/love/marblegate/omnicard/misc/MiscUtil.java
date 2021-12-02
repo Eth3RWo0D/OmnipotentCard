@@ -11,6 +11,10 @@ import net.minecraft.particles.IParticleData;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.Color;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
@@ -81,6 +85,14 @@ public class MiscUtil {
 
     public static AxisAlignedBB buildAABB(BlockPos pos, int radius) {
         return buildAABB(pos, radius, radius);
+    }
+
+    public static IFormattableTextComponent tooltip(String id, Color color) {
+        return new TranslationTextComponent(id).setStyle(Style.EMPTY.withColor(color).withBold(false));
+    }
+
+    public static IFormattableTextComponent tooltipBold(String id, Color color) {
+        return new TranslationTextComponent(id).setStyle(Style.EMPTY.withColor(color).withBold(true));
     }
 
 }

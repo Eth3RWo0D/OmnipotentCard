@@ -1,10 +1,8 @@
 package love.marblegate.omnicard.misc;
 
-import love.marblegate.omnicard.card.CommonCard;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -26,7 +24,7 @@ public class ModDamage {
 
     public static DamageSource causeCardDamage(Entity damageSource, @Nullable Entity owner) {
         if (owner instanceof LivingEntity)
-            return DamageSource.mobAttack( (LivingEntity) owner);
+            return DamageSource.mobAttack((LivingEntity) owner);
         else
             return DamageSource.thrown(damageSource, owner);
     }

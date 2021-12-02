@@ -1,7 +1,6 @@
 package love.marblegate.omnicard.data;
 
 import love.marblegate.omnicard.registry.ItemRegistry;
-import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.data.*;
 import net.minecraft.item.Items;
 
@@ -25,7 +24,7 @@ public class ModRecipeGen extends RecipeProvider {
                 .save(consumer);
         ShapelessRecipeBuilder.shapeless(ItemRegistry.PROTOTYPE_CORE.get())
                 .requires(Items.QUARTZ)
-                .unlockedBy("has_quartz",has(Items.QUARTZ)).save(consumer);
+                .unlockedBy("has_quartz", has(Items.QUARTZ)).save(consumer);
         // CardTack
         ShapedRecipeBuilder.shaped(ItemRegistry.CARD_STACK.get())
                 .pattern("AAA")
@@ -90,69 +89,69 @@ public class ModRecipeGen extends RecipeProvider {
                 .requires(Items.BLAZE_ROD)
                 .requires(Items.GUNPOWDER)
                 .requires(Items.ORANGE_DYE)
-                .unlockedBy("has_prototype_core",has(ItemRegistry.PROTOTYPE_CORE.get())).save(consumer);
+                .unlockedBy("has_prototype_core", has(ItemRegistry.PROTOTYPE_CORE.get())).save(consumer);
         ShapelessRecipeBuilder.shapeless(ItemRegistry.PURIFICATION_CORE.get())
                 .requires(ItemRegistry.PROTOTYPE_CORE.get())
                 .requires(Items.GLOWSTONE_DUST)
                 .requires(Items.MAGMA_CREAM)
                 .requires(Items.YELLOW_DYE)
-                .unlockedBy("has_prototype_core",has(ItemRegistry.PROTOTYPE_CORE.get())).save(consumer);
+                .unlockedBy("has_prototype_core", has(ItemRegistry.PROTOTYPE_CORE.get())).save(consumer);
         ShapelessRecipeBuilder.shapeless(ItemRegistry.SEAL_CORE.get())
                 .requires(ItemRegistry.PROTOTYPE_CORE.get())
                 .requires(Items.SOUL_SAND)
                 .requires(Items.PURPLE_DYE)
-                .unlockedBy("has_prototype_core",has(ItemRegistry.PROTOTYPE_CORE.get())).save(consumer);
+                .unlockedBy("has_prototype_core", has(ItemRegistry.PROTOTYPE_CORE.get())).save(consumer);
         ShapelessRecipeBuilder.shapeless(ItemRegistry.SUNNY_CORE.get())
                 .requires(ItemRegistry.PROTOTYPE_CORE.get())
                 .requires(Items.LAVA_BUCKET)
                 .requires(Items.BLUE_DYE)
-                .unlockedBy("has_prototype_core",has(ItemRegistry.PROTOTYPE_CORE.get())).save(consumer);
+                .unlockedBy("has_prototype_core", has(ItemRegistry.PROTOTYPE_CORE.get())).save(consumer);
         ShapelessRecipeBuilder.shapeless(ItemRegistry.RAINY_CORE.get())
                 .requires(ItemRegistry.PROTOTYPE_CORE.get())
                 .requires(Items.WATER_BUCKET)
                 .requires(Items.PURPLE_DYE)
-                .unlockedBy("has_prototype_core",has(ItemRegistry.PROTOTYPE_CORE.get())).save(consumer);
+                .unlockedBy("has_prototype_core", has(ItemRegistry.PROTOTYPE_CORE.get())).save(consumer);
         ShapelessRecipeBuilder.shapeless(ItemRegistry.THUNDERSTORM_CORE.get())
                 .requires(ItemRegistry.PROTOTYPE_CORE.get())
                 .requires(Items.WATER_BUCKET)
                 .requires(Items.BLUE_DYE)
-                .unlockedBy("has_prototype_core",has(ItemRegistry.PROTOTYPE_CORE.get())).save(consumer);
+                .unlockedBy("has_prototype_core", has(ItemRegistry.PROTOTYPE_CORE.get())).save(consumer);
         ShapelessRecipeBuilder.shapeless(ItemRegistry.BLOOM_CORE.get())
                 .requires(ItemRegistry.PROTOTYPE_CORE.get())
                 .requires(Items.BONE_MEAL)
                 .requires(Items.ROTTEN_FLESH)
                 .requires(Items.GREEN_DYE)
-                .unlockedBy("has_prototype_core",has(ItemRegistry.PROTOTYPE_CORE.get())).save(consumer);
+                .unlockedBy("has_prototype_core", has(ItemRegistry.PROTOTYPE_CORE.get())).save(consumer);
 
         //Special Card
         ShapelessRecipeBuilder.shapeless(ItemRegistry.FIELD_CARD.get())
                 .requires(ItemRegistry.BLANK_CARD.get())
                 .requires(ItemRegistry.FIELD_CORE.get())
-                .unlockedBy("field_core",has(ItemRegistry.FIELD_CORE.get())).save(consumer);
+                .unlockedBy("field_core", has(ItemRegistry.FIELD_CORE.get())).save(consumer);
         ShapelessRecipeBuilder.shapeless(ItemRegistry.PURIFICATION_CARD.get())
                 .requires(ItemRegistry.BLANK_CARD.get())
                 .requires(ItemRegistry.PURIFICATION_CORE.get())
-                .unlockedBy("purification_core",has(ItemRegistry.PURIFICATION_CORE.get())).save(consumer);
+                .unlockedBy("purification_core", has(ItemRegistry.PURIFICATION_CORE.get())).save(consumer);
         ShapelessRecipeBuilder.shapeless(ItemRegistry.SEAL_CARD.get())
                 .requires(ItemRegistry.BLANK_CARD.get())
                 .requires(ItemRegistry.SEAL_CORE.get())
-                .unlockedBy("seal_core",has(ItemRegistry.SEAL_CORE.get())).save(consumer);
+                .unlockedBy("seal_core", has(ItemRegistry.SEAL_CORE.get())).save(consumer);
         ShapelessRecipeBuilder.shapeless(ItemRegistry.SUNNY_CARD.get())
                 .requires(ItemRegistry.BLANK_CARD.get())
                 .requires(ItemRegistry.SUNNY_CORE.get())
-                .unlockedBy("sunny_core",has(ItemRegistry.SUNNY_CORE.get())).save(consumer);
+                .unlockedBy("sunny_core", has(ItemRegistry.SUNNY_CORE.get())).save(consumer);
         ShapelessRecipeBuilder.shapeless(ItemRegistry.RAINY_CARD.get())
                 .requires(ItemRegistry.BLANK_CARD.get())
                 .requires(ItemRegistry.RAINY_CORE.get())
-                .unlockedBy("rainy_core",has(ItemRegistry.RAINY_CORE.get())).save(consumer);
+                .unlockedBy("rainy_core", has(ItemRegistry.RAINY_CORE.get())).save(consumer);
         ShapelessRecipeBuilder.shapeless(ItemRegistry.THUNDERSTORM_CARD.get())
                 .requires(ItemRegistry.BLANK_CARD.get())
                 .requires(ItemRegistry.THUNDERSTORM_CORE.get())
-                .unlockedBy("thunderstorm_core",has(ItemRegistry.THUNDERSTORM_CORE.get())).save(consumer);
+                .unlockedBy("thunderstorm_core", has(ItemRegistry.THUNDERSTORM_CORE.get())).save(consumer);
         ShapelessRecipeBuilder.shapeless(ItemRegistry.BLOOM_CARD.get())
                 .requires(ItemRegistry.BLANK_CARD.get())
                 .requires(ItemRegistry.BLOOM_CORE.get())
-                .unlockedBy("bloom_core",has(ItemRegistry.BLOOM_CORE.get())).save(consumer);
+                .unlockedBy("bloom_core", has(ItemRegistry.BLOOM_CORE.get())).save(consumer);
 
     }
 }

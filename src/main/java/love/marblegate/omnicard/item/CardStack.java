@@ -8,8 +8,11 @@ import love.marblegate.omnicard.capability.cardtype.ICardTypeData;
 import love.marblegate.omnicard.card.CommonCard;
 import love.marblegate.omnicard.card.CommonCards;
 import love.marblegate.omnicard.entity.FlyingCardEntity;
+import love.marblegate.omnicard.misc.MiscUtil;
 import love.marblegate.omnicard.misc.ModGroup;
+import love.marblegate.omnicard.misc.ThemeColor;
 import love.marblegate.omnicard.registry.ItemRegistry;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -19,6 +22,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
@@ -44,7 +48,7 @@ public class CardStack extends Item {
                     cardTypeData.setSwitchingCard(false);
                 } else {
                     // Throwing Card
-                    if (player.abilities.instabuild || hasEnoughBlankCard(player)) {
+                    if ((player.abilities.instabuild || hasEnoughBlankCard(player)) && cardTypeData.get() != CommonCards.UNKNOWN) {
                         Vector3d vector3d = player.getViewVector(1.0F);
 
                         double x = (vector3d.x * 4D);
@@ -96,8 +100,36 @@ public class CardStack extends Item {
         }
     }
 
+    @Override
+    public void appendHoverText(ItemStack itemStack, @Nullable World world, List<ITextComponent> tooltips, ITooltipFlag iTooltipFlag) {
+        ICardTypeData cardTypeData = itemStack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
+        CommonCard card = cardTypeData.get();
+        boolean f = cardTypeData.isSwitchingCard();
+        if (f) {
+            tooltips.add(MiscUtil.tooltip("tooltip.omni_card.card_stack.is_switching", ThemeColor.MAIN));
+            tooltips.add(MiscUtil.tooltipBold("tooltip.omni_card.card_stack.end_switching_operation", ThemeColor.OPERATION)
+                    .append(MiscUtil.tooltip("tooltip.omni_card.card_stack.to_end_switching", ThemeColor.OPERATION_EXPLAIN)));
+        } else if (card == CommonCards.UNKNOWN) {
+            tooltips.add(MiscUtil.tooltip("tooltip.omni_card.card_stack.not_switched", ThemeColor.MAIN));
+            tooltips.add(MiscUtil.tooltip("tooltip.omni_card.card_stack.intro_1", ThemeColor.HINT)
+                    .append(MiscUtil.tooltip("item.omni_card.blank_card", ThemeColor.HINT_EMP))
+                    .append(MiscUtil.tooltip("tooltip.omni_card.card_stack.intro_2", ThemeColor.HINT))
+                    .append(MiscUtil.tooltip("tooltip.omni_card.card_stack.intro_3", ThemeColor.HINT_EMP))
+                    .append(MiscUtil.tooltip("tooltip.omni_card.card_stack.intro_4", ThemeColor.HINT))
+                    .append(MiscUtil.tooltipBold("tooltip.omni_card.card_stack.intro_5", ThemeColor.OPERATION))
+                    .append(MiscUtil.tooltip("tooltip.omni_card.card_stack.intro_6", ThemeColor.HINT)));
+            tooltips.add(MiscUtil.tooltipBold("tooltip.omni_card.card_stack.start_switching_operation", ThemeColor.OPERATION)
+                    .append(MiscUtil.tooltip("tooltip.omni_card.card_stack.to_start_switching", ThemeColor.OPERATION_EXPLAIN)));
+        } else {
+            tooltips.add(MiscUtil.tooltip("tooltip.omni_card.card_stack.function." + card.getCardName(), ThemeColor.HINT));
+            tooltips.add(MiscUtil.tooltipBold("tooltip.omni_card.card_stack.start_switching_operation", ThemeColor.OPERATION)
+                    .append(MiscUtil.tooltip("tooltip.omni_card.card_stack.to_start_switching", ThemeColor.OPERATION_EXPLAIN)));
+        }
+        super.appendHoverText(itemStack, world, tooltips, iTooltipFlag);
+    }
+
     private CommonCard switchingToNextCard(CommonCard presentCard) {
-        if(presentCard==CommonCards.UNKNOWN){
+        if (presentCard == CommonCards.UNKNOWN) {
             return availableCardType.get(0);
         }
         int position = availableCardType.indexOf(presentCard);
@@ -132,4 +164,6 @@ public class CardStack extends Item {
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
         return new CardTypeItemStackProvider();
     }
+
+
 }
