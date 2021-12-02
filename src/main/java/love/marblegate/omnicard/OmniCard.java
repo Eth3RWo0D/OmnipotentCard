@@ -73,7 +73,10 @@ public class OmniCard {
                         return 0.6F;
                     } else if (card == CommonCards.HELIOTROPE) {
                         return 0.7F;
-                    } else return 0;
+                    } else if (card == CommonCards.INK) {
+                        return 0.8F;
+                    } else
+                        return 0;
                 });
     }
 

@@ -29,7 +29,7 @@ public class CardFunc {
     public static class FlyingCard {
         public static void whiteCard(FlyingCardEntity card, LivingEntity victim) {
             if (!card.level.isClientSide()) {
-                victim.hurt(ModDamage.causeCardDamage(card.getOwner(), card.getCardType()), 6);
+                victim.hurt(ModDamage.causeCardDamage(card,card.getOwner()), 6);
             }
         }
 
@@ -37,7 +37,7 @@ public class CardFunc {
             if (!card.level.isClientSide()) {
                 if (victim.hasEffect(EffectRegistry.READY_TO_EXPLODE.get())) {
                     Explosion.Mode explosion$mode = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(victim.level, victim) ? Explosion.Mode.BREAK : Explosion.Mode.NONE;
-                    victim.level.explode(victim, ModDamage.causeCardDamage(card.getOwner(), card.getCardType()).setExplosion(), null, victim.getX(), victim.getY(), victim.getZ(), 0.71F, false, explosion$mode);
+                    victim.level.explode(victim, ModDamage.causeCardDamage(card,card.getOwner()).setExplosion(), null, victim.getX(), victim.getY(), victim.getZ(), 0.71F, false, explosion$mode);
                 }
                 victim.addEffect(new EffectInstance(EffectRegistry.READY_TO_EXPLODE.get(), 30));
             }
@@ -45,7 +45,7 @@ public class CardFunc {
 
         public static void orangeCard(FlyingCardEntity card, LivingEntity victim) {
             if (!card.level.isClientSide()) {
-                victim.hurt(ModDamage.causeCardDamage(card.getOwner(), card.getCardType()), 6);
+                victim.hurt(ModDamage.causeCardDamage(card,card.getOwner()), 6);
                 if (victim instanceof PlayerEntity) {
                     victim.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 80, 3));
                 } else {
@@ -57,7 +57,7 @@ public class CardFunc {
 
         public static void goldCard(FlyingCardEntity card, LivingEntity victim) {
             if (!card.level.isClientSide()) {
-                victim.hurt(ModDamage.causeCardDamage(card.getOwner(), card.getCardType()), 6);
+                victim.hurt(ModDamage.causeCardDamage(card,card.getOwner()), 6);
                 victim.addEffect(new EffectInstance(Effects.LEVITATION, 80));
                 victim.addEffect(new EffectInstance(Effects.GLOWING, 80));
             }
@@ -66,7 +66,7 @@ public class CardFunc {
         public static void greenCard(FlyingCardEntity card, LivingEntity victim) {
             if (!card.level.isClientSide()) {
                 if (victim.isInvertedHealAndHarm()) {
-                    victim.hurt(ModDamage.causeCardDamage(card.getOwner(), card.getCardType()), 8);
+                    victim.hurt(ModDamage.causeCardDamage(card,card.getOwner()), 8);
                 } else {
                     victim.heal(8);
                 }
@@ -81,14 +81,14 @@ public class CardFunc {
 
         public static void blueCard(FlyingCardEntity card, LivingEntity victim) {
             if (!card.level.isClientSide()) {
-                victim.hurt(ModDamage.causeCardDamage(card.getOwner(), card.getCardType()), 6);
+                victim.hurt(ModDamage.causeCardDamage(card,card.getOwner()), 6);
                 victim.addEffect(new EffectInstance(Effects.BLINDNESS, 100));
             }
         }
 
         public static void violetCard(FlyingCardEntity card, LivingEntity victim) {
             if (!card.level.isClientSide()) {
-                victim.hurt(ModDamage.causeCardDamage(card.getOwner(), card.getCardType()), 6);
+                victim.hurt(ModDamage.causeCardDamage(card,card.getOwner()), 6);
                 victim.addEffect(new EffectInstance(Effects.POISON, 80));
                 victim.addEffect(new EffectInstance(EffectRegistry.POISON_NOW_LETHAL.get(), 81));
             }
@@ -96,14 +96,14 @@ public class CardFunc {
 
         public static void blackCard(FlyingCardEntity card, LivingEntity victim) {
             if (!card.level.isClientSide()) {
-                victim.hurt(ModDamage.causeCardDamage(card.getOwner(), card.getCardType()), 6);
+                victim.hurt(ModDamage.causeCardDamage(card,card.getOwner()), 6);
                 victim.addEffect(new EffectInstance(Effects.WITHER, 80));
             }
         }
 
         public static void flameCard(FlyingCardEntity card, LivingEntity victim) {
             if (!card.level.isClientSide()) {
-                victim.hurt(ModDamage.causeCardDamage(card.getOwner(), card.getCardType()), 4);
+                victim.hurt(ModDamage.causeCardDamage(card,card.getOwner()), 4);
                 victim.setSecondsOnFire(3);
             }
         }
@@ -121,11 +121,11 @@ public class CardFunc {
         }
 
         public static void thunderCard(FlyingCardEntity card, LivingEntity victim) {
-            handleCommonThunderCardLogic(victim, card.level.isClientSide(), card.getOwner(), card.getCardType());
+            handleCommonThunderCardLogic(victim, card.level.isClientSide(), card.getOwner(), card);
         }
 
         public static void brambleCard(FlyingCardEntity card, LivingEntity victim) {
-
+            //TODO need implement
         }
 
         public static void earthCard(FlyingCardEntity card, LivingEntity victim) {
@@ -160,7 +160,7 @@ public class CardFunc {
     public static class TrapCard {
         public static void flameCard(CardTrapEntity trap, LivingEntity victim) {
             if (!trap.level.isClientSide()) {
-                victim.hurt(ModDamage.causeCardDamage(trap.getOwner(), trap.getCardType()).bypassArmor(), 4);
+                victim.hurt(ModDamage.causeCardDamage(trap, trap.getOwner()).bypassArmor(), 4);
                 victim.setSecondsOnFire(3);
             }
         }
@@ -175,11 +175,11 @@ public class CardFunc {
         }
 
         public static void thunderCard(CardTrapEntity trap, LivingEntity victim) {
-            handleCommonThunderCardLogic(victim, trap.level.isClientSide(), trap.getOwner(), trap.getCardType());
+            handleCommonThunderCardLogic(victim, trap.level.isClientSide(), trap.getOwner(), trap);
         }
 
         public static void bramble_card(CardTrapEntity trap, LivingEntity victim) {
-
+            //TODO need implement
         }
 
         public static void earthCard(CardTrapEntity trap, LivingEntity victim) {
@@ -187,7 +187,7 @@ public class CardFunc {
                 StoneSpikeEntity stoneSpikeEntity = new StoneSpikeEntity(trap.level);
                 stoneSpikeEntity.setPos(trap.getX(), trap.getY(), trap.getZ());
                 trap.level.addFreshEntity(stoneSpikeEntity);
-                victim.hurt(ModDamage.causeCardDamage(trap.getOwner(), trap.getCardType()), 6);
+                victim.hurt(ModDamage.causeCardDamage(trap,trap.getOwner()), 6);
                 victim.addEffect(new EffectInstance(Effects.WEAKNESS, 100));
                 victim.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 100));
             }
@@ -275,7 +275,7 @@ public class CardFunc {
         void handle(SpecialCardBlockTileEntity tileEntity);
     }
 
-    private static void handleCommonThunderCardLogic(LivingEntity victim, boolean clientSide, Entity owner, CommonCard card) {
+    private static void handleCommonThunderCardLogic(LivingEntity victim, boolean clientSide, Entity owner, Entity damageSource) {
         if (!clientSide) {
             LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(victim.level);
             lightningboltentity.setPos(victim.getX(), victim.getY(), victim.getZ());
@@ -285,7 +285,7 @@ public class CardFunc {
                 lightningboltentity.setDamage(10);
                 ((VillagerEntity) victim).thunderHit((ServerWorld) victim.level, lightningboltentity);
             } else {
-                victim.hurt(ModDamage.causeCardDamage(owner, card), 10);
+                victim.hurt(ModDamage.causeCardDamage(damageSource,owner), 10);
             }
         }
     }

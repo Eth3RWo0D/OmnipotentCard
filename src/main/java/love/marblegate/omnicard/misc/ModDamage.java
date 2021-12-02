@@ -16,32 +16,19 @@ public class ModDamage {
         return new SimpleDeathMessageDamageSource("omni_card.holy_fire");
     }
 
-    public static DamageSource causeCardDamage(@Nullable Entity entity, CommonCard card) {
-        if (entity instanceof LivingEntity)
-            return new MobtoMobDamageSource("omni_card." + card.getCardName(), (LivingEntity) entity);
-        else
-            return new SimpleDeathMessageDamageSource("omni_card" + card.getCardName());
+    public static DamageSource causeLethalPoisonDamage() {
+        return new SimpleDeathMessageDamageSource("omni_card.lethal_poison").bypassArmor();
     }
 
-    public static class MobtoMobDamageSource extends EntityDamageSource {
-        public MobtoMobDamageSource(String damageTypeIn, LivingEntity damageSourceEntity) {
-            super(damageTypeIn, damageSourceEntity);
-        }
+    public static DamageSource causeExplosion() {
+        return new SimpleDeathMessageDamageSource("omni_card.explosion").setExplosion();
+    }
 
-        @Override
-        @Nullable
-        public Entity getEntity() {
-            return entity;
-        }
-
-        /**
-         * Gets the death message that is displayed when the player dies
-         */
-        @Override
-        public ITextComponent getLocalizedDeathMessage(LivingEntity entityLivingBaseIn) {
-            String s = "death.attack." + msgId + ".with_source";
-            return new TranslationTextComponent(s, entityLivingBaseIn.getDisplayName(), entity.getDisplayName());
-        }
+    public static DamageSource causeCardDamage(Entity damageSource, @Nullable Entity owner) {
+        if (owner instanceof LivingEntity)
+            return DamageSource.mobAttack( (LivingEntity) owner);
+        else
+            return DamageSource.thrown(damageSource, owner);
     }
 
     public static class SimpleDeathMessageDamageSource extends DamageSource {

@@ -16,7 +16,7 @@ public class PoisonNowLethal extends HiddenEffect {
     public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
         if (this == EffectRegistry.POISON_NOW_LETHAL.get() && !livingEntity.level.isClientSide()) {
             if (livingEntity.hasEffect(Effects.POISON) && livingEntity.getHealth() <= 1.5F) {
-                livingEntity.hurt(ModDamage.causeCardDamage(null, CommonCards.HELIOTROPE).bypassArmor(), 100);
+                livingEntity.hurt(ModDamage.causeLethalPoisonDamage(), 100);
             }
         }
     }

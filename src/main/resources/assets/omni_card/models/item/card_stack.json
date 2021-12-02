@@ -1,8 +1,8 @@
 {
   "credit": "Made with Blockbench",
   "textures": {
-    "0": "omni_card:card/standard/black_card",
-    "particle": "omni_card:card/standard/black_card"
+    "0": "omni_card:card/standard/unknown_card",
+    "particle": "omni_card:card/standard/unknown_card"
   },
   "overrides": [
     {
@@ -46,6 +46,12 @@
         "omni_card:card_type": 0.7
       },
       "model": "omni_card:item/card_stack_violet"
+    },
+    {
+      "predicate": {
+        "omni_card:card_type": 0.8
+      },
+      "model": "omni_card:item/card_stack_black"
     }
   ],
   "elements": [

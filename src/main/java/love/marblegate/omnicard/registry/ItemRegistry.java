@@ -14,6 +14,7 @@ public class ItemRegistry {
 
     public static final RegistryObject<Item> CARD_STACK = ITEMS.register("card_stack", CardStack::new);
     public static final RegistryObject<Item> BLANK_CARD = ITEMS.register("blank_card", BlankCard::new);
+    public static final RegistryObject<Item> PROTOTYPE_CORE = ITEMS.register("prototype_core", Intermediates::new);
 
     public static final RegistryObject<Item> FLAME_CARD = ITEMS.register("flame_card", () -> new ElementalCard(CommonCards.FLAME));
     public static final RegistryObject<Item> TORRENT_CARD = ITEMS.register("torrent_card", () -> new ElementalCard(CommonCards.TORRENT));

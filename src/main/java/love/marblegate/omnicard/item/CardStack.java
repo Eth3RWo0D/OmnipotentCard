@@ -97,6 +97,9 @@ public class CardStack extends Item {
     }
 
     private CommonCard switchingToNextCard(CommonCard presentCard) {
+        if(presentCard==CommonCards.UNKNOWN){
+            return availableCardType.get(0);
+        }
         int position = availableCardType.indexOf(presentCard);
         if (position != availableCardType.size() - 1) {
             return availableCardType.get(position + 1);

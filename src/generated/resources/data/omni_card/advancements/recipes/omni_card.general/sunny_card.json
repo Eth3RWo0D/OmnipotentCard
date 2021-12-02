@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "omni_card:sunny_card"
+    ]
+  },
+  "criteria": {
+    "sunny_core": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "omni_card:sunny_core"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "omni_card:sunny_card"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "sunny_core",
+      "has_the_recipe"
+    ]
+  ]
+}

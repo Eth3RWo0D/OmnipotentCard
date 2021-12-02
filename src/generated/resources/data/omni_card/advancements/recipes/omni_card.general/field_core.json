@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "omni_card:field_core"
+    ]
+  },
+  "criteria": {
+    "has_prototype_core": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "omni_card:prototype_core"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "omni_card:field_core"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_prototype_core",
+      "has_the_recipe"
+    ]
+  ]
+}

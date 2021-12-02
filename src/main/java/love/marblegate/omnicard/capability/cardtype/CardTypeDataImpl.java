@@ -8,7 +8,7 @@ public class CardTypeDataImpl implements ICardTypeData {
     private boolean isSwitchingCard;
 
     public CardTypeDataImpl() {
-        type = CommonCards.INK;
+        type = CommonCards.UNKNOWN;
         isSwitchingCard = false;
     }
 

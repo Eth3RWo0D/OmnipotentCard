@@ -6,15 +6,12 @@
     ]
   },
   "criteria": {
-    "blank_card": {
+    "has_blank_card": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "item": "omni_card:blank_card"
-          },
-          {
-            "item": "minecraft:nether_star"
           }
         ]
       }
@@ -28,7 +25,7 @@
   },
   "requirements": [
     [
-      "blank_card",
+      "has_blank_card",
       "has_the_recipe"
     ]
   ]

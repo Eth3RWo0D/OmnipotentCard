@@ -6,15 +6,12 @@
     ]
   },
   "criteria": {
-    "paper": {
+    "has_paper": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "item": "minecraft:paper"
-          },
-          {
-            "item": "minecraft:lapis_lazuli"
           }
         ]
       }
@@ -28,7 +25,7 @@
   },
   "requirements": [
     [
-      "paper",
+      "has_paper",
       "has_the_recipe"
     ]
   ]

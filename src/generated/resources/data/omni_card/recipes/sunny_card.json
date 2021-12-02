@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "omni_card:blank_card"
+    },
+    {
+      "item": "omni_card:sunny_core"
+    }
+  ],
+  "result": {
+    "item": "omni_card:sunny_card"
+  }
+}

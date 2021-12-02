@@ -9,6 +9,7 @@ public class CommonCards {
     private static final String STANDARD_CATE = "standard";
     private static final String ELEMENTAL = "elemental";
 
+    public static CommonCard UNKNOWN = register(new CommonCard.Builder("unknown_card", STANDARD_CATE, ItemRegistry.BLANK_CARD), (byte) -1);
     public static CommonCard BLANK = register(new CommonCard.Builder("white_card", STANDARD_CATE, ItemRegistry.BLANK_CARD).setFlyCardHitHandler(CardFunc.FlyingCard::whiteCard), (byte) 0);
     public static CommonCard RED = register(new CommonCard.Builder("red_card", STANDARD_CATE, ItemRegistry.BLANK_CARD).setFlyCardHitHandler(CardFunc.FlyingCard::redCard), (byte) 1);
     public static CommonCard CORAL = register(new CommonCard.Builder("orange_card", STANDARD_CATE, ItemRegistry.BLANK_CARD).setFlyCardHitHandler(CardFunc.FlyingCard::orangeCard), (byte) 2);

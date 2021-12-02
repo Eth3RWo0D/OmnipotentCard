@@ -1,0 +1,200 @@
+{
+  "credit": "Made with Blockbench",
+  "textures": {
+    "8": "omni_card:card/standard/black_card"
+  },
+  "elements": [
+    {
+      "from": [
+        6,
+        0,
+        6
+      ],
+      "to": [
+        9,
+        0.2,
+        11
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          7.5,
+          0.1,
+          8.5
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            6,
+            3,
+            6.25
+          ],
+          "texture": "#8"
+        },
+        "east": {
+          "uv": [
+            0,
+            5,
+            5,
+            5.25
+          ],
+          "texture": "#8"
+        },
+        "south": {
+          "uv": [
+            6,
+            0,
+            9,
+            0.25
+          ],
+          "texture": "#8"
+        },
+        "west": {
+          "uv": [
+            5,
+            5,
+            10,
+            5.25
+          ],
+          "texture": "#8"
+        },
+        "up": {
+          "uv": [
+            3,
+            5,
+            0,
+            0
+          ],
+          "texture": "#8"
+        },
+        "down": {
+          "uv": [
+            6,
+            0,
+            3,
+            5
+          ],
+          "texture": "#8"
+        }
+      }
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "translation": [
+        -1.5,
+        1.5,
+        8.75
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "translation": [
+        -1.5,
+        1.5,
+        8.75
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        -56,
+        0
+      ],
+      "translation": [
+        0,
+        14.75,
+        2.5
+      ],
+      "scale": [
+        1.5,
+        1.5,
+        1.5
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        -56,
+        0
+      ],
+      "translation": [
+        0,
+        14.75,
+        2.5
+      ],
+      "scale": [
+        1.5,
+        1.5,
+        1.5
+      ]
+    },
+    "ground": {
+      "translation": [
+        0,
+        4,
+        0
+      ]
+    },
+    "gui": {
+      "rotation": [
+        45,
+        45,
+        0
+      ],
+      "translation": [
+        0.25,
+        12,
+        0
+      ],
+      "scale": [
+        2,
+        2,
+        2
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "translation": [
+        1,
+        0.25,
+        15.75
+      ],
+      "scale": [
+        2,
+        2,
+        2
+      ]
+    }
+  },
+  "groups": [
+    {
+      "name": "bone",
+      "origin": [
+        0,
+        0.1,
+        0
+      ],
+      "color": 0,
+      "children": [
+        0
+      ]
+    }
+  ]
+}
