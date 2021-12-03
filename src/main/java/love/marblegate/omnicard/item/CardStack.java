@@ -18,9 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -58,6 +56,9 @@ public class CardStack extends Item {
                         FlyingCardEntity flyingCardEntity = new FlyingCardEntity(player, x, y, z, worldIn, cardTypeData.get());
                         flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
                         worldIn.addFreshEntity(flyingCardEntity);
+
+                        worldIn.playSound((PlayerEntity)null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDER_PEARL_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
+
                         if (!player.abilities.instabuild) {
                             consumeBlankCard(player);
                             player.causeFoodExhaustion(1);

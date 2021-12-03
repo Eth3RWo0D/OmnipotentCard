@@ -25,5 +25,6 @@ public class EffectRegistry {
 
     public static final RegistryObject<Effect> POISON_NOW_LETHAL = EFFECT.register("poison_now_lethal", () -> new PoisonNowLethal(EffectType.NEUTRAL));
 
-
+    public static final RegistryObject<Effect> DO_NOT_MOVE = EFFECT.register("do_not_move", () -> new HiddenEffect(EffectType.HARMFUL)
+            .addAttributeModifier(Attributes.MOVEMENT_SPEED, "4064F194-CC57-4F60-B871-98B00F4D254A", -0.99D, AttributeModifier.Operation.MULTIPLY_TOTAL));
 }

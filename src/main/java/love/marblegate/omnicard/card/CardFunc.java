@@ -125,7 +125,10 @@ public class CardFunc {
         }
 
         public static void brambleCard(FlyingCardEntity card, LivingEntity victim) {
-            //TODO need implement
+            victim.hurt(ModDamage.causeCardDamage(card, card.getOwner()), 4);
+            victim.addEffect(new EffectInstance(Effects.POISON, 80));
+            victim.addEffect(new EffectInstance(EffectRegistry.POISON_NOW_LETHAL.get(), 81));
+            victim.addEffect(new EffectInstance(EffectRegistry.DO_NOT_MOVE.get(), 60));
         }
 
         public static void earthCard(FlyingCardEntity card, LivingEntity victim) {
@@ -179,7 +182,10 @@ public class CardFunc {
         }
 
         public static void bramble_card(CardTrapEntity trap, LivingEntity victim) {
-            //TODO need implement
+            victim.hurt(ModDamage.causeCardDamage(trap, trap.getOwner()), 4);
+            victim.addEffect(new EffectInstance(Effects.POISON, 80));
+            victim.addEffect(new EffectInstance(EffectRegistry.POISON_NOW_LETHAL.get(), 81));
+            victim.addEffect(new EffectInstance(EffectRegistry.DO_NOT_MOVE.get(), 60));
         }
 
         public static void earthCard(CardTrapEntity trap, LivingEntity victim) {

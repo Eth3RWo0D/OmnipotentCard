@@ -11,10 +11,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -61,6 +58,9 @@ public class ElementalCard extends Item {
                     cardTrapEntity.setPos(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z);
                     cardTrapEntity.yRot = context.getPlayer().yRot;
                     context.getLevel().addFreshEntity(cardTrapEntity);
+
+                    context.getLevel().playSound((PlayerEntity)null, context.getPlayer().getX(), context.getPlayer().getY(), context.getPlayer().getZ(), SoundEvents.ENDER_PEARL_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
+
                     if (!context.getPlayer().abilities.instabuild) {
                         stack.shrink(1);
                     }
