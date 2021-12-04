@@ -11,23 +11,26 @@ import love.marblegate.omnicard.misc.ModDamage;
 import love.marblegate.omnicard.registry.EffectRegistry;
 import love.marblegate.omnicard.registry.SoundRegistry;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.LightningBoltEntity;
-import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.GameRules;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.IPlantable;
 
 public class CardFunc {
     public static class FlyingCard {
@@ -110,7 +113,10 @@ public class CardFunc {
                 victim.hurt(ModDamage.causeCardDamage(card, card.getOwner()), 4);
                 victim.setSecondsOnFire(3);
                 victim.level.playSound((PlayerEntity)null, victim.getX(), victim.getY(), victim.getZ(), SoundRegistry.ELEMENTAL_CARD_HIT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
-            }
+                MiscUtil.addParticle((ServerWorld) victim.level, ParticleTypes.FLAME,
+                        card.getRandomX(1.2D), card.getRandomY() - 0.5d, card.getRandomZ(1.2D),
+                        card.getDeltaMovement().normalize().x, card.getDeltaMovement().normalize().y, card.getDeltaMovement().normalize().z,
+                        1, 50);}
         }
 
         public static void torrentCard(FlyingCardEntity card, LivingEntity victim) {
@@ -123,6 +129,10 @@ public class CardFunc {
                     MiscUtil.applyKnockback(victim, vector3d.x, 0.8D, vector3d.z);
                 }
                 victim.level.playSound((PlayerEntity)null, victim.getX(), victim.getY(), victim.getZ(), SoundRegistry.ELEMENTAL_CARD_HIT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+                MiscUtil.addParticle((ServerWorld) victim.level, ParticleTypes.RAIN,
+                        card.getRandomX(1.2D), card.getRandomY() - 0.5d, card.getRandomZ(1.2D),
+                        card.getDeltaMovement().normalize().x, card.getDeltaMovement().normalize().y, card.getDeltaMovement().normalize().z,
+                        1, 35);
             }
         }
 
@@ -138,6 +148,7 @@ public class CardFunc {
                 victim.addEffect(new EffectInstance(EffectRegistry.POISON_NOW_LETHAL.get(), 81));
                 victim.addEffect(new EffectInstance(EffectRegistry.DO_NOT_MOVE.get(), 60));
                 victim.level.playSound((PlayerEntity)null, victim.getX(), victim.getY(), victim.getZ(), SoundRegistry.ELEMENTAL_CARD_HIT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+                handleCommonBrambleCardPlantBush(victim);
             }
         }
 
@@ -152,17 +163,7 @@ public class CardFunc {
 
         public static void endCard(FlyingCardEntity card, LivingEntity victim) {
             if (!card.level.isClientSide()) {
-                int trialTime = 0;
-                boolean isPlayer = victim instanceof PlayerEntity;
-                BlockPos blockPos = victim.blockPosition(), targetLocation = null;
-                while (trialTime <= 5) {
-                    targetLocation = blockPos.offset(victim.getRandom().nextInt(11) - 5, victim.getRandom().nextInt(22) + 42, victim.getRandom().nextInt(11) - 5);
-                    if (MiscUtil.canTeleportTo(targetLocation, victim, isPlayer)) {
-                        break;
-                    }
-                    trialTime++;
-                }
-                victim.teleportTo(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ());
+                handleCommonEndCardTeleport(victim);
                 MiscUtil.addParticle((ServerWorld) victim.level, ParticleTypes.PORTAL,
                         card.getRandomX(1.2D), card.getRandomY() - 0.5d, card.getRandomZ(1.2D),
                         (victim.getRandom().nextDouble() - 0.5D) * 2.0D, (victim.getRandom().nextDouble() - 0.5D) * 2.0D, (victim.getRandom().nextDouble() - 0.5D) * 2.0D,
@@ -178,6 +179,9 @@ public class CardFunc {
             if (!trap.level.isClientSide()) {
                 victim.hurt(ModDamage.causeCardDamage(trap, trap.getOwner()).bypassArmor(), 4);
                 victim.setSecondsOnFire(3);
+                MiscUtil.addParticle((ServerWorld) victim.level, ParticleTypes.FLAME, trap.getX(), trap.getY() + 0.1D, trap.getZ(),
+                        victim.getRandom().nextDouble() / 10, victim.getRandom().nextDouble() * 2, victim.getRandom().nextDouble() / 10,
+                        1, 30);
             }
         }
 
@@ -187,6 +191,9 @@ public class CardFunc {
                     victim.clearFire();
                 }
                 MiscUtil.applyKnockback(victim, 0, 1.8F, 0);
+                MiscUtil.addParticle((ServerWorld) victim.level, ParticleTypes.RAIN, trap.getX(), trap.getY() + 0.1D, trap.getZ(),
+                        victim.getRandom().nextDouble() / 10, victim.getRandom().nextDouble() * 2, victim.getRandom().nextDouble() / 10,
+                        1, 20);
             }
         }
 
@@ -199,6 +206,7 @@ public class CardFunc {
             victim.addEffect(new EffectInstance(Effects.POISON, 80));
             victim.addEffect(new EffectInstance(EffectRegistry.POISON_NOW_LETHAL.get(), 81));
             victim.addEffect(new EffectInstance(EffectRegistry.DO_NOT_MOVE.get(), 60));
+            handleCommonBrambleCardPlantBush(victim);
         }
 
         public static void earthCard(CardTrapEntity trap, LivingEntity victim) {
@@ -214,19 +222,8 @@ public class CardFunc {
 
         public static void endCard(CardTrapEntity trap, LivingEntity victim) {
             if (!trap.level.isClientSide()) {
-                int trialTime = 0;
-                boolean isPlayer = victim instanceof PlayerEntity;
-                BlockPos blockPos = victim.blockPosition(), targetLocation = null;
-                while (trialTime <= 5) {
-                    targetLocation = blockPos.offset(victim.getRandom().nextInt(11) - 5, victim.getRandom().nextInt(22) + 42, victim.getRandom().nextInt(11) - 5);
-                    if (MiscUtil.canTeleportTo(targetLocation, victim, isPlayer)) {
-                        break;
-                    }
-                    trialTime++;
-                }
-                victim.teleportTo(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ());
-                MiscUtil.addParticle((ServerWorld) victim.level, ParticleTypes.PORTAL,
-                        trap.getX(), trap.getY() + 0.1D, trap.getZ(),
+                handleCommonEndCardTeleport(victim);
+                MiscUtil.addParticle((ServerWorld) victim.level, ParticleTypes.PORTAL, trap.getX(), trap.getY() + 0.1D, trap.getZ(),
                         victim.getRandom().nextDouble() - 0.5D, victim.getRandom().nextDouble(), victim.getRandom().nextDouble() - 0.5D,
                         1, 50);
             }
@@ -357,6 +354,27 @@ public class CardFunc {
             victim.level.addFreshEntity(lightningboltentity);
             victim.thunderHit((ServerWorld) victim.level,lightningboltentity);
             victim.hurt(ModDamage.causeCardDamage(damageSource, owner), 10);
+        }
+    }
+
+    private static void handleCommonEndCardTeleport(LivingEntity victim) {
+        int trialTime = 0;
+        boolean isPlayer = victim instanceof PlayerEntity;
+        BlockPos blockPos = victim.blockPosition(), targetLocation = null;
+        while (trialTime <= 5) {
+            targetLocation = blockPos.offset(victim.getRandom().nextInt(11) - 5, victim.getRandom().nextInt(22) + 42, victim.getRandom().nextInt(11) - 5);
+            if (MiscUtil.canTeleportTo(targetLocation, victim, isPlayer)) {
+                break;
+            }
+            trialTime++;
+        }
+        victim.teleportTo(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ());
+    }
+
+    private static void handleCommonBrambleCardPlantBush(LivingEntity victim){
+        BlockPos pos = victim.blockPosition();
+        if(victim.level.getBlockState(pos).getBlock().equals(Blocks.AIR) &&victim.level.getBlockState(pos.below()).canSustainPlant((IBlockReader) victim.level,pos,Direction.UP, (IPlantable) Blocks.SWEET_BERRY_BUSH)){
+            victim.level.setBlockAndUpdate(pos,Blocks.SWEET_BERRY_BUSH.defaultBlockState());
         }
     }
 }

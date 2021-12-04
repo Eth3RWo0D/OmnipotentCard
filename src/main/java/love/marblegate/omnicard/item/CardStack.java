@@ -98,6 +98,7 @@ public class CardStack extends Item {
             ICardTypeData cardTypeData = itemStack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
             if (world.getDayTime() % 10 == 0 && cardTypeData.isSwitchingCard()) {
                 cardTypeData.set(switchingToNextCard(cardTypeData.get()));
+                world.playSound((PlayerEntity)null, entity.getX(), entity.getY(), entity.getZ(), SoundRegistry.CUTTING_CARD.get(), SoundCategory.PLAYERS, 0.3F, 0.5F);
             }
         }
     }

@@ -68,8 +68,8 @@
   "tooltip.omni_card.elemental_card.function.torrent_card": "Remove flames from targets it hits and cause knockback. Place it on the ground and it will knock upward on passing creatures while eliminating flames.",
   "tooltip.omni_card.elemental_card.function.thunder_card": "Summon lightning to attack the target. Place it on the ground and it will lightning strike creatures that step on it.",
   "tooltip.omni_card.elemental_card.function.bramble_card": "Imprison hits the target and causes poisoning. Placing it on the ground, it imprisons creatures that step on it and causes poisoning.",
-  "tooltip.omni_card.elemental_card.function.earth_card": "Teleports a hit target to high altitude! Placing it on the ground will produce the same effect.",
-  "tooltip.omni_card.elemental_card.function.end_card": "Summon a ground spike to pierce the target that hits it. Place it on the ground and it will summon falling rocks in the air to smash creatures that step on it.",
+  "tooltip.omni_card.elemental_card.function.end_card": "Teleports a hit target to high altitude! Placing it on the ground will produce the same effect.",
+  "tooltip.omni_card.elemental_card.function.earth_card": "Summon a ground spike to pierce the target that hits it. Place it on the ground and it will summon falling rocks in the air to smash creatures that step on it.",
 
   "tooltip.omni_card.special_card.is_1": "This card is ",
   "tooltip.omni_card.special_card.is_2": "retrievable",
