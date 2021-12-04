@@ -6,7 +6,8 @@ import java.util.Objects;
 
 
 public class BlockCard extends AbstractCard {
-    private final CardFunc.ISpecialCardBlockServerTick serverTickHandler;
+    private final CardFunc.ISpecialCardBlockTick serverTickHandler;
+    private final CardFunc.ISpecialCardBlockTick clientTickHandler;
     private final int lifetime;
     private final boolean canRetrieveByBreak;
 
@@ -22,19 +23,27 @@ public class BlockCard extends AbstractCard {
     public BlockCard(Builder builder) {
         super(builder);
         serverTickHandler = builder.serverTickHandler;
+        clientTickHandler = builder.clientTickHandler;
         lifetime = builder.lifetime;
         canRetrieveByBreak = builder.canRetrieveByBreak;
 
     }
 
-    public void handlerServerTick(SpecialCardBlockTileEntity specialCardBlockTile) {
-        if (specialCardBlockTile != null) {
+    public void handleServerTick(SpecialCardBlockTileEntity specialCardBlockTile) {
+        if (specialCardBlockTile != null && serverTickHandler!=null) {
             serverTickHandler.handle(specialCardBlockTile);
         }
     }
 
+    public void handleClientTick(SpecialCardBlockTileEntity specialCardBlockTile) {
+        if (specialCardBlockTile != null && clientTickHandler!=null) {
+            clientTickHandler.handle(specialCardBlockTile);
+        }
+    }
+
     public static class Builder extends AbstractCard.Builder<Builder> {
-        private CardFunc.ISpecialCardBlockServerTick serverTickHandler;
+        private CardFunc.ISpecialCardBlockTick serverTickHandler;
+        private CardFunc.ISpecialCardBlockTick clientTickHandler;
         private final int lifetime;
         private boolean canRetrieveByBreak = false;
 
@@ -58,8 +67,13 @@ public class BlockCard extends AbstractCard {
             return this;
         }
 
-        public Builder setFlyCardHitHandler(CardFunc.ISpecialCardBlockServerTick serverTickHandler) {
+        public Builder setServerTickHandler(CardFunc.ISpecialCardBlockTick serverTickHandler) {
             this.serverTickHandler = Objects.requireNonNull(serverTickHandler);
+            return this;
+        }
+
+        public Builder setClientTickHandler(CardFunc.ISpecialCardBlockTick serverTickHandler) {
+            this.clientTickHandler = Objects.requireNonNull(serverTickHandler);
             return this;
         }
 

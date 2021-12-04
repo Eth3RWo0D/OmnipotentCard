@@ -1,0 +1,42 @@
+{
+  "throw_common_card": {
+    "replace": "true",
+    "sounds": [
+      {
+        "name": "omni_card:throw_common_card",
+        "stream": true
+      }
+    ]
+  },
+  "throw_elemental_card": {
+    "replace": "true",
+    "sounds": [
+      {
+        "name": "omni_card:throw_elemental_card",
+        "stream": true
+      }
+    ]
+  },
+  "elemental_card_hit": {
+    "replace": "true",
+    "sounds": [
+      {
+        "name": "omni_card:elemental_card_hit",
+        "stream": true
+      }
+    ]
+  },
+  "cutting_card": {
+    "replace": "true",
+    "sounds": [
+      {
+        "name": "omni_card:cutting_card_1",
+        "stream": true
+      },
+      {
+        "name": "omni_card:cutting_card_2",
+        "stream": true
+      }
+    ]
+  }
+}

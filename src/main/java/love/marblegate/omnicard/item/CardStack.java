@@ -12,6 +12,7 @@ import love.marblegate.omnicard.misc.MiscUtil;
 import love.marblegate.omnicard.misc.ModGroup;
 import love.marblegate.omnicard.misc.ThemeColor;
 import love.marblegate.omnicard.registry.ItemRegistry;
+import love.marblegate.omnicard.registry.SoundRegistry;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -49,15 +50,15 @@ public class CardStack extends Item {
                     if ((player.abilities.instabuild || hasEnoughBlankCard(player)) && cardTypeData.get() != CommonCards.UNKNOWN) {
                         Vector3d vector3d = player.getViewVector(1.0F);
 
-                        double x = (vector3d.x * 4D);
-                        double y = (vector3d.y * 4D);
-                        double z = (vector3d.z * 4D);
+                        double x = (vector3d.x * 8D);
+                        double y = (vector3d.y * 8D);
+                        double z = (vector3d.z * 8D);
 
                         FlyingCardEntity flyingCardEntity = new FlyingCardEntity(player, x, y, z, worldIn, cardTypeData.get());
                         flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
                         worldIn.addFreshEntity(flyingCardEntity);
 
-                        worldIn.playSound((PlayerEntity)null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDER_PEARL_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        worldIn.playSound((PlayerEntity)null, player.getX(), player.getY(), player.getZ(), SoundRegistry.THROW_COMMON_CARD.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 
                         if (!player.abilities.instabuild) {
                             consumeBlankCard(player);

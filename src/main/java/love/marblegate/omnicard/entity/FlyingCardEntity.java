@@ -68,13 +68,16 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(CAN_PICK_UP, true);
+        this.entityData.define(CAN_PICK_UP, false);
     }
 
     @Override
     public void tick() {
         super.tick();
         if (!level.isClientSide()) {
+            // This Height limit needs to be changed in 1.17
+            if(blockPosition().getY()>=300)
+                remove();
             if (remainingLifeTime <= 0) {
                 if (card.getRetrievedItem().isPresent())
                     this.spawnAtLocation(card.getRetrievedItem().get().getDefaultInstance(), 0.1F);

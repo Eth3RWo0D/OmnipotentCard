@@ -5,10 +5,13 @@ import love.marblegate.omnicard.entity.CardTrapEntity;
 import love.marblegate.omnicard.entity.FallingStoneEntity;
 import love.marblegate.omnicard.entity.FlyingCardEntity;
 import love.marblegate.omnicard.entity.StoneSpikeEntity;
+import love.marblegate.omnicard.misc.ClientMiscUtil;
 import love.marblegate.omnicard.misc.MiscUtil;
 import love.marblegate.omnicard.misc.ModDamage;
 import love.marblegate.omnicard.registry.EffectRegistry;
+import love.marblegate.omnicard.registry.SoundRegistry;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -18,6 +21,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
@@ -105,6 +109,7 @@ public class CardFunc {
             if (!card.level.isClientSide()) {
                 victim.hurt(ModDamage.causeCardDamage(card, card.getOwner()), 4);
                 victim.setSecondsOnFire(3);
+                victim.level.playSound((PlayerEntity)null, victim.getX(), victim.getY(), victim.getZ(), SoundRegistry.ELEMENTAL_CARD_HIT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
             }
         }
 
@@ -117,18 +122,23 @@ public class CardFunc {
                 if (vector3d.lengthSqr() > 0.0D) {
                     MiscUtil.applyKnockback(victim, vector3d.x, 0.8D, vector3d.z);
                 }
+                victim.level.playSound((PlayerEntity)null, victim.getX(), victim.getY(), victim.getZ(), SoundRegistry.ELEMENTAL_CARD_HIT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
             }
         }
 
         public static void thunderCard(FlyingCardEntity card, LivingEntity victim) {
             handleCommonThunderCardLogic(victim, card.level.isClientSide(), card.getOwner(), card);
+            victim.level.playSound((PlayerEntity)null, victim.getX(), victim.getY(), victim.getZ(), SoundRegistry.ELEMENTAL_CARD_HIT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
         }
 
         public static void brambleCard(FlyingCardEntity card, LivingEntity victim) {
-            victim.hurt(ModDamage.causeCardDamage(card, card.getOwner()), 4);
-            victim.addEffect(new EffectInstance(Effects.POISON, 80));
-            victim.addEffect(new EffectInstance(EffectRegistry.POISON_NOW_LETHAL.get(), 81));
-            victim.addEffect(new EffectInstance(EffectRegistry.DO_NOT_MOVE.get(), 60));
+            if(!card.level.isClientSide()){
+                victim.hurt(ModDamage.causeCardDamage(card, card.getOwner()), 4);
+                victim.addEffect(new EffectInstance(Effects.POISON, 80));
+                victim.addEffect(new EffectInstance(EffectRegistry.POISON_NOW_LETHAL.get(), 81));
+                victim.addEffect(new EffectInstance(EffectRegistry.DO_NOT_MOVE.get(), 60));
+                victim.level.playSound((PlayerEntity)null, victim.getX(), victim.getY(), victim.getZ(), SoundRegistry.ELEMENTAL_CARD_HIT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+            }
         }
 
         public static void earthCard(FlyingCardEntity card, LivingEntity victim) {
@@ -136,6 +146,7 @@ public class CardFunc {
                 FallingStoneEntity fallingStoneEntity = new FallingStoneEntity(card.level);
                 fallingStoneEntity.setPos(victim.getX(), victim.getY() + 3, victim.getZ());
                 card.level.addFreshEntity(fallingStoneEntity);
+                victim.level.playSound((PlayerEntity)null, victim.getX(), victim.getY(), victim.getZ(), SoundRegistry.ELEMENTAL_CARD_HIT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
             }
         }
 
@@ -152,10 +163,12 @@ public class CardFunc {
                     trialTime++;
                 }
                 victim.teleportTo(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ());
-                MiscUtil.addParticleServerSide((ServerWorld) victim.level, ParticleTypes.PORTAL,
+                MiscUtil.addParticle((ServerWorld) victim.level, ParticleTypes.PORTAL,
                         card.getRandomX(1.2D), card.getRandomY() - 0.5d, card.getRandomZ(1.2D),
                         (victim.getRandom().nextDouble() - 0.5D) * 2.0D, (victim.getRandom().nextDouble() - 0.5D) * 2.0D, (victim.getRandom().nextDouble() - 0.5D) * 2.0D,
                         1, 80);
+                victim.level.playSound((PlayerEntity)null, victim.getX(), victim.getY(), victim.getZ(), SoundRegistry.ELEMENTAL_CARD_HIT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+
             }
         }
     }
@@ -212,7 +225,7 @@ public class CardFunc {
                     trialTime++;
                 }
                 victim.teleportTo(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ());
-                MiscUtil.addParticleServerSide((ServerWorld) victim.level, ParticleTypes.PORTAL,
+                MiscUtil.addParticle((ServerWorld) victim.level, ParticleTypes.PORTAL,
                         trap.getX(), trap.getY() + 0.1D, trap.getZ(),
                         victim.getRandom().nextDouble() - 0.5D, victim.getRandom().nextDouble(), victim.getRandom().nextDouble() - 0.5D,
                         1, 50);
@@ -228,10 +241,65 @@ public class CardFunc {
             }
         }
 
+        public static void fieldCardClient(SpecialCardBlockTileEntity tileEntity) {
+            int i = (int) (tileEntity.getLevel().getDayTime() % 32);
+            ClientMiscUtil.addParticle((ClientWorld) tileEntity.getLevel(), ParticleTypes.LAVA,
+                    tileEntity.getBlockPos().getX() - 8 + (i * 0.5), tileEntity.getBlockPos().getY() + 8 + 0.5, tileEntity.getBlockPos().getZ() - 8,
+                    0, 0, 0, 1);
+            ClientMiscUtil.addParticle((ClientWorld) tileEntity.getLevel(), ParticleTypes.LAVA,
+                    tileEntity.getBlockPos().getX() - 8, tileEntity.getBlockPos().getY() + 8 + 0.5, tileEntity.getBlockPos().getZ() + 8 - (i * 0.5),
+                    0, 0, 0, 1);
+            ClientMiscUtil.addParticle((ClientWorld) tileEntity.getLevel(), ParticleTypes.LAVA,
+                    tileEntity.getBlockPos().getX() + 8, tileEntity.getBlockPos().getY() + 8 + 0.5, tileEntity.getBlockPos().getZ() - 8 + (i * 0.5),
+                    0, 0, 0, 1);
+            ClientMiscUtil.addParticle((ClientWorld) tileEntity.getLevel(), ParticleTypes.LAVA,
+                    tileEntity.getBlockPos().getX() + 8 - (i * 0.5), tileEntity.getBlockPos().getY() + 8 + 0.5, tileEntity.getBlockPos().getZ() + 8,
+                    0, 0, 0, 1);
+        }
+
+        public static void sealCardClient(SpecialCardBlockTileEntity tileEntity){
+            if (tileEntity.getLifetime() % 20 == 0) {
+                for(int i=0;i<16;i++){
+                    ClientMiscUtil.addParticle((ClientWorld) tileEntity.getLevel(), ParticleTypes.FALLING_OBSIDIAN_TEAR,
+                            tileEntity.getBlockPos().getX() - 8 + i, tileEntity.getBlockPos().getY() + 8 + 0.5, tileEntity.getBlockPos().getZ() - 8,
+                            0, 0, 0, 1);
+                    ClientMiscUtil.addParticle((ClientWorld) tileEntity.getLevel(), ParticleTypes.FALLING_OBSIDIAN_TEAR,
+                            tileEntity.getBlockPos().getX() - 8, tileEntity.getBlockPos().getY() + 8 + 0.5, tileEntity.getBlockPos().getZ() + 8 - i,
+                            0, 0, 0, 1);
+                    ClientMiscUtil.addParticle((ClientWorld) tileEntity.getLevel(), ParticleTypes.FALLING_OBSIDIAN_TEAR,
+                            tileEntity.getBlockPos().getX() + 8, tileEntity.getBlockPos().getY() + 8 + 0.5, tileEntity.getBlockPos().getZ() - 8 + i,
+                            0, 0, 0, 1);
+                    ClientMiscUtil.addParticle((ClientWorld) tileEntity.getLevel(), ParticleTypes.FALLING_OBSIDIAN_TEAR,
+                            tileEntity.getBlockPos().getX() + 8 - i, tileEntity.getBlockPos().getY() + 8 + 0.5, tileEntity.getBlockPos().getZ() + 8,
+                            0, 0, 0, 1);
+                }
+            }
+        }
+
         public static void purificationCard(SpecialCardBlockTileEntity tileEntity) {
             if (tileEntity.getLifetime() == 90) {
                 MiscUtil.applyHolyFlameInArea((ServerWorld) tileEntity.getLevel(),
                         MiscUtil.buildAABB(tileEntity.getBlockPos(), 8), 200);
+            }
+        }
+
+        public static void purificationCardClient(SpecialCardBlockTileEntity tileEntity) {
+            if (tileEntity.getLifetime() <= 90 && tileEntity.getLifetime() > 58 && tileEntity.getLifetime() % 4 == 0){
+                int h = (90 - tileEntity.getLifetime())/2;
+                for(int i=0;i<8;i++){
+                    ClientMiscUtil.addParticle((ClientWorld) tileEntity.getLevel(), ParticleTypes.LAVA,
+                            tileEntity.getBlockPos().getX() - 8 + 0.5 + 2 * i, tileEntity.getBlockPos().getY() - 8 + h + 0.5, tileEntity.getBlockPos().getZ() - 8 + 0.5,
+                            0, 0, 0, 1);
+                    ClientMiscUtil.addParticle((ClientWorld) tileEntity.getLevel(), ParticleTypes.LAVA,
+                            tileEntity.getBlockPos().getX() - 8 + 0.5, tileEntity.getBlockPos().getY() - 8 + h + 0.5, tileEntity.getBlockPos().getZ() + 8 + 0.5 - 2 * i,
+                            0, 0, 0, 1);
+                    ClientMiscUtil.addParticle((ClientWorld) tileEntity.getLevel(), ParticleTypes.LAVA,
+                            tileEntity.getBlockPos().getX() + 8 + 0.5, tileEntity.getBlockPos().getY() - 8 + h + 0.5, tileEntity.getBlockPos().getZ() - 8 + 0.5 + 2 * i,
+                            0, 0, 0, 1);
+                    ClientMiscUtil.addParticle((ClientWorld) tileEntity.getLevel(), ParticleTypes.LAVA,
+                            tileEntity.getBlockPos().getX() + 8 + 0.5 - 2 * i, tileEntity.getBlockPos().getY() - 8 + h + 0.5, tileEntity.getBlockPos().getZ() + 8 + 0.5,
+                            0, 0, 0, 1);
+                }
             }
         }
 
@@ -277,7 +345,7 @@ public class CardFunc {
     }
 
     @FunctionalInterface
-    public interface ISpecialCardBlockServerTick {
+    public interface ISpecialCardBlockTick {
         void handle(SpecialCardBlockTileEntity tileEntity);
     }
 
@@ -287,12 +355,8 @@ public class CardFunc {
             lightningboltentity.setPos(victim.getX(), victim.getY(), victim.getZ());
             lightningboltentity.setVisualOnly(true);
             victim.level.addFreshEntity(lightningboltentity);
-            if (victim instanceof VillagerEntity) {
-                lightningboltentity.setDamage(10);
-                ((VillagerEntity) victim).thunderHit((ServerWorld) victim.level, lightningboltentity);
-            } else {
-                victim.hurt(ModDamage.causeCardDamage(damageSource, owner), 10);
-            }
+            victim.thunderHit((ServerWorld) victim.level,lightningboltentity);
+            victim.hurt(ModDamage.causeCardDamage(damageSource, owner), 10);
         }
     }
 }

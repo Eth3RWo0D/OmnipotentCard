@@ -67,11 +67,20 @@ public class SpecialCardBlockTileEntity extends TileEntity implements ITickableT
                     preparedVanish = true;
                     SyncToClient();
                 }
-                if (lifetime > 0) lifetime--;
+                if (lifetime > 0){
+                    lifetime--;
+                    if(lifetime%20==0)
+                        SyncToClient();
+                }
                 // Handle Special Card Logic
                 if (card != null) {
-                    card.handlerServerTick(this);
+                    card.handleServerTick(this);
                 }
+            }
+        } else {
+            lifetime--;
+            if (card != null) {
+                card.handleClientTick(this);
             }
         }
 
@@ -126,6 +135,7 @@ public class SpecialCardBlockTileEntity extends TileEntity implements ITickableT
         CompoundNBT compoundNBT = super.getUpdateTag();
         compoundNBT.putByte("card_type", BlockCards.toByte(card));
         compoundNBT.putBoolean("should_disappear", preparedVanish);
+        compoundNBT.putInt("lifetime",lifetime);
         return compoundNBT;
     }
 
@@ -134,6 +144,7 @@ public class SpecialCardBlockTileEntity extends TileEntity implements ITickableT
         super.handleUpdateTag(state, tag);
         card = BlockCards.fromByte(tag.getByte("card_type"));
         preparedVanish = tag.getBoolean("should_disappear");
+        lifetime = tag.getInt("lifetime");
     }
 
 }

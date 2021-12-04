@@ -6,6 +6,7 @@ import love.marblegate.omnicard.entity.FlyingCardEntity;
 import love.marblegate.omnicard.misc.MiscUtil;
 import love.marblegate.omnicard.misc.ModGroup;
 import love.marblegate.omnicard.misc.ThemeColor;
+import love.marblegate.omnicard.registry.SoundRegistry;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -33,9 +34,11 @@ public class ElementalCard extends Item {
         if (!worldIn.isClientSide()) {
             Vector3d vector3d = player.getViewVector(1.0F);
 
-            double x = (vector3d.x * 4D);
-            double y = (vector3d.y * 4D);
-            double z = (vector3d.z * 4D);
+            double x = (vector3d.x * 8D);
+            double y = (vector3d.y * 8D);
+            double z = (vector3d.z * 8D);
+
+            worldIn.playSound((PlayerEntity)null, player.getX(), player.getY(), player.getZ(), SoundRegistry.THROW_ELEMENTAL_CARD.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 
             FlyingCardEntity flyingCardEntity = new FlyingCardEntity(player, x, y, z, worldIn, card);
             flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
@@ -58,8 +61,6 @@ public class ElementalCard extends Item {
                     cardTrapEntity.setPos(context.getClickLocation().x, context.getClickLocation().y, context.getClickLocation().z);
                     cardTrapEntity.yRot = context.getPlayer().yRot;
                     context.getLevel().addFreshEntity(cardTrapEntity);
-
-                    context.getLevel().playSound((PlayerEntity)null, context.getPlayer().getX(), context.getPlayer().getY(), context.getPlayer().getZ(), SoundEvents.ENDER_PEARL_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
 
                     if (!context.getPlayer().abilities.instabuild) {
                         stack.shrink(1);

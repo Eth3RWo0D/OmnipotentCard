@@ -23,6 +23,8 @@
   "item.omni_card.thunderstorm_core": "\"THUNDERSTORM\" Core",
   "item.omni_card.bloom_core": "\"BLOOM\" Core",
 
+  "block.omni_card.special_card_block": "Card",
+
   "entity.omni_card.flying_card": "Card",
   "entity.omni_card.card_trap": "Card",
 
