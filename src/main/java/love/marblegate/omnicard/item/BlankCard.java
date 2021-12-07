@@ -31,7 +31,7 @@ public class BlankCard extends Item {
             double z = (vector3d.z * 8D);
 
             FlyingCardEntity flyingCardEntity = new FlyingCardEntity(player, x, y, z, worldIn, CommonCards.BLANK);
-            flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
+            flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
             worldIn.addFreshEntity(flyingCardEntity);
 
 

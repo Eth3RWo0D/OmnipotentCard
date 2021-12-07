@@ -55,7 +55,7 @@ public class CardStack extends Item {
                         double z = (vector3d.z * 8D);
 
                         FlyingCardEntity flyingCardEntity = new FlyingCardEntity(player, x, y, z, worldIn, cardTypeData.get());
-                        flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
+                        flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
                         worldIn.addFreshEntity(flyingCardEntity);
 
                         worldIn.playSound((PlayerEntity)null, player.getX(), player.getY(), player.getZ(), SoundRegistry.THROW_COMMON_CARD.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);

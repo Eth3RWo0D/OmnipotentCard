@@ -40,6 +40,7 @@ public class PlaceableSpecialCard extends Item {
         this.card = card;
     }
 
+    @Override
     public ActionResultType useOn(ItemUseContext context) {
         return this.place(new BlockItemUseContext(context));
     }

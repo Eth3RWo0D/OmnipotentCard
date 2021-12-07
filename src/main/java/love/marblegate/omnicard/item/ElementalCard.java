@@ -41,7 +41,7 @@ public class ElementalCard extends Item {
             worldIn.playSound((PlayerEntity)null, player.getX(), player.getY(), player.getZ(), SoundRegistry.THROW_ELEMENTAL_CARD.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 
             FlyingCardEntity flyingCardEntity = new FlyingCardEntity(player, x, y, z, worldIn, card);
-            flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
+            flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
             flyingCardEntity.setOwner(player);
             worldIn.addFreshEntity(flyingCardEntity);
 
