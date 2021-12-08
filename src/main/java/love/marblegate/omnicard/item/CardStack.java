@@ -58,7 +58,7 @@ public class CardStack extends Item {
                         flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
                         worldIn.addFreshEntity(flyingCardEntity);
 
-                        worldIn.playSound((PlayerEntity)null, player.getX(), player.getY(), player.getZ(), SoundRegistry.THROW_COMMON_CARD.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        worldIn.playSound((PlayerEntity)null, player.getX(), player.getY(), player.getZ(), SoundRegistry.THROW_COLORED_CARD.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 
                         if (!player.abilities.instabuild) {
                             consumeBlankCard(player);
