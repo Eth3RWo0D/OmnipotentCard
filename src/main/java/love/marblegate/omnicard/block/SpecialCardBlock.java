@@ -77,9 +77,10 @@ public class SpecialCardBlock extends Block {
     @Override
     public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
         BlockCard type = ((SpecialCardBlockTileEntity) world.getBlockEntity(pos)).getCardType();
-        if (type.getRetrievedItem().isPresent())
-            return type.getRetrievedItem().get().getDefaultInstance();
-        else
-            return ItemStack.EMPTY;
+        if(type!=null){
+            if (type.getRetrievedItem().isPresent())
+                return type.getRetrievedItem().get().getDefaultInstance();
+        }
+        return ItemStack.EMPTY;
     }
 }

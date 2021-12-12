@@ -62,7 +62,7 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "card_controller", 1, this::predicate));
+        data.addAnimationController(new AnimationController(this, "card_controller", 0, this::predicate));
     }
 
     @Override
@@ -162,8 +162,7 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
         super.readAdditionalSaveData(compoundNBT);
         card = CommonCards.fromByte(compoundNBT.getByte("card_type"));
         remainingLifeTime = compoundNBT.getInt("remaining_life_time");
-        boolean b = compoundNBT.getBoolean("can_pickup");
-        setPickUpStatus(b);
+        setPickUpStatus(compoundNBT.getBoolean("can_pickup"));
     }
 
     @Override
@@ -183,15 +182,14 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
     public void writeSpawnData(PacketBuffer buffer) {
         buffer.writeByte(CommonCards.toByte(card));
         buffer.writeInt(remainingLifeTime);
-        buffer.writeByte(canPickUp() ? 1 : 0);
+        buffer.writeBoolean(canPickUp());
     }
 
     @Override
     public void readSpawnData(PacketBuffer additionalData) {
         card = CommonCards.fromByte(additionalData.readByte());
         remainingLifeTime = additionalData.readInt();
-        boolean b = additionalData.readByte() == 1;
-        setPickUpStatus(b);
+        setPickUpStatus(additionalData.readBoolean());
     }
 
 }

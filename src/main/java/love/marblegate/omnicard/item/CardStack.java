@@ -95,10 +95,12 @@ public class CardStack extends Item {
     @Override
     public void inventoryTick(ItemStack itemStack, World world, Entity entity, int slot, boolean selected) {
         if (!world.isClientSide() && selected) {
-            ICardTypeData cardTypeData = itemStack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
-            if (world.getDayTime() % 10 == 0 && cardTypeData.isSwitchingCard()) {
-                cardTypeData.set(switchingToNextCard(cardTypeData.get()));
-                world.playSound((PlayerEntity)null, entity.getX(), entity.getY(), entity.getZ(), SoundRegistry.CUTTING_CARD.get(), SoundCategory.PLAYERS, 0.6F, 1F);
+            if (world.getDayTime() % 20 == 0) {
+                ICardTypeData cardTypeData = itemStack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
+                if(cardTypeData.isSwitchingCard()){
+                    cardTypeData.set(switchingToNextCard(cardTypeData.get()));
+                    world.playSound((PlayerEntity)null, entity.getX(), entity.getY(), entity.getZ(), SoundRegistry.CUTTING_CARD.get(), SoundCategory.PLAYERS, 0.6F, 1F);
+                }
             }
         }
     }
