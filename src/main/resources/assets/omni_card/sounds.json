@@ -21,7 +21,7 @@
     "replace": "true",
     "sounds": [
       {
-        "name": "omni_card:throw_common_card",
+        "name": "omni_card:throw_colored_card",
         "stream": true
       }
     ]
@@ -48,7 +48,7 @@
     "replace": "true",
     "sounds": [
       {
-        "name": "omni_card:elemental_card_hit",
+        "name": "omni_card:trap_card_hit",
         "stream": true
       }
     ]

@@ -19,7 +19,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -58,7 +61,7 @@ public class CardStack extends Item {
                         flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
                         worldIn.addFreshEntity(flyingCardEntity);
 
-                        worldIn.playSound((PlayerEntity)null, player.getX(), player.getY(), player.getZ(), SoundRegistry.THROW_COLORED_CARD.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        worldIn.playSound((PlayerEntity) null, player.getX(), player.getY(), player.getZ(), SoundRegistry.THROW_COLORED_CARD.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 
                         if (!player.abilities.instabuild) {
                             consumeBlankCard(player);
@@ -97,9 +100,9 @@ public class CardStack extends Item {
         if (!world.isClientSide() && selected) {
             if (world.getDayTime() % 20 == 0) {
                 ICardTypeData cardTypeData = itemStack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
-                if(cardTypeData.isSwitchingCard()){
+                if (cardTypeData.isSwitchingCard()) {
                     cardTypeData.set(switchingToNextCard(cardTypeData.get()));
-                    world.playSound((PlayerEntity)null, entity.getX(), entity.getY(), entity.getZ(), SoundRegistry.CUTTING_CARD.get(), SoundCategory.PLAYERS, 0.6F, 1F);
+                    world.playSound((PlayerEntity) null, entity.getX(), entity.getY(), entity.getZ(), SoundRegistry.CUTTING_CARD.get(), SoundCategory.PLAYERS, 0.6F, 1F);
                 }
             }
         }

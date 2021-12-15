@@ -1,3 +1,5 @@
 {
-  "texture": "omni_card:empty_particle"
+  "textures": [
+    "omni_card:empty_particle"
+  ]
 }

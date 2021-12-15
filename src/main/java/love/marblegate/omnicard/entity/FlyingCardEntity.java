@@ -76,7 +76,7 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
         super.tick();
         if (!level.isClientSide()) {
             // This Height limit needs to be changed in 1.17
-            if(blockPosition().getY()>=300)
+            if (blockPosition().getY() >= 300)
                 remove();
             if (remainingLifeTime <= 0) {
                 if (card.getRetrievedItem().isPresent())

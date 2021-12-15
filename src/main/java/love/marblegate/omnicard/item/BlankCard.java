@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
@@ -35,7 +34,7 @@ public class BlankCard extends Item {
             worldIn.addFreshEntity(flyingCardEntity);
 
 
-            worldIn.playSound((PlayerEntity)null, player.getX(), player.getY(), player.getZ(), SoundRegistry.THROW_COMMON_CARD.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+            worldIn.playSound((PlayerEntity) null, player.getX(), player.getY(), player.getZ(), SoundRegistry.THROW_COMMON_CARD.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 
             if (!player.abilities.instabuild) {
                 itemStack.shrink(1);

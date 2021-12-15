@@ -30,13 +30,13 @@ public class BlockCard extends AbstractCard {
     }
 
     public void handleServerTick(SpecialCardBlockTileEntity specialCardBlockTile) {
-        if (specialCardBlockTile != null && serverTickHandler!=null) {
+        if (specialCardBlockTile != null && serverTickHandler != null) {
             serverTickHandler.handle(specialCardBlockTile);
         }
     }
 
     public void handleClientTick(SpecialCardBlockTileEntity specialCardBlockTile) {
-        if (specialCardBlockTile != null && clientTickHandler!=null) {
+        if (specialCardBlockTile != null && clientTickHandler != null) {
             clientTickHandler.handle(specialCardBlockTile);
         }
     }

@@ -67,9 +67,9 @@ public class SpecialCardBlockTileEntity extends TileEntity implements ITickableT
                     preparedVanish = true;
                     SyncToClient();
                 }
-                if (lifetime > 0){
+                if (lifetime > 0) {
                     lifetime--;
-                    if(lifetime%20==0)
+                    if (lifetime % 20 == 0)
                         SyncToClient();
                 }
                 // Handle Special Card Logic
@@ -135,7 +135,7 @@ public class SpecialCardBlockTileEntity extends TileEntity implements ITickableT
         CompoundNBT compoundNBT = super.getUpdateTag();
         compoundNBT.putByte("card_type", BlockCards.toByte(card));
         compoundNBT.putBoolean("should_disappear", preparedVanish);
-        compoundNBT.putInt("lifetime",lifetime);
+        compoundNBT.putInt("lifetime", lifetime);
         return compoundNBT;
     }
 
