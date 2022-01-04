@@ -4,26 +4,26 @@ import love.marblegate.omnicard.card.CommonCard;
 import love.marblegate.omnicard.card.CommonCards;
 import love.marblegate.omnicard.registry.EntityRegistry;
 import love.marblegate.omnicard.registry.ParticleRegistry;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.DamagingProjectileEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -33,17 +33,17 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 
-public class FlyingCardEntity extends DamagingProjectileEntity implements IAnimatable, IEntityAdditionalSpawnData {
+public class FlyingCardEntity extends AbstractHurtingProjectile implements IAnimatable, IEntityAdditionalSpawnData {
     private final AnimationFactory factory = new AnimationFactory(this);
     private CommonCard card;
-    private static final DataParameter<Boolean> CAN_PICK_UP = EntityDataManager.defineId(FlyingCardEntity.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> CAN_PICK_UP = SynchedEntityData.defineId(FlyingCardEntity.class, EntityDataSerializers.BOOLEAN);
     private int remainingLifeTime;
 
-    public FlyingCardEntity(EntityType<? extends FlyingCardEntity> p_i50173_1_, World p_i50173_2_) {
+    public FlyingCardEntity(EntityType<? extends FlyingCardEntity> p_i50173_1_, Level p_i50173_2_) {
         super(p_i50173_1_, p_i50173_2_);
     }
 
-    public FlyingCardEntity(LivingEntity livingEntity, double xPower, double yPower, double zPower, World world, CommonCard card) {
+    public FlyingCardEntity(LivingEntity livingEntity, double xPower, double yPower, double zPower, Level world, CommonCard card) {
         super(EntityRegistry.FLYING_CARD.get(), livingEntity, xPower, yPower, zPower, world);
         this.card = card;
         remainingLifeTime = 60 * 20;
@@ -62,7 +62,7 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<>(this, "card_controller", 0, this::predicate));
+        data.addAnimationController(new AnimationController(this, "card_controller", 0, this::predicate));
     }
 
     @Override
@@ -77,17 +77,17 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
         if (!level.isClientSide()) {
             // This Height limit needs to be changed in 1.17
             if (blockPosition().getY() >= 300)
-                remove();
+                remove(RemovalReason.DISCARDED);
             if (remainingLifeTime <= 0) {
                 if (card.getRetrievedItem().isPresent())
                     this.spawnAtLocation(card.getRetrievedItem().get().getDefaultInstance(), 0.1F);
-                remove();
+                remove(RemovalReason.DISCARDED);
             } else {
                 remainingLifeTime -= 1;
                 // Pickup Card on Ground
                 if (canPickUp() && qualifiedToBeRetrieved()) {
                     this.spawnAtLocation(card.getRetrievedItem().get().getDefaultInstance(), 0.1F);
-                    remove();
+                    remove(RemovalReason.DISCARDED);
                 }
             }
         }
@@ -99,34 +99,34 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
     }
 
     @Override
-    protected void onHit(RayTraceResult rayTraceResult) {
+    protected void onHit(HitResult rayTraceResult) {
         super.onHit(rayTraceResult);
     }
 
     @Override
-    protected void onHitEntity(EntityRayTraceResult entityRayTraceResult) {
+    protected void onHitEntity(EntityHitResult entityRayTraceResult) {
         super.onHitEntity(entityRayTraceResult);
         Entity entity = entityRayTraceResult.getEntity();
         if (entity instanceof LivingEntity && !canPickUp()) {
             card.hit(this, (LivingEntity) entity);
-            remove();
+            remove(RemovalReason.DISCARDED);
         }
     }
 
     @Override
-    protected void onHitBlock(BlockRayTraceResult blockRayTraceResult) {
+    protected void onHitBlock(BlockHitResult blockRayTraceResult) {
         super.onHitBlock(blockRayTraceResult);
         stayOnBlock(blockRayTraceResult);
     }
 
     private boolean qualifiedToBeRetrieved() {
-        return !level.getEntities(this, this.getBoundingBox(), (entity -> entity instanceof PlayerEntity)).isEmpty();
+        return !level.getEntities(this, this.getBoundingBox(), (entity -> entity instanceof Player)).isEmpty();
     }
 
-    private void stayOnBlock(BlockRayTraceResult blockRayTraceResult) {
-        Vector3d vector3d = blockRayTraceResult.getLocation().subtract(this.getX(), this.getY(), this.getZ());
+    private void stayOnBlock(BlockHitResult blockRayTraceResult) {
+        Vec3 vector3d = blockRayTraceResult.getLocation().subtract(this.getX(), this.getY(), this.getZ());
         this.setDeltaMovement(vector3d);
-        Vector3d vector3d1 = vector3d.normalize().scale((double) 0.05F);
+        Vec3 vector3d1 = vector3d.normalize().scale((double) 0.05F);
         this.setPosRaw(this.getX() - vector3d1.x, this.getY() - vector3d1.y, this.getZ() - vector3d1.z);
         setPickUpStatus(true);
     }
@@ -145,7 +145,7 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
     }
 
     @Override
-    protected IParticleData getTrailParticle() {
+    protected ParticleOptions getTrailParticle() {
         if (!canPickUp()) {
             return ParticleTypes.FIREWORK;
         } else
@@ -158,7 +158,7 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT compoundNBT) {
+    public void readAdditionalSaveData(CompoundTag compoundNBT) {
         super.readAdditionalSaveData(compoundNBT);
         card = CommonCards.fromByte(compoundNBT.getByte("card_type"));
         remainingLifeTime = compoundNBT.getInt("remaining_life_time");
@@ -166,7 +166,7 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compoundNBT) {
+    public void addAdditionalSaveData(CompoundTag compoundNBT) {
         super.addAdditionalSaveData(compoundNBT);
         compoundNBT.putByte("card_type", CommonCards.toByte(card));
         compoundNBT.putInt("remaining_life_time", remainingLifeTime);
@@ -174,19 +174,19 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    public void writeSpawnData(PacketBuffer buffer) {
+    public void writeSpawnData(FriendlyByteBuf buffer) {
         buffer.writeByte(CommonCards.toByte(card));
         buffer.writeInt(remainingLifeTime);
         buffer.writeBoolean(canPickUp());
     }
 
     @Override
-    public void readSpawnData(PacketBuffer additionalData) {
+    public void readSpawnData(FriendlyByteBuf additionalData) {
         card = CommonCards.fromByte(additionalData.readByte());
         remainingLifeTime = additionalData.readInt();
         setPickUpStatus(additionalData.readBoolean());

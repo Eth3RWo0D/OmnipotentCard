@@ -1,6 +1,6 @@
 package love.marblegate.omnicard.card;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 import java.util.Optional;
 import java.util.function.Supplier;

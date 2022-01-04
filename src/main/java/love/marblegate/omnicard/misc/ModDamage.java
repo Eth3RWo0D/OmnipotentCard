@@ -1,10 +1,10 @@
 package love.marblegate.omnicard.misc;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 
 import javax.annotation.Nullable;
 
@@ -35,9 +35,9 @@ public class ModDamage {
         }
 
         @Override
-        public ITextComponent getLocalizedDeathMessage(LivingEntity entityLivingBaseIn) {
+        public Component getLocalizedDeathMessage(LivingEntity entityLivingBaseIn) {
             String s = "death.attack." + msgId + ".no_source";
-            return new TranslationTextComponent(s, entityLivingBaseIn.getDisplayName());
+            return new TranslatableComponent(s, entityLivingBaseIn.getDisplayName());
         }
     }
 }

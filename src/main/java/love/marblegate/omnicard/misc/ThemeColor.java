@@ -1,11 +1,11 @@
 package love.marblegate.omnicard.misc;
 
-import net.minecraft.util.text.Color;
+import net.minecraft.network.chat.TextColor;
 
 public class ThemeColor {
-    public static final Color MAIN = Color.parseColor("#F29D52");
-    public static final Color OPERATION = Color.parseColor("#027368");
-    public static final Color OPERATION_EXPLAIN = Color.parseColor("#025959");
-    public static final Color HINT = Color.parseColor("#A69076");
-    public static final Color HINT_EMP = Color.parseColor("#BFB2A3");
+    public static final TextColor MAIN = TextColor.parseColor("#F29D52");
+    public static final TextColor OPERATION = TextColor.parseColor("#027368");
+    public static final TextColor OPERATION_EXPLAIN = TextColor.parseColor("#025959");
+    public static final TextColor HINT = TextColor.parseColor("#A69076");
+    public static final TextColor HINT_EMP = TextColor.parseColor("#BFB2A3");
 }

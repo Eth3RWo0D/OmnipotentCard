@@ -4,8 +4,8 @@ import love.marblegate.omnicard.OmniCard;
 import love.marblegate.omnicard.card.BlockCards;
 import love.marblegate.omnicard.card.CommonCards;
 import love.marblegate.omnicard.item.*;
-import net.minecraft.item.Item;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.Item;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 

@@ -1,6 +1,6 @@
 package love.marblegate.omnicard.item;
 
-import love.marblegate.omnicard.block.tileentity.SpecialCardBlockTileEntity;
+import love.marblegate.omnicard.block.blockentity.SpecialCardBlockTileEntity;
 import love.marblegate.omnicard.card.BlockCard;
 import love.marblegate.omnicard.card.BlockCards;
 import love.marblegate.omnicard.misc.MiscUtil;
@@ -8,26 +8,26 @@ import love.marblegate.omnicard.misc.ModGroup;
 import love.marblegate.omnicard.misc.ThemeColor;
 import love.marblegate.omnicard.registry.BlockRegistry;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.state.Property;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -41,22 +41,22 @@ public class PlaceableSpecialCard extends Item {
     }
 
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        return this.place(new BlockItemUseContext(context));
+    public InteractionResult useOn(UseOnContext context) {
+        return this.place(new BlockPlaceContext(context));
     }
 
-    public ActionResultType place(BlockItemUseContext context) {
+    public InteractionResult place(BlockPlaceContext context) {
         if (!context.canPlace()) {
-            return ActionResultType.FAIL;
+            return InteractionResult.FAIL;
         } else {
             BlockState blockstate = BlockRegistry.SPECIAL_CARD_BLOCK.get().defaultBlockState();
 
             if (!this.placeBlock(context, blockstate)) {
-                return ActionResultType.FAIL;
+                return InteractionResult.FAIL;
             } else {
                 BlockPos blockpos = context.getClickedPos();
-                World world = context.getLevel();
-                PlayerEntity playerentity = context.getPlayer();
+                Level world = context.getLevel();
+                Player playerentity = context.getPlayer();
                 ItemStack itemstack = context.getItemInHand();
                 BlockState blockstate1 = world.getBlockState(blockpos);
                 Block block = blockstate1.getBlock();
@@ -64,28 +64,28 @@ public class PlaceableSpecialCard extends Item {
                     // blockstate1 = this.updateBlockStateFromTag(blockpos, world, itemstack, blockstate1);
                     updateCustomBlockEntityTag(world, playerentity, blockpos, itemstack);
                     block.setPlacedBy(world, blockpos, blockstate1, playerentity, itemstack);
-                    if (playerentity instanceof ServerPlayerEntity) {
-                        CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayerEntity) playerentity, blockpos, itemstack);
+                    if (playerentity instanceof ServerPlayer) {
+                        CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) playerentity, blockpos, itemstack);
                     }
                 }
 
                 SoundType soundtype = blockstate1.getSoundType(world, blockpos, context.getPlayer());
-                world.playSound(playerentity, blockpos, this.getPlaceSound(blockstate1, world, blockpos, context.getPlayer()), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+                world.playSound(playerentity, blockpos, this.getPlaceSound(blockstate1, world, blockpos, context.getPlayer()), SoundSource.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
 
                 if (card == BlockCards.PURIFICATION) {
-                    context.getPlayer().addEffect(new EffectInstance(Effects.WEAKNESS, 1200));
+                    context.getPlayer().addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 1200));
                 }
 
-                if (playerentity == null || !playerentity.abilities.instabuild) {
+                if (playerentity == null || !playerentity.getAbilities().instabuild) {
                     itemstack.shrink(1);
                 }
 
-                return ActionResultType.sidedSuccess(world.isClientSide);
+                return InteractionResult.sidedSuccess(world.isClientSide);
             }
         }
     }
 
-    protected boolean placeBlock(BlockItemUseContext context, BlockState blockState) {
+    protected boolean placeBlock(BlockPlaceContext context, BlockState blockState) {
         return context.getLevel().setBlockAndUpdate(context.getClickedPos(), blockState);
     }
 
@@ -93,7 +93,7 @@ public class PlaceableSpecialCard extends Item {
         return property.getValue(nbtString).map((string) -> blockState.setValue(property, string)).orElse(blockState);
     }
 
-    protected boolean updateCustomBlockEntityTag(World level, @Nullable PlayerEntity player, BlockPos blockPos, ItemStack itemStack) {
+    protected boolean updateCustomBlockEntityTag(Level level, @Nullable Player player, BlockPos blockPos, ItemStack itemStack) {
         MinecraftServer minecraftserver = level.getServer();
         if (minecraftserver == null) {
             return false;
@@ -117,12 +117,12 @@ public class PlaceableSpecialCard extends Item {
         return false;
     }
 
-    private SoundEvent getPlaceSound(BlockState state, World world, BlockPos pos, PlayerEntity entity) {
+    private SoundEvent getPlaceSound(BlockState state, Level world, BlockPos pos, Player entity) {
         return state.getSoundType(world, pos, entity).getPlaceSound();
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable World world, List<ITextComponent> tooltips, ITooltipFlag iTooltipFlag) {
+    public void appendHoverText(ItemStack itemStack, @Nullable Level world, List<Component> tooltips, TooltipFlag iTooltipFlag) {
         tooltips.add(MiscUtil.tooltip("tooltip.omni_card.special_card.function." + card.getCardName(), ThemeColor.HINT));
         tooltips.add(MiscUtil.tooltip("tooltip.omni_card.special_card.is_1", ThemeColor.HINT)
                 .append(MiscUtil.tooltip("tooltip.omni_card.special_card.is_" + (card.canRetrieve() ? "2" : "3"), ThemeColor.HINT_EMP))

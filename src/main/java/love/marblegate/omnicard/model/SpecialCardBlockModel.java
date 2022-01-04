@@ -1,8 +1,8 @@
 package love.marblegate.omnicard.model;
 
 import love.marblegate.omnicard.OmniCard;
-import love.marblegate.omnicard.block.tileentity.SpecialCardBlockTileEntity;
-import net.minecraft.util.ResourceLocation;
+import love.marblegate.omnicard.block.blockentity.SpecialCardBlockTileEntity;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class SpecialCardBlockModel extends AnimatedGeoModel<SpecialCardBlockTileEntity> {

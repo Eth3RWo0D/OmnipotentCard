@@ -3,23 +3,23 @@ package love.marblegate.omnicard.entity;
 import love.marblegate.omnicard.card.CommonCard;
 import love.marblegate.omnicard.card.CommonCards;
 import love.marblegate.omnicard.registry.EntityRegistry;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -37,11 +37,11 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
     private CommonCard card;
     private UUID ownerUUID;
 
-    public CardTrapEntity(EntityType<? extends CardTrapEntity> p_i50173_1_, World p_i50173_2_) {
+    public CardTrapEntity(EntityType<? extends CardTrapEntity> p_i50173_1_, Level p_i50173_2_) {
         super(p_i50173_1_, p_i50173_2_);
     }
 
-    public CardTrapEntity(World world, CommonCard card) {
+    public CardTrapEntity(Level world, CommonCard card) {
         super(EntityRegistry.CARD_TRAP.get(), world);
         this.card = card;
     }
@@ -53,17 +53,17 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<>(this, "card_controller", 1, this::predicate));
+        data.addAnimationController(new AnimationController(this, "card_controller", 1, this::predicate));
     }
 
     @Override
-    public ActionResultType interact(PlayerEntity player, Hand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand) {
         if (!player.level.isClientSide()) {
             if (card.getRetrievedItem().isPresent())
                 player.level.addFreshEntity(new ItemEntity(player.level, this.getX(), this.getY(), this.getZ(), card.getRetrievedItem().get().getDefaultInstance()));
-            remove();
+            remove(RemovalReason.DISCARDED);
         }
-        return ActionResultType.sidedSuccess(player.level.isClientSide());
+        return InteractionResult.sidedSuccess(player.level.isClientSide());
     }
 
     @Override
@@ -83,29 +83,29 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
 
         if (isAlive()) {
             // Natural falling and movement
-            this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.04D, 0.0D));
+            setDeltaMovement(getDeltaMovement().add(0.0D, -0.04D, 0.0D));
 
-            if (this.level.isClientSide) {
-                this.noPhysics = false;
+            if (level.isClientSide) {
+                noPhysics = false;
             } else {
-                this.noPhysics = !this.level.noCollision(this);
-                if (this.noPhysics) {
-                    this.moveTowardsClosestSpace(this.getX(), (this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D, this.getZ());
+                noPhysics = !level.noCollision(this);
+                if (noPhysics) {
+                    moveTowardsClosestSpace(getX(), (getBoundingBox().minY + getBoundingBox().maxY) / 2.0D, getZ());
                 }
             }
 
-            if (!this.onGround || getHorizontalDistanceSqr(this.getDeltaMovement()) > (double) 1.0E-5F || (this.tickCount + this.getId()) % 4 == 0) {
-                this.move(MoverType.SELF, this.getDeltaMovement());
+            if (!onGround || getDeltaMovement().horizontalDistanceSqr() > (double) 1.0E-5F || (tickCount + getId()) % 4 == 0) {
+                move(MoverType.SELF, getDeltaMovement());
                 float f1 = 0.98F;
-                if (this.onGround) {
-                    f1 = this.level.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getSlipperiness(level, new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ()), this) * 0.98F;
+                if (onGround) {
+                    f1 = level.getBlockState(new BlockPos(getX(), getY() - 1.0D, getZ())).getFriction(level, new BlockPos(getX(), getY() - 1.0D, getZ()), this) * 0.98F;
                 }
 
-                this.setDeltaMovement(this.getDeltaMovement().multiply(f1, 0.98D, f1));
-                if (this.onGround) {
-                    Vector3d vector3d1 = this.getDeltaMovement();
+                this.setDeltaMovement(getDeltaMovement().multiply(f1, 0.98D, f1));
+                if (onGround) {
+                    Vec3 vector3d1 = getDeltaMovement();
                     if (vector3d1.y < 0.0D) {
-                        this.setDeltaMovement(vector3d1.multiply(1.0D, -0.5D, 1.0D));
+                        setDeltaMovement(vector3d1.multiply(1.0D, -0.5D, 1.0D));
                     }
                 }
             }
@@ -120,7 +120,7 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
     private void activateTrap(List<LivingEntity> targets) {
         for (LivingEntity livingEntity : targets)
             card.activate(this, livingEntity);
-        remove();
+        remove(RemovalReason.DISCARDED);
     }
 
     public void setOwner(@Nullable Entity entity) {
@@ -131,8 +131,8 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
 
     @Nullable
     public Entity getOwner() {
-        if (this.ownerUUID != null && this.level instanceof ServerWorld) {
-            return ((ServerWorld) this.level).getEntity(this.ownerUUID);
+        if (ownerUUID != null && level instanceof ServerLevel) {
+            return ((ServerLevel) level).getEntity(ownerUUID);
         }
         return null;
     }
@@ -157,14 +157,14 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT compoundNBT) {
+    public void readAdditionalSaveData(CompoundTag compoundNBT) {
         card = CommonCards.fromByte(compoundNBT.getByte("card_type"));
         if (compoundNBT.contains("owner_uuid"))
             ownerUUID = compoundNBT.getUUID("owner_uuid");
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compoundNBT) {
+    public void addAdditionalSaveData(CompoundTag compoundNBT) {
         compoundNBT.putByte("card_type", CommonCards.toByte(card));
         if (ownerUUID != null) {
             compoundNBT.putUUID("owner_uuid", ownerUUID);
@@ -173,17 +173,17 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
 
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    public void writeSpawnData(PacketBuffer buffer) {
+    public void writeSpawnData(FriendlyByteBuf buffer) {
         buffer.writeByte(CommonCards.toByte(card));
     }
 
     @Override
-    public void readSpawnData(PacketBuffer additionalData) {
+    public void readSpawnData(FriendlyByteBuf additionalData) {
         card = CommonCards.fromByte(additionalData.readByte());
     }
 

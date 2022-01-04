@@ -4,14 +4,14 @@ import love.marblegate.omnicard.card.CommonCards;
 import love.marblegate.omnicard.entity.FlyingCardEntity;
 import love.marblegate.omnicard.misc.ModGroup;
 import love.marblegate.omnicard.registry.SoundRegistry;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 public class BlankCard extends Item {
 
@@ -20,10 +20,10 @@ public class BlankCard extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> use(World worldIn, PlayerEntity player, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         if (!worldIn.isClientSide()) {
-            Vector3d vector3d = player.getViewVector(1.0F);
+            Vec3 vector3d = player.getViewVector(1.0F);
 
             double x = (vector3d.x * 8D);
             double y = (vector3d.y * 8D);
@@ -34,12 +34,12 @@ public class BlankCard extends Item {
             worldIn.addFreshEntity(flyingCardEntity);
 
 
-            worldIn.playSound((PlayerEntity) null, player.getX(), player.getY(), player.getZ(), SoundRegistry.THROW_COMMON_CARD.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+            worldIn.playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundRegistry.THROW_COMMON_CARD.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 
-            if (!player.abilities.instabuild) {
+            if (!player.getAbilities().instabuild) {
                 itemStack.shrink(1);
             }
         }
-        return ActionResult.sidedSuccess(itemStack, worldIn.isClientSide());
+        return InteractionResultHolder.sidedSuccess(itemStack, worldIn.isClientSide());
     }
 }

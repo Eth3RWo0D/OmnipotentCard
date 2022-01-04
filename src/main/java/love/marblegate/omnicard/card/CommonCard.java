@@ -2,7 +2,7 @@ package love.marblegate.omnicard.card;
 
 import love.marblegate.omnicard.entity.CardTrapEntity;
 import love.marblegate.omnicard.entity.FlyingCardEntity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Objects;
 

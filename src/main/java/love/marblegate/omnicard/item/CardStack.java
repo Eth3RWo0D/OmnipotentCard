@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import love.marblegate.omnicard.OmniCard;
 import love.marblegate.omnicard.capability.cardtype.CardTypeData;
 import love.marblegate.omnicard.capability.cardtype.CardTypeItemStackProvider;
-import love.marblegate.omnicard.capability.cardtype.ICardTypeData;
 import love.marblegate.omnicard.card.CommonCard;
 import love.marblegate.omnicard.card.CommonCards;
 import love.marblegate.omnicard.entity.FlyingCardEntity;
@@ -13,19 +12,19 @@ import love.marblegate.omnicard.misc.ModGroup;
 import love.marblegate.omnicard.misc.ThemeColor;
 import love.marblegate.omnicard.registry.ItemRegistry;
 import love.marblegate.omnicard.registry.SoundRegistry;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nullable;
@@ -40,18 +39,17 @@ public class CardStack extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> use(World worldIn, PlayerEntity player, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player player, InteractionHand hand) {
         if (!worldIn.isClientSide()) {
-            ICardTypeData cardTypeData = player.getItemInHand(hand).getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
-
+            CardTypeData cardTypeData = player.getItemInHand(hand).getCapability(CardTypeData.CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
             if (!player.isShiftKeyDown()) {
                 if (cardTypeData.isSwitchingCard()) {
                     // stop card picking
                     cardTypeData.setSwitchingCard(false);
                 } else {
                     // Throwing Card
-                    if ((player.abilities.instabuild || hasEnoughBlankCard(player)) && cardTypeData.get() != CommonCards.UNKNOWN) {
-                        Vector3d vector3d = player.getViewVector(1.0F);
+                    if ((player.getAbilities().instabuild || hasEnoughBlankCard(player)) && cardTypeData.get() != CommonCards.UNKNOWN) {
+                        Vec3 vector3d = player.getViewVector(1.0F);
 
                         double x = (vector3d.x * 8D);
                         double y = (vector3d.y * 8D);
@@ -61,14 +59,14 @@ public class CardStack extends Item {
                         flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
                         worldIn.addFreshEntity(flyingCardEntity);
 
-                        worldIn.playSound((PlayerEntity) null, player.getX(), player.getY(), player.getZ(), SoundRegistry.THROW_COLORED_CARD.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        worldIn.playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundRegistry.THROW_COLORED_CARD.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 
-                        if (!player.abilities.instabuild) {
+                        if (!player.getAbilities().instabuild) {
                             consumeBlankCard(player);
                             player.causeFoodExhaustion(1);
                         }
                     } else {
-                        return ActionResult.fail(player.getItemInHand(hand));
+                        return InteractionResultHolder.fail(player.getItemInHand(hand));
                     }
                 }
             } else {
@@ -77,18 +75,18 @@ public class CardStack extends Item {
             }
 
         }
-        return ActionResult.sidedSuccess(player.getItemInHand(hand), worldIn.isClientSide());
+        return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), worldIn.isClientSide());
     }
 
-    private boolean hasEnoughBlankCard(PlayerEntity player) {
-        for (ItemStack itemStack : player.inventory.items) {
+    private boolean hasEnoughBlankCard(Player player) {
+        for (ItemStack itemStack : player.getInventory().items) {
             if (itemStack.getItem().equals(ItemRegistry.BLANK_CARD.get())) return true;
         }
         return false;
     }
 
-    private void consumeBlankCard(PlayerEntity player) {
-        for (ItemStack itemStack : player.inventory.items) {
+    private void consumeBlankCard(Player player) {
+        for (ItemStack itemStack : player.getInventory().items) {
             if (itemStack.getItem().equals(ItemRegistry.BLANK_CARD.get())) {
                 itemStack.shrink(1);
             }
@@ -96,21 +94,21 @@ public class CardStack extends Item {
     }
 
     @Override
-    public void inventoryTick(ItemStack itemStack, World world, Entity entity, int slot, boolean selected) {
+    public void inventoryTick(ItemStack itemStack, Level world, Entity entity, int slot, boolean selected) {
         if (!world.isClientSide() && selected) {
             if (world.getDayTime() % 20 == 0) {
-                ICardTypeData cardTypeData = itemStack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
+                CardTypeData cardTypeData = itemStack.getCapability(CardTypeData.CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
                 if (cardTypeData.isSwitchingCard()) {
                     cardTypeData.set(switchingToNextCard(cardTypeData.get()));
-                    world.playSound((PlayerEntity) null, entity.getX(), entity.getY(), entity.getZ(), SoundRegistry.CUTTING_CARD.get(), SoundCategory.PLAYERS, 0.6F, 1F);
+                    world.playSound((Player) null, entity.getX(), entity.getY(), entity.getZ(), SoundRegistry.CUTTING_CARD.get(), SoundSource.PLAYERS, 0.6F, 1F);
                 }
             }
         }
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable World world, List<ITextComponent> tooltips, ITooltipFlag iTooltipFlag) {
-        ICardTypeData cardTypeData = itemStack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
+    public void appendHoverText(ItemStack itemStack, @Nullable Level world, List<Component> tooltips, TooltipFlag iTooltipFlag) {
+        CardTypeData cardTypeData = itemStack.getCapability(CardTypeData.CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
         CommonCard card = cardTypeData.get();
         boolean f = cardTypeData.isSwitchingCard();
         if (f) {
@@ -148,28 +146,28 @@ public class CardStack extends Item {
 
     @Nullable
     @Override
-    public CompoundNBT getShareTag(ItemStack stack) {
-        CompoundNBT compoundNBT = super.getShareTag(stack);
+    public CompoundTag getShareTag(ItemStack stack) {
+        CompoundTag compoundNBT = super.getShareTag(stack);
         if (compoundNBT == null) {
-            compoundNBT = new CompoundNBT();
+            compoundNBT = new CompoundTag();
         }
-        ICardTypeData cardTypeData = stack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
+        CardTypeData cardTypeData = stack.getCapability(CardTypeData.CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
         compoundNBT.putByte("card_type", CommonCards.toByte(cardTypeData.get()));
         return compoundNBT;
     }
 
     @Override
-    public void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt) {
+    public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
         super.readShareTag(stack, nbt);
         if (nbt != null) {
-            ICardTypeData cardTypeData = stack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
+            CardTypeData cardTypeData = stack.getCapability(CardTypeData.CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
             cardTypeData.set(CommonCards.fromByte(nbt.getByte("card_type")));
         }
     }
 
     @Nullable
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         return new CardTypeItemStackProvider();
     }
 

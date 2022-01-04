@@ -1,8 +1,12 @@
 package love.marblegate.omnicard.data;
 
 import love.marblegate.omnicard.registry.ItemRegistry;
-import net.minecraft.data.*;
-import net.minecraft.item.Items;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.world.item.Items;
 
 import java.util.function.Consumer;
 
@@ -12,7 +16,7 @@ public class ModRecipeGen extends RecipeProvider {
     }
 
     @Override
-    protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
+    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
         //Essentials
         ShapedRecipeBuilder.shaped(ItemRegistry.BLANK_CARD.get(), 8)
                 .pattern("AAA")

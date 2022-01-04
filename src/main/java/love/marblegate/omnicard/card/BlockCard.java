@@ -1,6 +1,6 @@
 package love.marblegate.omnicard.card;
 
-import love.marblegate.omnicard.block.tileentity.SpecialCardBlockTileEntity;
+import love.marblegate.omnicard.block.blockentity.SpecialCardBlockTileEntity;
 
 import java.util.Objects;
 

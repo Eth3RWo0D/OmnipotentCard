@@ -1,14 +1,14 @@
 package love.marblegate.omnicard.misc;
 
 import love.marblegate.omnicard.registry.ItemRegistry;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 
 public class ModGroup {
 
     public final static GeneralGroup GENERAL = new GeneralGroup();
 
-    public static class GeneralGroup extends ItemGroup {
+    public static class GeneralGroup extends CreativeModeTab {
 
         public GeneralGroup() {
             super("omni_card.general");

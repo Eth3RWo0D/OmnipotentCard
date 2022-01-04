@@ -1,32 +1,36 @@
 package love.marblegate.omnicard.block;
 
 import com.google.common.collect.Lists;
-import love.marblegate.omnicard.block.tileentity.SpecialCardBlockTileEntity;
+import love.marblegate.omnicard.block.blockentity.SpecialCardBlockTileEntity;
 import love.marblegate.omnicard.card.BlockCard;
-import love.marblegate.omnicard.registry.TileEntityRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.block.material.PushReaction;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
+import love.marblegate.omnicard.registry.BlockEntityRegistry;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpecialCardBlock extends Block {
+public class SpecialCardBlock extends Block implements EntityBlock {
     private static final VoxelShape SHAPE = Block.box(5.5D, 2.5D, 5.5D, 10.5D, 12.5D, 10.5D);
 
     public SpecialCardBlock() {
@@ -34,20 +38,20 @@ public class SpecialCardBlock extends Block {
     }
 
     @Override
-    public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
+    public VoxelShape getShape(BlockState p_220053_1_, BlockGetter p_220053_2_, BlockPos p_220053_3_, CollisionContext p_220053_4_) {
         return SHAPE;
     }
 
     @Override
-    public BlockRenderType getRenderShape(BlockState state) {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
     public List<ItemStack> getDrops(BlockState blockState, LootContext.Builder builder) {
-        Entity entity = builder.getOptionalParameter(LootParameters.THIS_ENTITY);
-        if (entity instanceof PlayerEntity) {
-            TileEntity tileentity = builder.getOptionalParameter(LootParameters.BLOCK_ENTITY);
+        Entity entity = builder.getOptionalParameter(LootContextParams.THIS_ENTITY);
+        if (entity instanceof Player) {
+            BlockEntity tileentity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
             if (tileentity instanceof SpecialCardBlockTileEntity) {
                 SpecialCardBlockTileEntity specialCardBlockTileEntity = (SpecialCardBlockTileEntity) tileentity;
                 if (specialCardBlockTileEntity.getCardType().canRetrieve() && specialCardBlockTileEntity.getCardType().getRetrievedItem().isPresent()) {
@@ -59,23 +63,35 @@ public class SpecialCardBlock extends Block {
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return BlockEntityRegistry.SPECIAL_CARD_BLOCK_TILEENTITY.get().create(blockPos, blockState);
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return TileEntityRegistry.SPECIAL_CARD_BLOCK_TILEENTITY.get().create();
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+        if (level.isClientSide()) {
+            return (theLevel, pos, state, tile) -> {
+                if (tile instanceof SpecialCardBlockTileEntity tileEntity) {
+                    tileEntity.tickClient();
+                }
+            };
+        } else {
+            return (theLevel, pos, state, tile) -> {
+                if (tile instanceof SpecialCardBlockTileEntity tileEntity) {
+                    tileEntity.tickServer();
+                }
+            };
+        }
     }
 
     @Override
-    public boolean canHarvestBlock(BlockState state, IBlockReader world, BlockPos pos, PlayerEntity player) {
+    public boolean canHarvestBlock(BlockState state, BlockGetter world, BlockPos pos, Player player) {
         return super.canHarvestBlock(state, world, pos, player);
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
+    public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
         BlockCard type = ((SpecialCardBlockTileEntity) world.getBlockEntity(pos)).getCardType();
         if (type != null) {
             if (type.getRetrievedItem().isPresent())

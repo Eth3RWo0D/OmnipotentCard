@@ -1,38 +1,35 @@
 package love.marblegate.omnicard.capability.cardtype;
 
+import love.marblegate.omnicard.card.CommonCard;
 import love.marblegate.omnicard.card.CommonCards;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-
-import javax.annotation.Nullable;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 
 public class CardTypeData {
-    @CapabilityInject(ICardTypeData.class)
-    public static final Capability<ICardTypeData> CARD_TYPE_DATA_CAPABILITY = null;
+    public static final Capability<CardTypeData> CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static void register() {
-        CapabilityManager.INSTANCE.register(ICardTypeData.class, new Storage(), CardTypeDataImpl::new);
+    private CommonCard type;
+    private boolean isSwitchingCard;
+
+    public CardTypeData() {
+        type = CommonCards.UNKNOWN;
+        isSwitchingCard = false;
     }
 
-    public static class Storage implements Capability.IStorage<ICardTypeData> {
+    public CommonCard get() {
+        return type;
+    }
 
-        @Nullable
-        @Override
-        public INBT writeNBT(Capability<ICardTypeData> capability, ICardTypeData instance, Direction side) {
-            CompoundNBT compoundNBT = new CompoundNBT();
-            compoundNBT.putByte("card_type", CommonCards.toByte(instance.get()));
-            compoundNBT.putBoolean("is_switching", instance.isSwitchingCard());
-            return compoundNBT;
-        }
+    public void set(CommonCard type) {
+        this.type = type;
+    }
 
-        @Override
-        public void readNBT(Capability<ICardTypeData> capability, ICardTypeData instance, Direction side, INBT nbt) {
-            instance.set(CommonCards.fromByte(((CompoundNBT) nbt).getByte("card_type")));
-            instance.setSwitchingCard((((CompoundNBT) nbt).getBoolean("is_switching")));
-        }
+    public void setSwitchingCard(boolean i) {
+        isSwitchingCard = i;
+    }
+
+    public boolean isSwitchingCard() {
+        return isSwitchingCard;
     }
 }

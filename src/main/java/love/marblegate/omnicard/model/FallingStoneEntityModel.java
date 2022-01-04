@@ -2,7 +2,7 @@ package love.marblegate.omnicard.model;
 
 import love.marblegate.omnicard.OmniCard;
 import love.marblegate.omnicard.entity.FallingStoneEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class FallingStoneEntityModel extends AnimatedGeoModel<FallingStoneEntity> {

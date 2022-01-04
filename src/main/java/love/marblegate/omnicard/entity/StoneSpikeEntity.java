@@ -1,15 +1,15 @@
 package love.marblegate.omnicard.entity;
 
 import love.marblegate.omnicard.registry.EntityRegistry;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -20,15 +20,15 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class StoneSpikeEntity extends Entity implements IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
-    private static final DataParameter<Boolean> DONE_STRIKE = EntityDataManager.defineId(FlyingCardEntity.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DONE_STRIKE = SynchedEntityData.defineId(FlyingCardEntity.class, EntityDataSerializers.BOOLEAN);
     private int lifetime;
 
 
-    public StoneSpikeEntity(EntityType<?> p_i48580_1_, World p_i48580_2_) {
+    public StoneSpikeEntity(EntityType<?> p_i48580_1_, Level p_i48580_2_) {
         super(p_i48580_1_, p_i48580_2_);
     }
 
-    public StoneSpikeEntity(World world) {
+    public StoneSpikeEntity(Level world) {
         super(EntityRegistry.STONE_SPIKE.get(), world);
         lifetime = 25;
     }
@@ -37,7 +37,7 @@ public class StoneSpikeEntity extends Entity implements IAnimatable {
     public void tick() {
         if (!level.isClientSide()) {
             if (lifetime <= 0)
-                remove();
+                remove(RemovalReason.DISCARDED);
             else
                 lifetime--;
         }
@@ -49,19 +49,19 @@ public class StoneSpikeEntity extends Entity implements IAnimatable {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundNBT compoundNBT) {
+    protected void readAdditionalSaveData(CompoundTag compoundNBT) {
         getEntityData().set(DONE_STRIKE, compoundNBT.getBoolean("done_strike"));
         lifetime = compoundNBT.getInt("done_strike");
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundNBT compoundNBT) {
+    protected void addAdditionalSaveData(CompoundTag compoundNBT) {
         compoundNBT.putBoolean("done_strike", getEntityData().get(DONE_STRIKE));
         compoundNBT.putInt("lifetime", lifetime);
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
@@ -76,7 +76,7 @@ public class StoneSpikeEntity extends Entity implements IAnimatable {
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<>(this, "falling_stone_controller", 1, this::predicate));
+        data.addAnimationController(new AnimationController(this, "falling_stone_controller", 1, this::predicate));
     }
 
     @Override
