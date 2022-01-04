@@ -106,19 +106,25 @@ public class SpecialCardBlockTileEntity extends BlockEntity implements IAnimatab
         preparedVanish = nbt.getBoolean("should_disappear");
     }
 
+    /*
+    Some notes about BlockEntity saving:
+    1.18 doesn't really use save() in the same way older versions used to. If you continue overriding save, it will not work.
+    Instead, you should override saveAdditional.
+    If you are storing BlockEntities somewhere,
+    don't call save. Call saveWithFullMetadata(), saveWithId() or saveWithoutMetadata(), depending on your needs.
+     */
     @Override
-    public CompoundTag save(CompoundTag nbt) {
-        CompoundTag compoundNBT = super.save(nbt);
-        compoundNBT.putByte("card_type", BlockCards.toByte(card));
-        compoundNBT.putInt("lifetime", lifetime);
-        compoundNBT.putBoolean("should_disappear", preparedVanish);
-        return compoundNBT;
+    protected void saveAdditional(CompoundTag tag) {
+        tag.putByte("card_type", BlockCards.toByte(card));
+        tag.putInt("lifetime", lifetime);
+        tag.putBoolean("should_disappear", preparedVanish);
+        super.saveAdditional(tag);
     }
 
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return new ClientboundBlockEntityDataPacket(worldPosition, 1, getUpdateTag());
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override

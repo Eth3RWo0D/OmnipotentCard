@@ -91,7 +91,7 @@ public class SpecialCardBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
         BlockCard type = ((SpecialCardBlockTileEntity) world.getBlockEntity(pos)).getCardType();
         if (type != null) {
             if (type.getRetrievedItem().isPresent())

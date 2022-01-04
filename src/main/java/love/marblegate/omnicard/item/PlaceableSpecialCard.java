@@ -105,12 +105,6 @@ public class PlaceableSpecialCard extends Item {
             }
 
             tileentity.initializingData(card);
-
-            // Vanilla BlockItem use #save & #load method and also NBT tag from ItemStack.
-            // But we do not use following code since #save requires custom data to be setup.
-            // CompoundNBT compoundnbt = tileentity.save(new CompoundNBT());
-            // tileentity.load(level.getBlockState(blockPos),compoundnbt);
-
             tileentity.setChanged();
             return true;
         }
