@@ -62,7 +62,7 @@ public class FlyingCardEntity extends DamagingProjectileEntity implements IAnima
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "card_controller", 0, this::predicate));
+        data.addAnimationController(new AnimationController<>(this, "card_controller", 0, this::predicate));
     }
 
     @Override

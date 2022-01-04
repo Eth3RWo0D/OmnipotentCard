@@ -19,7 +19,5 @@ public class RendererRegistry {
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.FALLING_STONE.get(), FallingStoneEntityRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.STONE_SPIKE.get(), StoneSpikeEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(TileEntityRegistry.SPECIAL_CARD_BLOCK_TILEENTITY.get(), SpecialCardBlockRenderer::new);
-
-
     }
 }

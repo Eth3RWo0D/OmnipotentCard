@@ -103,7 +103,7 @@ public class FallingStoneEntity extends Entity implements IAnimatable {
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "falling_stone_controller", 1, this::predicate));
+        data.addAnimationController(new AnimationController<>(this, "falling_stone_controller", 1, this::predicate));
     }
 
     @Override

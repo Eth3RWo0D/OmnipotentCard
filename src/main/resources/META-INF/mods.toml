@@ -10,7 +10,7 @@ displayURL="https://marblegate.love/" #optional
 credits="Art by Etherwood" #optional
 authors="MarbleGate 纯白之门 & Etherwood 以太木" #optional
 description='''
-waiting for edit.
+Cards that can be thrown, used as a trap, or used as a force field.
 '''
 [[dependencies.omni_card]] #optional
     # the modid of the dependency
