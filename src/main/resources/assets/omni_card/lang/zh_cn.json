@@ -73,6 +73,7 @@
   "tooltip.omni_card.special_card.is_2": "可被回收",
   "tooltip.omni_card.special_card.is_3": "不可被回收",
   "tooltip.omni_card.special_card.is_4": "。",
+  "tooltip.omni_card.special_card.is_5": "持续时间（秒）：",
   "tooltip.omni_card.special_card.operation_place": "右键任何表面",
   "tooltip.omni_card.special_card.to_place": "放置并启动卡牌。",
   "tooltip.omni_card.special_card.function.field_card": "以此卡牌放置位置为中心产生一个区域，并点燃所有进入此区域的敌对生物。",

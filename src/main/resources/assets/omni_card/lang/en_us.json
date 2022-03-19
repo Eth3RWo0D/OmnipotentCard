@@ -75,6 +75,7 @@
   "tooltip.omni_card.special_card.is_2": "retrievable",
   "tooltip.omni_card.special_card.is_3": "irretrievable",
   "tooltip.omni_card.special_card.is_4": ".",
+  "tooltip.omni_card.special_card.is_5": "Lifetime(second):",
   "tooltip.omni_card.special_card.operation_place": "RIGHT CLICK ON ANY SURFACE",
   "tooltip.omni_card.special_card.to_place": " to place and activate the card.",
   "tooltip.omni_card.special_card.function.field_card": "Create an area centered around where this card is placed and ignite all hostile creatures that enter this area.",

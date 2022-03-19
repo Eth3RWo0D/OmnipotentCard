@@ -10,6 +10,8 @@ import love.marblegate.omnicard.registry.BlockRegistry;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -121,6 +123,9 @@ public class PlaceableSpecialCard extends Item {
         tooltips.add(MiscUtil.tooltip("tooltip.omni_card.special_card.is_1", ThemeColor.HINT)
                 .append(MiscUtil.tooltip("tooltip.omni_card.special_card.is_" + (card.canRetrieve() ? "2" : "3"), ThemeColor.HINT_EMP))
                 .append(MiscUtil.tooltip("tooltip.omni_card.special_card.is_4", ThemeColor.HINT)));
+        String lifetime = card.getLifetime()==-1?" ∞ ":" " + card.getLifetime() / 20 + " ";
+        tooltips.add(MiscUtil.tooltip("tooltip.omni_card.special_card.is_5", ThemeColor.HINT)
+                .append(new TextComponent(lifetime).setStyle(Style.EMPTY.withColor(ThemeColor.HINT_EMP).withBold(false))));
         tooltips.add(MiscUtil.tooltipBold("tooltip.omni_card.special_card.operation_place", ThemeColor.OPERATION)
                 .append(MiscUtil.tooltip("tooltip.omni_card.special_card.to_place", ThemeColor.OPERATION_EXPLAIN)));
         super.appendHoverText(itemStack, world, tooltips, iTooltipFlag);

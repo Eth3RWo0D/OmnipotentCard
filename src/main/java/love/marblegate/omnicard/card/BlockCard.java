@@ -1,13 +1,14 @@
 package love.marblegate.omnicard.card;
 
 import love.marblegate.omnicard.block.blockentity.SpecialCardBlockTileEntity;
+import love.marblegate.omnicard.card.function.ISpecialCardBlockTick;
 
 import java.util.Objects;
 
 
 public class BlockCard extends AbstractCard {
-    private final CardFunc.ISpecialCardBlockTick serverTickHandler;
-    private final CardFunc.ISpecialCardBlockTick clientTickHandler;
+    private final ISpecialCardBlockTick serverTickHandler;
+    private final ISpecialCardBlockTick clientTickHandler;
     private final int lifetime;
     private final boolean canRetrieveByBreak;
 
@@ -42,8 +43,8 @@ public class BlockCard extends AbstractCard {
     }
 
     public static class Builder extends AbstractCard.Builder<Builder> {
-        private CardFunc.ISpecialCardBlockTick serverTickHandler;
-        private CardFunc.ISpecialCardBlockTick clientTickHandler;
+        private ISpecialCardBlockTick serverTickHandler;
+        private ISpecialCardBlockTick clientTickHandler;
         private final int lifetime;
         private boolean canRetrieveByBreak = false;
 
@@ -67,12 +68,12 @@ public class BlockCard extends AbstractCard {
             return this;
         }
 
-        public Builder setServerTickHandler(CardFunc.ISpecialCardBlockTick serverTickHandler) {
+        public Builder setServerTickHandler(ISpecialCardBlockTick serverTickHandler) {
             this.serverTickHandler = Objects.requireNonNull(serverTickHandler);
             return this;
         }
 
-        public Builder setClientTickHandler(CardFunc.ISpecialCardBlockTick serverTickHandler) {
+        public Builder setClientTickHandler(ISpecialCardBlockTick serverTickHandler) {
             this.clientTickHandler = Objects.requireNonNull(serverTickHandler);
             return this;
         }

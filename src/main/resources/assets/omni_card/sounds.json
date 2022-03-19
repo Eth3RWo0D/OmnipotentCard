@@ -1,33 +1,15 @@
 {
-  "throw_common_card": {
-    "replace": "true",
+  "throw_card": {
+    "replace": true,
     "sounds": [
       {
-        "name": "omni_card:throw_common_card",
-        "stream": true
-      }
-    ]
-  },
-  "throw_elemental_card": {
-    "replace": "true",
-    "sounds": [
-      {
-        "name": "omni_card:throw_elemental_card",
-        "stream": true
-      }
-    ]
-  },
-  "throw_colored_card": {
-    "replace": "true",
-    "sounds": [
-      {
-        "name": "omni_card:throw_colored_card",
+        "name": "omni_card:throw_card",
         "stream": true
       }
     ]
   },
   "colored_card_hit": {
-    "replace": "true",
+    "replace": true,
     "sounds": [
       {
         "name": "omni_card:colored_card_hit",
@@ -36,7 +18,7 @@
     ]
   },
   "elemental_card_hit": {
-    "replace": "true",
+    "replace": true,
     "sounds": [
       {
         "name": "omni_card:elemental_card_hit",
@@ -45,7 +27,7 @@
     ]
   },
   "trap_card_hit": {
-    "replace": "true",
+    "replace": true,
     "sounds": [
       {
         "name": "omni_card:trap_card_hit",
@@ -54,7 +36,7 @@
     ]
   },
   "cutting_card": {
-    "replace": "true",
+    "replace": true,
     "sounds": [
       {
         "name": "omni_card:cutting_card_1",
@@ -67,7 +49,7 @@
     ]
   },
   "block_card_on_run": {
-    "replace": "true",
+    "replace": true,
     "sounds": [
       {
         "name": "omni_card:block_card_on_run",

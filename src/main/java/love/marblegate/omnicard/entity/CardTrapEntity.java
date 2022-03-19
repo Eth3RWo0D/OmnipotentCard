@@ -2,6 +2,7 @@ package love.marblegate.omnicard.entity;
 
 import love.marblegate.omnicard.card.CommonCard;
 import love.marblegate.omnicard.card.CommonCards;
+import love.marblegate.omnicard.misc.Configuration;
 import love.marblegate.omnicard.registry.EntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -54,6 +55,11 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
     @Override
     public void registerControllers(AnimationData data) {
         data.addAnimationController(new AnimationController(this, "card_controller", 1, this::predicate));
+    }
+
+    @Override
+    public float getBrightness() {
+        return Configuration.TRAP_CARD_BRIGHTNESS.get().floatValue();
     }
 
     @Override
@@ -130,6 +136,14 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
     }
 
     @Nullable
+    public UUID getOwnerUUID(){
+        if (ownerUUID != null) {
+            return ownerUUID;
+        }
+        return null;
+    }
+
+    @Nullable
     public Entity getOwner() {
         if (ownerUUID != null && level instanceof ServerLevel) {
             return ((ServerLevel) level).getEntity(ownerUUID);
@@ -180,11 +194,13 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
     @Override
     public void writeSpawnData(FriendlyByteBuf buffer) {
         buffer.writeByte(CommonCards.toByte(card));
+        buffer.writeUUID(ownerUUID);
     }
 
     @Override
     public void readSpawnData(FriendlyByteBuf additionalData) {
         card = CommonCards.fromByte(additionalData.readByte());
+        ownerUUID = additionalData.readUUID();
     }
 
 }

@@ -1,4 +1,4 @@
-package love.marblegate.omnicard.card;
+package love.marblegate.omnicard.card.function;
 
 import love.marblegate.omnicard.block.blockentity.SpecialCardBlockTileEntity;
 import love.marblegate.omnicard.entity.CardTrapEntity;
@@ -13,6 +13,7 @@ import love.marblegate.omnicard.registry.SoundRegistry;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -23,17 +24,19 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.IPlantable;
 
 public class CardFunc {
-    public static class FlyingCard {
+    public static class HitEntity {
         public static void whiteCard(FlyingCardEntity card, LivingEntity victim) {
             if (!card.level.isClientSide()) {
                 victim.hurt(ModDamage.causeCardDamage(card, card.getOwner()), 6);
@@ -142,7 +145,7 @@ public class CardFunc {
                 MiscUtil.addParticle((ServerLevel) victim.level, ParticleTypes.RAIN,
                         card.getRandomX(1.2D), card.getRandomY() - 0.5d, card.getRandomZ(1.2D),
                         card.getDeltaMovement().normalize().x, card.getDeltaMovement().normalize().y, card.getDeltaMovement().normalize().z,
-                        1, 35);
+                        1, 70);
             }
         }
 
@@ -186,7 +189,126 @@ public class CardFunc {
         }
     }
 
-    public static class TrapCard {
+    public static class HitBlock{
+        public static void torrentCard(FlyingCardEntity card, BlockPos pos, Direction face){
+            if(!card.level.isClientSide()){
+                BlockState blockState = card.level.getBlockState(pos);
+                boolean worked = false;
+                if(blockState.getBlock() instanceof AbstractCandleBlock || blockState.getBlock() instanceof CampfireBlock){
+                    if(blockState.getValue(BlockStateProperties.LIT)) {
+                        card.level.setBlockAndUpdate(pos,blockState.setValue(BlockStateProperties.LIT,false));
+                        worked = true;
+                    }
+                }
+                for(BlockPos blockPos: BlockPos.betweenClosed(pos.above().east().south(),pos.below().north().west())){
+                    if(card.level.getBlockState(blockPos).getBlock() instanceof BaseFireBlock){
+                        card.level.setBlockAndUpdate(blockPos,Blocks.AIR.defaultBlockState());
+                        worked = true;
+                    }
+                }
+                if(blockState.is(Blocks.MAGMA_BLOCK)){
+                    card.level.setBlockAndUpdate(pos,Blocks.COBBLESTONE.defaultBlockState());
+                    worked = true;
+                }
+                if(worked){
+                    card.level.playSound((Player) null, pos.getX(), pos.getY(), pos.getZ(), SoundRegistry.ELEMENTAL_CARD_HIT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+                    MiscUtil.addParticle((ServerLevel) card.level, ParticleTypes.RAIN,
+                            card.getRandomX(1.2D), card.getRandomY() - 0.5d, card.getRandomZ(1.2D),
+                            card.getDeltaMovement().normalize().x, card.getDeltaMovement().normalize().y, card.getDeltaMovement().normalize().z,
+                            1, 70);
+                    card.remove(Entity.RemovalReason.DISCARDED);
+                }
+            }
+        }
+
+        public static void flameCard(FlyingCardEntity card, BlockPos pos, Direction face){
+            if(!card.level.isClientSide()){
+                BlockState blockState = card.level.getBlockState(pos);
+                boolean worked = false;
+                if(CampfireBlock.canLight(blockState) || CandleBlock.canLight(blockState) || CandleCakeBlock.canLight(blockState)){
+                    card.level.setBlockAndUpdate(pos,blockState.setValue(BlockStateProperties.LIT,true));
+                    worked = true;
+                }
+                if(blockState.isFlammable(card.level,pos,face) || blockState.is(Blocks.OBSIDIAN)){
+                    if(tryCatchFire(card.level, pos))
+                        worked = true;
+                }
+                if(blockState.is(Blocks.TNT)){
+                    if(card.getOwner() instanceof LivingEntity)
+                        blockState.onCaughtFire(card.level,pos,face, (LivingEntity) card.getOwner());
+                    else blockState.onCaughtFire(card.level,pos,face, (LivingEntity) null);
+                    card.level.setBlockAndUpdate(pos,Blocks.AIR.defaultBlockState());
+                    worked = true;
+                }
+                if(worked){
+                    card.level.playSound((Player) null, pos.getX(), pos.getY(), pos.getZ(), SoundRegistry.ELEMENTAL_CARD_HIT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+                    MiscUtil.addParticle((ServerLevel) card.level, ParticleTypes.FLAME,
+                            card.getRandomX(1.2D), card.getRandomY() - 0.5d, card.getRandomZ(1.2D),
+                            card.getDeltaMovement().normalize().x, card.getDeltaMovement().normalize().y, card.getDeltaMovement().normalize().z,
+                            1, 50);
+                    card.remove(Entity.RemovalReason.DISCARDED);
+                }
+            }
+
+        }
+
+        private static boolean tryCatchFire(Level level, BlockPos pos){
+            boolean worked = false;
+            if(level.getBlockState(pos.above()).isAir()){
+                level.setBlockAndUpdate(pos.above(),Blocks.FIRE.defaultBlockState());
+                worked = true;
+            }
+            if(level.getBlockState(pos.below()).isAir()){
+                level.setBlockAndUpdate(pos.below(),Blocks.FIRE.defaultBlockState());
+                worked = true;
+            }
+            if(level.getBlockState(pos.south()).isAir()){
+                level.setBlockAndUpdate(pos.south(),Blocks.FIRE.defaultBlockState());
+                worked = true;
+            }
+            if(level.getBlockState(pos.north()).isAir()){
+                level.setBlockAndUpdate(pos.north(),Blocks.FIRE.defaultBlockState());
+                worked = true;
+            }
+            if(level.getBlockState(pos.east()).isAir()){
+                level.setBlockAndUpdate(pos.east(),Blocks.FIRE.defaultBlockState());
+                worked = true;
+            }
+            if(level.getBlockState(pos.west()).isAir()){
+                level.setBlockAndUpdate(pos.west(),Blocks.FIRE.defaultBlockState());
+                worked = true;
+            }
+            return worked;
+        }
+    }
+
+    public static class CardOnFly{
+        public static void defaultCard(FlyingCardEntity card){
+            if(card.level.isClientSide()){
+                if(!card.justBeenThrown()){
+                    Vec3 vec3 = card.getDeltaMovement();
+                    double d0 = card.getX() + vec3.x;
+                    double d1 = card.getY() + vec3.y;
+                    double d2 = card.getZ() + vec3.z;
+                    if (card.isInWater()) {
+                        for (int i = 0; i < 4; ++i) {
+                            card.level.addAlwaysVisibleParticle(ParticleTypes.BUBBLE, d0 - vec3.x * 0.25D, d1 - vec3.y * 0.25D, d2 - vec3.z * 0.25D, vec3.x, vec3.y, vec3.z);
+                        }
+                    }
+                    card.level.addAlwaysVisibleParticle(ParticleTypes.FIREWORK, d0, d1 + 0.5D, d2, 0.0D, 0.0D, 0.0D);
+                }
+            }
+            else
+                System.out.println("Well it is Serverside!");
+                ProjectileUtil.rotateTowardsMovement(card, 0.2F);
+
+        }
+
+        public static void noEffect(FlyingCardEntity card){}
+    }
+
+
+    public static class ActivateTrap {
         public static void flameCard(CardTrapEntity trap, LivingEntity victim) {
             if (!trap.level.isClientSide()) {
                 victim.hurt(ModDamage.causeCardDamage(trap, trap.getOwner()).bypassArmor(), 4);
@@ -206,7 +328,7 @@ public class CardFunc {
                 MiscUtil.applyKnockback(victim, 0, 1.8F, 0);
                 MiscUtil.addParticle((ServerLevel) victim.level, ParticleTypes.RAIN, trap.getX(), trap.getY() + 0.1D, trap.getZ(),
                         victim.getRandom().nextDouble() / 10, victim.getRandom().nextDouble() * 2, victim.getRandom().nextDouble() / 10,
-                        1, 20);
+                        1, 50);
                 victim.level.playSound((Player) null, victim.getX(), victim.getY(), victim.getZ(), SoundRegistry.TRAP_CARD_HIT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
             }
         }
@@ -253,7 +375,7 @@ public class CardFunc {
         }
     }
 
-    public static class BlockCard {
+    public static class RunningField {
         public static void fieldCard(SpecialCardBlockTileEntity tileEntity) {
             if (tileEntity.getLifetime() % 10 == 0) {
                 MiscUtil.applyHolyFlameInArea((ServerLevel) tileEntity.getLevel(),
@@ -366,21 +488,6 @@ public class CardFunc {
     }
 
 
-    @FunctionalInterface
-    public interface ITrapCardActivationHandler {
-        void handleTrap(CardTrapEntity trap, LivingEntity victim);
-    }
-
-    @FunctionalInterface
-    public interface IFlyingCardHitHandler {
-        void handleHit(FlyingCardEntity card, LivingEntity victim);
-    }
-
-    @FunctionalInterface
-    public interface ISpecialCardBlockTick {
-        void handle(SpecialCardBlockTileEntity tileEntity);
-    }
-
     private static void handleCommonThunderCardLogic(LivingEntity victim, Entity owner, Entity damageSource) {
         LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(victim.level);
         lightningboltentity.setPos(victim.getX(), victim.getY(), victim.getZ());
@@ -407,7 +514,7 @@ public class CardFunc {
     private static void handleCommonBrambleCardPlantBush(LivingEntity victim) {
         BlockPos pos = victim.blockPosition();
         if (victim.level.getBlockState(pos).getBlock().equals(Blocks.AIR) && victim.level.getBlockState(pos.below()).canSustainPlant((BlockGetter) victim.level, pos, Direction.UP, (IPlantable) Blocks.SWEET_BERRY_BUSH)) {
-            victim.level.setBlockAndUpdate(pos, Blocks.SWEET_BERRY_BUSH.defaultBlockState());
+            victim.level.setBlockAndUpdate(pos, Blocks.SWEET_BERRY_BUSH.defaultBlockState().setValue(SweetBerryBushBlock.AGE,3));
         }
     }
 

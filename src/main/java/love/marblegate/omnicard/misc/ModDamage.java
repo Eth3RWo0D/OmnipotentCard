@@ -36,7 +36,7 @@ public class ModDamage {
 
         @Override
         public Component getLocalizedDeathMessage(LivingEntity entityLivingBaseIn) {
-            String s = "death.attack." + msgId + ".no_source";
+            String s = "death.attack." + msgId;
             return new TranslatableComponent(s, entityLivingBaseIn.getDisplayName());
         }
     }
