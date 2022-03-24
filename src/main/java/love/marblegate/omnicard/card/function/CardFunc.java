@@ -429,8 +429,8 @@ public class CardFunc {
 
         public static void purificationCard(SpecialCardBlockTileEntity tileEntity) {
             if (tileEntity.getLifetime() == 90) {
-                MiscUtil.applyHolyFlameInArea((ServerLevel) tileEntity.getLevel(),
-                        MiscUtil.buildAABB(tileEntity.getBlockPos(), 8), 200);
+                MiscUtil.applyHugeDamageThenApplyFireInArea((ServerLevel) tileEntity.getLevel(),
+                        MiscUtil.buildAABB(tileEntity.getBlockPos(), 8), 20,3);
             }
         }
 
@@ -455,20 +455,27 @@ public class CardFunc {
         }
 
         public static void sunnyCard(SpecialCardBlockTileEntity tileEntity) {
-            if (tileEntity.getLevel().dimension() == Level.OVERWORLD) {
-                ((ServerLevel) tileEntity.getLevel()).setWeatherParameters(24000, 0, false, false);
+            if (tileEntity.getLifetime() == 90) {
+                if (tileEntity.getLevel().dimension() == Level.OVERWORLD) {
+                    ((ServerLevel) tileEntity.getLevel()).setWeatherParameters(24000, 0, false, false);
+                }
             }
         }
 
         public static void rainyCard(SpecialCardBlockTileEntity tileEntity) {
-            if (tileEntity.getLevel().dimension() == Level.OVERWORLD) {
-                ((ServerLevel) tileEntity.getLevel()).setWeatherParameters(0, 24000, true, false);
+            if (tileEntity.getLifetime() == 90) {
+                if (tileEntity.getLevel().dimension() == Level.OVERWORLD) {
+                    ((ServerLevel) tileEntity.getLevel()).setWeatherParameters(0, 24000, true, false);
+                }
             }
+
         }
 
         public static void thunderstormCard(SpecialCardBlockTileEntity tileEntity) {
-            if (tileEntity.getLevel().dimension() == Level.OVERWORLD) {
-                ((ServerLevel) tileEntity.getLevel()).setWeatherParameters(0, 24000, true, true);
+            if (tileEntity.getLifetime() == 90) {
+                if (tileEntity.getLevel().dimension() == Level.OVERWORLD) {
+                    ((ServerLevel) tileEntity.getLevel()).setWeatherParameters(0, 24000, true, true);
+                }
             }
         }
 

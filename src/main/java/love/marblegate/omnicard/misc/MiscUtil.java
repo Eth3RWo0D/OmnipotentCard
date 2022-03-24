@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.FlyingMob;
@@ -80,6 +81,14 @@ public class MiscUtil {
     public static void applyHolyFlameInArea(ServerLevel world, AABB aabb, int ticks) {
         world.getEntities((Entity) null, aabb, entity -> entity instanceof LivingEntity && isHostile((LivingEntity) entity, false))
                 .forEach(entity -> ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffectRegistry.HOLY_FLAME.get(), ticks)));
+    }
+
+    public static void applyHugeDamageThenApplyFireInArea(ServerLevel world, AABB aabb, float damage, int fireSecond) {
+        world.getEntities((Entity) null, aabb, entity -> entity instanceof LivingEntity && isHostile((LivingEntity) entity, false))
+                .forEach(entity -> {
+                    entity.hurt(DamageSource.MAGIC,damage);
+                    entity.setSecondsOnFire(fireSecond);
+                });
     }
 
     public static AABB buildAABB(BlockPos pos, int width, int height) {

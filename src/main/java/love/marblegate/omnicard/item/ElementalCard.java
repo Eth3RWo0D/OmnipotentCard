@@ -8,6 +8,7 @@ import love.marblegate.omnicard.misc.MiscUtil;
 import love.marblegate.omnicard.misc.ModGroup;
 import love.marblegate.omnicard.misc.ThemeColor;
 import love.marblegate.omnicard.registry.SoundRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;

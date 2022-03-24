@@ -8,6 +8,7 @@ import love.marblegate.omnicard.misc.ModGroup;
 import love.marblegate.omnicard.misc.ThemeColor;
 import love.marblegate.omnicard.registry.BlockRegistry;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -30,6 +31,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -118,7 +120,7 @@ public class PlaceableSpecialCard extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable Level world, List<Component> tooltips, TooltipFlag iTooltipFlag) {
+    public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level world, List<Component> tooltips, TooltipFlag iTooltipFlag) {
         tooltips.add(MiscUtil.tooltip("tooltip.omni_card.special_card.function." + card.getCardName(), ThemeColor.HINT));
         tooltips.add(MiscUtil.tooltip("tooltip.omni_card.special_card.is_1", ThemeColor.HINT)
                 .append(MiscUtil.tooltip("tooltip.omni_card.special_card.is_" + (card.canRetrieve() ? "2" : "3"), ThemeColor.HINT_EMP))
