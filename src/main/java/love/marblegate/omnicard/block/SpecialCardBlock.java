@@ -3,6 +3,7 @@ package love.marblegate.omnicard.block;
 import com.google.common.collect.Lists;
 import love.marblegate.omnicard.block.tileentity.SpecialCardBlockTileEntity;
 import love.marblegate.omnicard.card.BlockCard;
+import love.marblegate.omnicard.misc.Configuration;
 import love.marblegate.omnicard.registry.TileEntityRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -56,6 +57,11 @@ public class SpecialCardBlock extends Block {
             }
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
+        return Configuration.FIELD_CARD_BRIGHTNESS.get();
     }
 
     @Override

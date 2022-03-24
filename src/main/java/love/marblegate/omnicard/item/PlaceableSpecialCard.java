@@ -27,6 +27,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -127,6 +129,9 @@ public class PlaceableSpecialCard extends Item {
         tooltips.add(MiscUtil.tooltip("tooltip.omni_card.special_card.is_1", ThemeColor.HINT)
                 .append(MiscUtil.tooltip("tooltip.omni_card.special_card.is_" + (card.canRetrieve() ? "2" : "3"), ThemeColor.HINT_EMP))
                 .append(MiscUtil.tooltip("tooltip.omni_card.special_card.is_4", ThemeColor.HINT)));
+        String lifetime = card.getLifetime()==-1?" ∞ ":" " + card.getLifetime() / 20 + " ";
+        tooltips.add(MiscUtil.tooltip("tooltip.omni_card.special_card.is_5", ThemeColor.HINT)
+                .append(new StringTextComponent(lifetime).setStyle(Style.EMPTY.withColor(ThemeColor.HINT_EMP).withBold(false))));
         tooltips.add(MiscUtil.tooltipBold("tooltip.omni_card.special_card.operation_place", ThemeColor.OPERATION)
                 .append(MiscUtil.tooltip("tooltip.omni_card.special_card.to_place", ThemeColor.OPERATION_EXPLAIN)));
         super.appendHoverText(itemStack, world, tooltips, iTooltipFlag);

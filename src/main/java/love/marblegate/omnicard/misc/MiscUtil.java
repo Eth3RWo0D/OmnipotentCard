@@ -9,6 +9,7 @@ import net.minecraft.entity.monster.*;
 import net.minecraft.entity.monster.piglin.PiglinEntity;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.Color;
@@ -77,6 +78,14 @@ public class MiscUtil {
     public static void applyHolyFlameInArea(ServerWorld world, AxisAlignedBB aabb, int ticks) {
         world.getEntities((Entity) null, aabb, entity -> entity instanceof LivingEntity && isHostile((LivingEntity) entity, false))
                 .forEach(entity -> ((LivingEntity) entity).addEffect(new EffectInstance(EffectRegistry.HOLY_FLAME.get(), ticks)));
+    }
+
+    public static void applyHugeDamageThenApplyFireInArea(ServerWorld world, AxisAlignedBB aabb, float damage, int fireSecond) {
+        world.getEntities((Entity) null, aabb, entity -> entity instanceof LivingEntity && isHostile((LivingEntity) entity, false))
+                .forEach(entity -> {
+                    entity.hurt(DamageSource.MAGIC,damage);
+                    entity.setSecondsOnFire(fireSecond);
+                });
     }
 
     public static AxisAlignedBB buildAABB(BlockPos pos, int width, int height) {

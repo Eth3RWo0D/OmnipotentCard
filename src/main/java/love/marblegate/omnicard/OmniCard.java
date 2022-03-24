@@ -5,9 +5,12 @@ import love.marblegate.omnicard.capability.cardtype.ICardTypeData;
 import love.marblegate.omnicard.card.CommonCard;
 import love.marblegate.omnicard.card.CommonCards;
 import love.marblegate.omnicard.item.CardStack;
+import love.marblegate.omnicard.misc.Configuration;
 import love.marblegate.omnicard.registry.*;
 import net.minecraft.item.ItemModelsProperties;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
@@ -24,13 +27,13 @@ public class OmniCard {
 
     public OmniCard() {
         GeckoLib.initialize();
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configuration.COMMON_CONFIG);
 
         ItemRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         EntityRegistry.ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
         EffectRegistry.EFFECT.register(FMLJavaModLoadingContext.get().getModEventBus());
         BlockRegistry.BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         TileEntityRegistry.TILE_ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
-        ParticleRegistry.PARTICLE_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
         SoundRegistry.SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());
 
         /*// Register the setup method for modloading

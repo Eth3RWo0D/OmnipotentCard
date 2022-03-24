@@ -2,6 +2,7 @@ package love.marblegate.omnicard.entity;
 
 import love.marblegate.omnicard.card.CommonCard;
 import love.marblegate.omnicard.card.CommonCards;
+import love.marblegate.omnicard.misc.Configuration;
 import love.marblegate.omnicard.registry.EntityRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -130,6 +131,14 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
     }
 
     @Nullable
+    public UUID getOwnerUUID(){
+        if (ownerUUID != null) {
+            return ownerUUID;
+        }
+        return null;
+    }
+
+    @Nullable
     public Entity getOwner() {
         if (this.ownerUUID != null && this.level instanceof ServerWorld) {
             return ((ServerWorld) this.level).getEntity(this.ownerUUID);
@@ -180,11 +189,18 @@ public class CardTrapEntity extends Entity implements IAnimatable, IEntityAdditi
     @Override
     public void writeSpawnData(PacketBuffer buffer) {
         buffer.writeByte(CommonCards.toByte(card));
+        buffer.writeUUID(ownerUUID);
+    }
+
+    @Override
+    public float getBrightness() {
+        return Configuration.TRAP_CARD_BRIGHTNESS.get().floatValue();
     }
 
     @Override
     public void readSpawnData(PacketBuffer additionalData) {
         card = CommonCards.fromByte(additionalData.readByte());
+        ownerUUID = additionalData.readUUID();
     }
 
 }

@@ -10,17 +10,19 @@ import love.marblegate.omnicard.misc.MiscUtil;
 import love.marblegate.omnicard.misc.ModDamage;
 import love.marblegate.omnicard.registry.EffectRegistry;
 import love.marblegate.omnicard.registry.SoundRegistry;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.*;
+import net.minecraft.client.audio.SoundSource;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -33,7 +35,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.IPlantable;
 
 public class CardFunc {
-    public static class FlyingCard {
+    public static class HitEntity {
         public static void whiteCard(FlyingCardEntity card, LivingEntity victim) {
             if (!card.level.isClientSide()) {
                 victim.hurt(ModDamage.causeCardDamage(card, card.getOwner()), 6);
@@ -142,7 +144,7 @@ public class CardFunc {
                 MiscUtil.addParticle((ServerWorld) victim.level, ParticleTypes.RAIN,
                         card.getRandomX(1.2D), card.getRandomY() - 0.5d, card.getRandomZ(1.2D),
                         card.getDeltaMovement().normalize().x, card.getDeltaMovement().normalize().y, card.getDeltaMovement().normalize().z,
-                        1, 35);
+                        1, 70);
             }
         }
 
@@ -186,6 +188,99 @@ public class CardFunc {
         }
     }
 
+    public static class HitBlock{
+        public static void torrentCard(FlyingCardEntity card, BlockPos pos, Direction face){
+            if(!card.level.isClientSide()){
+                BlockState blockState = card.level.getBlockState(pos);
+                boolean worked = false;
+                if(blockState.getBlock() instanceof CampfireBlock){
+                    if(blockState.getValue(BlockStateProperties.LIT)) {
+                        card.level.setBlockAndUpdate(pos,blockState.setValue(BlockStateProperties.LIT,false));
+                        worked = true;
+                    }
+                }
+                for(BlockPos blockPos: BlockPos.betweenClosed(pos.above().east().south(),pos.below().north().west())){
+                    if(card.level.getBlockState(blockPos).getBlock() instanceof AbstractFireBlock){
+                        card.level.setBlockAndUpdate(blockPos,Blocks.AIR.defaultBlockState());
+                        worked = true;
+                    }
+                }
+                if(blockState.is(Blocks.MAGMA_BLOCK)){
+                    card.level.setBlockAndUpdate(pos,Blocks.COBBLESTONE.defaultBlockState());
+                    worked = true;
+                }
+                if(worked){
+                    card.level.playSound((PlayerEntity) null, pos.getX(), pos.getY(), pos.getZ(), SoundRegistry.ELEMENTAL_CARD_HIT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    MiscUtil.addParticle((ServerWorld) card.level, ParticleTypes.RAIN,
+                            card.getRandomX(1.2D), card.getRandomY() - 0.5d, card.getRandomZ(1.2D),
+                            card.getDeltaMovement().normalize().x, card.getDeltaMovement().normalize().y, card.getDeltaMovement().normalize().z,
+                            1, 70);
+                    card.remove();
+                }
+            }
+        }
+
+        public static void flameCard(FlyingCardEntity card, BlockPos pos, Direction face){
+            if(!card.level.isClientSide()){
+                BlockState blockState = card.level.getBlockState(pos);
+                boolean worked = false;
+                if(CampfireBlock.canLight(blockState)){
+                    card.level.setBlockAndUpdate(pos,blockState.setValue(BlockStateProperties.LIT,true));
+                    worked = true;
+                }
+                if(blockState.isFlammable(card.level,pos,face) || blockState.is(Blocks.OBSIDIAN)){
+                    if(tryCatchFire(card.level, pos))
+                        worked = true;
+                }
+                if(blockState.is(Blocks.TNT)){
+                    if(card.getOwner() instanceof LivingEntity)
+                        blockState.catchFire(card.level,pos,face, (LivingEntity) card.getOwner());
+                    else blockState.catchFire(card.level,pos,face, (LivingEntity) null);
+                    card.level.setBlockAndUpdate(pos,Blocks.AIR.defaultBlockState());
+                    worked = true;
+                }
+                if(worked){
+                    card.level.playSound((PlayerEntity) null, pos.getX(), pos.getY(), pos.getZ(), SoundRegistry.ELEMENTAL_CARD_HIT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    MiscUtil.addParticle((ServerWorld) card.level, ParticleTypes.FLAME,
+                            card.getRandomX(1.2D), card.getRandomY() - 0.5d, card.getRandomZ(1.2D),
+                            card.getDeltaMovement().normalize().x, card.getDeltaMovement().normalize().y, card.getDeltaMovement().normalize().z,
+                            1, 50);
+                    card.remove();
+                }
+            }
+
+        }
+
+        private static boolean tryCatchFire(World world, BlockPos pos){
+            boolean worked = false;
+            if(world.getBlockState(pos.above()).isAir(world,pos.above())){
+                world.setBlockAndUpdate(pos.above(),Blocks.FIRE.defaultBlockState());
+                worked = true;
+            }
+            if(world.getBlockState(pos.below()).isAir(world,pos.below())){
+                world.setBlockAndUpdate(pos.below(),Blocks.FIRE.defaultBlockState());
+                worked = true;
+            }
+            if(world.getBlockState(pos.south()).isAir(world,pos.south())){
+                world.setBlockAndUpdate(pos.south(),Blocks.FIRE.defaultBlockState());
+                worked = true;
+            }
+            if(world.getBlockState(pos.north()).isAir(world,pos.north())){
+                world.setBlockAndUpdate(pos.north(),Blocks.FIRE.defaultBlockState());
+                worked = true;
+            }
+            if(world.getBlockState(pos.east()).isAir(world,pos.east())){
+                world.setBlockAndUpdate(pos.east(),Blocks.FIRE.defaultBlockState());
+                worked = true;
+            }
+            if(world.getBlockState(pos.west()).isAir(world,pos.west())){
+                world.setBlockAndUpdate(pos.west(),Blocks.FIRE.defaultBlockState());
+                worked = true;
+            }
+            return worked;
+        }
+    }
+
     public static class TrapCard {
         public static void flameCard(CardTrapEntity trap, LivingEntity victim) {
             if (!trap.level.isClientSide()) {
@@ -206,7 +301,7 @@ public class CardFunc {
                 MiscUtil.applyKnockback(victim, 0, 1.8F, 0);
                 MiscUtil.addParticle((ServerWorld) victim.level, ParticleTypes.RAIN, trap.getX(), trap.getY() + 0.1D, trap.getZ(),
                         victim.getRandom().nextDouble() / 10, victim.getRandom().nextDouble() * 2, victim.getRandom().nextDouble() / 10,
-                        1, 20);
+                        1, 50);
                 victim.level.playSound((PlayerEntity) null, victim.getX(), victim.getY(), victim.getZ(), SoundRegistry.TRAP_CARD_HIT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
             }
         }
@@ -253,7 +348,7 @@ public class CardFunc {
         }
     }
 
-    public static class BlockCard {
+    public static class RunningField {
         public static void fieldCard(SpecialCardBlockTileEntity tileEntity) {
             if (tileEntity.getLifetime() % 10 == 0) {
                 MiscUtil.applyHolyFlameInArea((ServerWorld) tileEntity.getLevel(),
@@ -307,8 +402,8 @@ public class CardFunc {
 
         public static void purificationCard(SpecialCardBlockTileEntity tileEntity) {
             if (tileEntity.getLifetime() == 90) {
-                MiscUtil.applyHolyFlameInArea((ServerWorld) tileEntity.getLevel(),
-                        MiscUtil.buildAABB(tileEntity.getBlockPos(), 8), 200);
+                MiscUtil.applyHugeDamageThenApplyFireInArea((ServerWorld) tileEntity.getLevel(),
+                        MiscUtil.buildAABB(tileEntity.getBlockPos(), 8), 20,3);
             }
         }
 
@@ -333,20 +428,26 @@ public class CardFunc {
         }
 
         public static void sunnyCard(SpecialCardBlockTileEntity tileEntity) {
-            if (tileEntity.getLevel().dimension() == World.OVERWORLD) {
-                ((ServerWorld) tileEntity.getLevel()).setWeatherParameters(24000, 0, false, false);
+            if (tileEntity.getLifetime() == 90) {
+                if (tileEntity.getLevel().dimension() == World.OVERWORLD) {
+                    ((ServerWorld) tileEntity.getLevel()).setWeatherParameters(24000, 0, false, false);
+                }
             }
         }
 
         public static void rainyCard(SpecialCardBlockTileEntity tileEntity) {
-            if (tileEntity.getLevel().dimension() == World.OVERWORLD) {
-                ((ServerWorld) tileEntity.getLevel()).setWeatherParameters(0, 24000, true, false);
+            if (tileEntity.getLifetime() == 90) {
+                if (tileEntity.getLevel().dimension() == World.OVERWORLD) {
+                    ((ServerWorld) tileEntity.getLevel()).setWeatherParameters(0, 24000, true, false);
+                }
             }
         }
 
         public static void thunderstormCard(SpecialCardBlockTileEntity tileEntity) {
-            if (tileEntity.getLevel().dimension() == World.OVERWORLD) {
-                ((ServerWorld) tileEntity.getLevel()).setWeatherParameters(0, 24000, true, true);
+            if (tileEntity.getLifetime() == 90) {
+                if (tileEntity.getLevel().dimension() == World.OVERWORLD) {
+                    ((ServerWorld) tileEntity.getLevel()).setWeatherParameters(0, 24000, true, true);
+                }
             }
         }
 
@@ -365,6 +466,26 @@ public class CardFunc {
         }
     }
 
+    public static class CardOnFly{
+        public static void defaultCard(FlyingCardEntity card){
+            ProjectileHelper.rotateTowardsMovement(card, 0.2F);
+            if(!card.justBeenThrown()){
+                Vector3d vec3 = card.getDeltaMovement();
+                double d0 = card.getX() + vec3.x;
+                double d1 = card.getY() + vec3.y;
+                double d2 = card.getZ() + vec3.z;
+                if (card.isInWater()) {
+                    for (int i = 0; i < 4; ++i) {
+                        card.level.addParticle(ParticleTypes.BUBBLE, d0 - vec3.x * 0.25D, d1 - vec3.y * 0.25D, d2 - vec3.z * 0.25D, vec3.x, vec3.y, vec3.z);
+                    }
+                }
+                card.level.addParticle(ParticleTypes.FIREWORK, d0, d1 + 0.5D, d2, 0.0D, 0.0D, 0.0D);
+            }
+        }
+
+        public static void noEffect(FlyingCardEntity card){}
+    }
+
 
     @FunctionalInterface
     public interface ITrapCardActivationHandler {
@@ -372,9 +493,20 @@ public class CardFunc {
     }
 
     @FunctionalInterface
-    public interface IFlyingCardHitHandler {
+    public interface IFlyingCardHitEntityHandler {
         void handleHit(FlyingCardEntity card, LivingEntity victim);
     }
+
+    @FunctionalInterface
+    public interface IFlyingCardOnFlyHandler {
+        void handle(FlyingCardEntity card);
+    }
+
+    @FunctionalInterface
+    public interface IFlyingCardHitBlockHandler {
+        void handleHit(FlyingCardEntity card, BlockPos pos, Direction face);
+    }
+
 
     @FunctionalInterface
     public interface ISpecialCardBlockTick {
@@ -407,7 +539,7 @@ public class CardFunc {
     private static void handleCommonBrambleCardPlantBush(LivingEntity victim) {
         BlockPos pos = victim.blockPosition();
         if (victim.level.getBlockState(pos).getBlock().equals(Blocks.AIR) && victim.level.getBlockState(pos.below()).canSustainPlant((IBlockReader) victim.level, pos, Direction.UP, (IPlantable) Blocks.SWEET_BERRY_BUSH)) {
-            victim.level.setBlockAndUpdate(pos, Blocks.SWEET_BERRY_BUSH.defaultBlockState());
+            victim.level.setBlockAndUpdate(pos, Blocks.SWEET_BERRY_BUSH.defaultBlockState().setValue(SweetBerryBushBlock.AGE,3));
         }
     }
 

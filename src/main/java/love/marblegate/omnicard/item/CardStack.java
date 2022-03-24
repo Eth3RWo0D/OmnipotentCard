@@ -8,6 +8,7 @@ import love.marblegate.omnicard.capability.cardtype.ICardTypeData;
 import love.marblegate.omnicard.card.CommonCard;
 import love.marblegate.omnicard.card.CommonCards;
 import love.marblegate.omnicard.entity.FlyingCardEntity;
+import love.marblegate.omnicard.misc.Configuration;
 import love.marblegate.omnicard.misc.MiscUtil;
 import love.marblegate.omnicard.misc.ModGroup;
 import love.marblegate.omnicard.misc.ThemeColor;
@@ -19,13 +20,16 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nullable;
@@ -53,15 +57,20 @@ public class CardStack extends Item {
                     if ((player.abilities.instabuild || hasEnoughBlankCard(player)) && cardTypeData.get() != CommonCards.UNKNOWN) {
                         Vector3d vector3d = player.getViewVector(1.0F);
 
-                        double x = (vector3d.x * 8D);
-                        double y = (vector3d.y * 8D);
-                        double z = (vector3d.z * 8D);
+                        double x = (vector3d.x * Configuration.FLYING_CARD_SPEED.get());
+                        double y = (vector3d.y * Configuration.FLYING_CARD_SPEED.get());
+                        double z = (vector3d.z * Configuration.FLYING_CARD_SPEED.get());
 
                         FlyingCardEntity flyingCardEntity = new FlyingCardEntity(player, x, y, z, worldIn, cardTypeData.get());
                         flyingCardEntity.setPos(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
+                        flyingCardEntity.setOwner(player);
                         worldIn.addFreshEntity(flyingCardEntity);
 
-                        worldIn.playSound((PlayerEntity) null, player.getX(), player.getY(), player.getZ(), SoundRegistry.THROW_COLORED_CARD.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        double d0 = -MathHelper.sin(player.yRot * ((float)Math.PI / 180F));
+                        double d1 = MathHelper.cos(player.yRot * ((float)Math.PI / 180F));
+                        ((ServerWorld)worldIn).sendParticles(ParticleTypes.SWEEP_ATTACK, player.getX() + d0, player.getY(0.5D), player.getZ() + d1, 0, d0, 0.0D, d1, 0.0D);
+
+                        worldIn.playSound((PlayerEntity) null, player.getX(), player.getY(), player.getZ(), SoundRegistry.THROW_CARD.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 
                         if (!player.abilities.instabuild) {
                             consumeBlankCard(player);
