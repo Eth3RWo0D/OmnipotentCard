@@ -12,7 +12,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ItemRegistry {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, OmniCard.MODID);
 
-    public static final RegistryObject<Item> CARD_STACK = ITEMS.register("card_stack", CardStack::new);
+    public static final RegistryObject<Item> CARD_STACK = ITEMS.register("card_stack", CardSwitcher::new);
     public static final RegistryObject<Item> BLANK_CARD = ITEMS.register("blank_card", BlankCard::new);
     public static final RegistryObject<Item> PROTOTYPE_CORE = ITEMS.register("prototype_core", Intermediates::new);
 

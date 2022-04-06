@@ -299,7 +299,6 @@ public class CardFunc {
                 }
             }
             else
-                System.out.println("Well it is Serverside!");
                 ProjectileUtil.rotateTowardsMovement(card, 0.2F);
 
         }

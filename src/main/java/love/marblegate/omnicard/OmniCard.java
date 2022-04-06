@@ -3,7 +3,7 @@ package love.marblegate.omnicard;
 import love.marblegate.omnicard.capability.cardtype.CardTypeData;
 import love.marblegate.omnicard.card.CommonCard;
 import love.marblegate.omnicard.card.CommonCards;
-import love.marblegate.omnicard.item.CardStack;
+import love.marblegate.omnicard.item.CardSwitcher;
 import love.marblegate.omnicard.misc.Configuration;
 import love.marblegate.omnicard.registry.*;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -61,8 +61,8 @@ public class OmniCard {
         event.enqueueWork(() ->
         {
             ItemProperties.register(ItemRegistry.CARD_STACK.get(),
-                    CardStack.CARD_CATEGORY_PROPERTY_NAME, (stack, world, living, id) -> {
-                        CardTypeData cardTypeData = stack.getCapability(CardTypeData.CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
+                    CardSwitcher.CARD_CATEGORY_PROPERTY_NAME, (stack, world, living, id) -> {
+                        CardTypeData cardTypeData = stack.getCapability(CardTypeData.CAPABILITY, null).orElseThrow(() -> new RuntimeException("Capability of CardTypeData goes wrong!"));
                         CommonCard card = cardTypeData.get();
                         if (card == CommonCards.RED) {
                             return 0.1F;
