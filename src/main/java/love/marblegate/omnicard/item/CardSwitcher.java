@@ -35,18 +35,18 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class CardStack extends Item {
+public class CardSwitcher extends Item {
     public static ResourceLocation CARD_CATEGORY_PROPERTY_NAME = new ResourceLocation(OmniCard.MODID, "card_type");
     private static final List<CommonCard> availableCardType = Lists.newArrayList(CommonCards.INK, CommonCards.RED, CommonCards.CORAL, CommonCards.GOLD, CommonCards.SEA_GREEN, CommonCards.AZURE, CommonCards.CERULEAN_BLUE, CommonCards.HELIOTROPE);
 
-    public CardStack() {
+    public CardSwitcher() {
         super(new Properties().tab(ModGroup.GENERAL));
     }
 
     @Override
     public ActionResult<ItemStack> use(World worldIn, PlayerEntity player, Hand hand) {
         if (!worldIn.isClientSide()) {
-            ICardTypeData cardTypeData = player.getItemInHand(hand).getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
+            ICardTypeData cardTypeData = player.getItemInHand(hand).getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new RuntimeException("Capability of CardTypeData goes wrong!"));
 
             if (!player.isShiftKeyDown()) {
                 if (cardTypeData.isSwitchingCard()) {
@@ -113,6 +113,7 @@ public class CardStack extends Item {
                     cardTypeData.set(switchingToNextCard(cardTypeData.get()));
                     world.playSound((PlayerEntity) null, entity.getX(), entity.getY(), entity.getZ(), SoundRegistry.CUTTING_CARD.get(), SoundCategory.PLAYERS, 0.6F, 1F);
                 }
+                entity.setSlot(slot,itemStack);
             }
         }
     }
@@ -162,7 +163,7 @@ public class CardStack extends Item {
         if (compoundNBT == null) {
             compoundNBT = new CompoundNBT();
         }
-        ICardTypeData cardTypeData = stack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
+        ICardTypeData cardTypeData = stack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new RuntimeException("Capability of CardTypeData goes wrong!"));
         compoundNBT.putByte("card_type", CommonCards.toByte(cardTypeData.get()));
         return compoundNBT;
     }
@@ -171,7 +172,7 @@ public class CardStack extends Item {
     public void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt) {
         super.readShareTag(stack, nbt);
         if (nbt != null) {
-            ICardTypeData cardTypeData = stack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Capability of CardTypeData goes wrong!"));
+            ICardTypeData cardTypeData = stack.getCapability(CardTypeData.CARD_TYPE_DATA_CAPABILITY, null).orElseThrow(() -> new RuntimeException("Capability of CardTypeData goes wrong!"));
             cardTypeData.set(CommonCards.fromByte(nbt.getByte("card_type")));
         }
     }
